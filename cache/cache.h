@@ -12,6 +12,7 @@
 template <typename T, typename KeyT = unsigned long long>
 struct Cache_t
 {
+private:
     using Lst = typename std::list<T>;
     using LstIt = typename std::list<T>::iterator;
 
@@ -28,6 +29,7 @@ struct Cache_t
     Lst cache;
     Map hash_tbl;
 
+public:
     Cache_t( size_t cap ) : cap(cap),
                             cache(0)
     {}
@@ -52,6 +54,8 @@ struct Cache_t
         }
     }
 
+private:
+
     LstIt put_in_cache( KeyT key )
     {
         T data = load_from_web(key);
@@ -67,8 +71,8 @@ struct Cache_t
             return link;
         }
 
-        cache.push_back(data);
-        return --cache.end();
+        cache.push_front(data);
+        return cache.begin();
     }
 
     HshIt find_loneliest( )
