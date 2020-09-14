@@ -51,10 +51,8 @@ int main()
         lfu.request(request);
     }
 
-    std::cout << "Total amounts of hits = " << hits << "\n";
     std::cout << "------------LIST DUMP-----------------------\n";
     std::cout << lfu << "\n";
-
 
     return 0;
 }
