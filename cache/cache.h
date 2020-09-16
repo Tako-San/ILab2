@@ -12,6 +12,8 @@
 template <typename T, typename KeyT = unsigned long long>
 struct Cache_t
 {
+public:
+    unsigned counter = 0;
 private:
     using Lst = typename std::list<T>;
     using LstIt = typename std::list<T>::iterator;
@@ -44,12 +46,15 @@ public:
         if (search_res != hash_tbl.end())
         {
             search_res->second.hits++;
+            counter++;
+            //std::cout << "Key: " << key << ", Hits: " << search_res->second.hits << "\n";
             return *(search_res->second.link);
         }
         else
         {
             LstIt link = put_in_cache(key);
-            hash_tbl[key] = {link, 1};
+            hash_tbl[key] = {link, 0};
+            //std::cout << "Key: " << key << ", Hits: 0\n";
             return *link;
         }
     }

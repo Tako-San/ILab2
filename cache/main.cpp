@@ -52,7 +52,8 @@ int main()
     }
 
     std::cout << "------------LIST DUMP-----------------------\n";
-    std::cout << lfu << "\n";
+    std::cout << lfu << "\n\n";
+    std::cout << "Hits: " << lfu.counter << std::endl;
 
     return 0;
 }
