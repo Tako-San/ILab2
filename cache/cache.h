@@ -33,31 +33,46 @@ private:
     HshIt loneliest;
 
 public:
-    Cache_t( size_t cap ) : cap(cap),
+    explicit Cache_t( size_t cap ) : cap(cap),
                             cache(0),
-                            loneliest(nullptr)
+                            loneliest(hash_tbl.end())
     {}
 
     T & request( KeyT key )
     {
-        auto search_res = hash_tbl.find(key);
+#define INCREMENT_AND_RETURN( )        \
+                                       \
+    search_res->second.hits++;         \
+    counter++;                         \
+    return *(search_res->second.link)  \
 
-        if (search_res != hash_tbl.end())
-        {
-            search_res->second.hits++;
-            counter++;
-            loneliest = find_loneliest();
-            //std::cout << "Key: " << key << ", Hits: " << search_res->second.hits << "\n";
-            return *(search_res->second.link);
-        }
-        else
+
+        HshIt search_res = hash_tbl.find(key);
+
+        if (search_res == hash_tbl.end())
         {
             LstIt link = put_in_cache(key);
             hash_tbl[key] = {link, 0};
             loneliest = hash_tbl.find(key);
-            //std::cout << "Key: " << key << ", Hits: 0\n";
             return *link;
         }
+        else if (search_res == loneliest )
+        {
+            loneliest = find_loneliest();
+            INCREMENT_AND_RETURN();
+        }
+        else if (search_res != hash_tbl.end())
+        {
+            INCREMENT_AND_RETURN();
+        }
+        else
+        {
+            std::cout << "Unknown hash iterator.\n";
+            std::cout << "Exit...\n";
+            exit(1);
+        }
+
+#undef INCREMENT_AND_RETURN
     }
 
 private:
@@ -68,11 +83,8 @@ private:
 
         if (cache.size() >= cap)
         {
-            //HshIt deadman = find_loneliest();
             LstIt link = loneliest->second.link;
-
             hash_tbl.erase(loneliest);
-
             *link = data;
             return link;
         }
@@ -92,7 +104,7 @@ private:
         HshIt end = hash_tbl.end(),
               min = hash_tbl.begin();
 
-        for (auto it = hash_tbl.begin(); it != end; it++)
+        for (HshIt it = hash_tbl.begin(); it != end; it++)
             if (it->second.hits < min->second.hits)
                 min = it;
 
@@ -108,7 +120,6 @@ private:
         web.open("/media/hdd/my_data/ILab2/cache/web.txt");
 
         if (web.is_open())
-        {
             while (getline(web, line))
             {
                 char * pEnd = nullptr;
@@ -116,16 +127,13 @@ private:
                 if (strtol(line.c_str(), &pEnd, 10) == key)
                 {
                     web.close();
-                    return strtol(pEnd, NULL, 10);
+                    return strtol(pEnd, nullptr, 10);
                 }
             }
-        }
 
         web.close();
         std::cout << "Not found in web, good bye" << std::endl;
         exit(1);
-
-        return key;
     }
 
     template <typename Tp, typename KeyTp>
