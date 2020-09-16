@@ -9,11 +9,9 @@
 #include <string>
 #include <cstdlib>
 
-template <typename T, typename KeyT = unsigned long long>
+template <typename T, typename KeyT = long long int>
 struct Cache_t
 {
-public:
-    unsigned counter = 0;
 private:
     using Lst = typename std::list<T>;
     using LstIt = typename std::list<T>::iterator;
@@ -27,13 +25,17 @@ private:
     using Map = typename std::unordered_map<KeyT, PageInfo>;
     using HshIt = typename std::unordered_map<KeyT, PageInfo>::iterator;
 
+    unsigned counter;
     size_t cap;
+
     Lst cache;
     Map hash_tbl;
+
     HshIt loneliest;
 
 public:
-    explicit Cache_t( size_t cap ) : cap(cap),
+    explicit Cache_t( size_t cap ) : counter(0),
+                                     cap(cap),
                                      cache(0),
                                      loneliest(hash_tbl.end())
     {}
@@ -71,8 +73,12 @@ public:
             std::cout << "Exit...\n";
             exit(1);
         }
-
 #undef INCREMENT_AND_RETURN
+    }
+
+    unsigned get_counter( )
+    {
+        return counter;
     }
 
 private:
@@ -129,10 +135,10 @@ private:
         {
             char * pEnd = nullptr;
 
-            if (strtol(line.c_str(), &pEnd, 10) == key)
+            if (strtoll(line.c_str(), &pEnd, 10) == key)
             {
                 web.close();
-                return strtol(pEnd, nullptr, 10);
+                return strtoll(pEnd, nullptr, 10);
             }
         }
 

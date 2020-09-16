@@ -1,51 +1,36 @@
+#include <vector>
 #include "cache.h"
+#include "tst.h"
 
-int main()
+int main( int argc, char ** argv )
 {
-    // using lst_it = typename std::list<int>::iterator;
-    /*Cache_t<int, int> c(4);
-    c.request(1); // 1
-    c.request(2); // 1
-    c.request(3); // 1
-    c.request(4); // 1
-    c.request(5); // 1
-    c.request(1); // 2
-    c.request(1); // 3
-    c.request(2); // 2
-    c.request(2); // 3
-    c.request(5); // 2
-    c.request(5); // 3
-    c.request(6);
-    for(const auto& n : c.cache)
-        std::cout << "Value: " << n << "\n";
-    auto x = c.request(2);
-    std::cout << x << std::endl;
-    std::cout << c << std::endl;*/
+    std::vector<int> tst_cases;
 
-    int hits = 0, capacity = 0, calls_amount = 0;
+    unsigned capacity = 0;
 
-    std::cout << "Input maximum capacity of cache:\n";
+    if (argc > 1)
+    {
+        std::string filename(argv[1]);
+        capacity = test_from_file(filename, tst_cases);
+        std::cout << "Right answer: " << read_ans(filename) << "\n\n";
+    }
+    else
+        capacity = test_from_console(tst_cases);
 
-    std::cin >> capacity;
-
-    std::cout << "Input amount of calls:\n";
-
-    std::cin >> calls_amount;
+    if (capacity == 0)
+    {
+        std::cout << "Cache capacity is zero\n Exit...\n";
+        return 0;
+    }
 
     Cache_t<int> lfu(capacity);
 
-    for (int i = 0; i < calls_amount; ++i)
-    {
-        int request = 0;
-        std::cout << "Input request #" << i << "\n";
-        std::cin >> request;
-
-        lfu.request(request);
-    }
+    for (auto call : tst_cases)
+        lfu.request(call);
 
     std::cout << "------------LIST DUMP-----------------------\n";
-    std::cout << lfu << "\n\n";
-    std::cout << "Hits: " << lfu.counter << std::endl;
+    std::cout << lfu << "\n";
+    std::cout << "Hits: " << lfu.get_counter() << std::endl;
 
     return 0;
 }
