@@ -30,10 +30,12 @@ private:
     size_t cap;
     Lst cache;
     Map hash_tbl;
+    HshIt loneliest;
 
 public:
     Cache_t( size_t cap ) : cap(cap),
-                            cache(0)
+                            cache(0),
+                            loneliest(nullptr)
     {}
 
     T & request( KeyT key )
@@ -44,6 +46,7 @@ public:
         {
             search_res->second.hits++;
             counter++;
+            loneliest = find_loneliest();
             //std::cout << "Key: " << key << ", Hits: " << search_res->second.hits << "\n";
             return *(search_res->second.link);
         }
@@ -51,6 +54,7 @@ public:
         {
             LstIt link = put_in_cache(key);
             hash_tbl[key] = {link, 0};
+            loneliest = hash_tbl.find(key);
             //std::cout << "Key: " << key << ", Hits: 0\n";
             return *link;
         }
@@ -64,10 +68,10 @@ private:
 
         if (cache.size() >= cap)
         {
-            HshIt deadman = find_loneliest();
-            LstIt link = deadman->second.link;
+            //HshIt deadman = find_loneliest();
+            LstIt link = loneliest->second.link;
 
-            hash_tbl.erase(deadman);
+            hash_tbl.erase(loneliest);
 
             *link = data;
             return link;
