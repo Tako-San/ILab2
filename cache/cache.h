@@ -34,8 +34,8 @@ private:
 
 public:
     explicit Cache_t( size_t cap ) : cap(cap),
-                            cache(0),
-                            loneliest(hash_tbl.end())
+                                     cache(0),
+                                     loneliest(hash_tbl.end())
     {}
 
     T & request( KeyT key )
@@ -76,7 +76,6 @@ public:
     }
 
 private:
-
     LstIt put_in_cache( KeyT key )
     {
         T data = load_from_web(key);
@@ -119,17 +118,23 @@ private:
 
         web.open("/media/hdd/my_data/ILab2/cache/web.txt");
 
-        if (web.is_open())
-            while (getline(web, line))
-            {
-                char * pEnd = nullptr;
+        if (!web.is_open())
+        {
+            web.close();
+            std::cout << "Web is not availible" << std::endl;
+            exit(1);
+        }
 
-                if (strtol(line.c_str(), &pEnd, 10) == key)
-                {
-                    web.close();
-                    return strtol(pEnd, nullptr, 10);
-                }
+        while (getline(web, line))
+        {
+            char * pEnd = nullptr;
+
+            if (strtol(line.c_str(), &pEnd, 10) == key)
+            {
+                web.close();
+                return strtol(pEnd, nullptr, 10);
             }
+        }
 
         web.close();
         std::cout << "Not found in web, good bye" << std::endl;

@@ -29,7 +29,7 @@ struct Vec
 
     bool operator == ( const Vec & that ) const
     {
-    #define cmp(x) std::abs(this->x - that.x) < ACCURACY
+    #define cmp( x ) std::abs(this->x - that.x) < ACCURACY
 
         return cmp(x) && cmp(y) && cmp(z);
 

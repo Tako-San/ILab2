@@ -4,30 +4,22 @@ int main()
 {
     // using lst_it = typename std::list<int>::iterator;
     /*Cache_t<int, int> c(4);
-
     c.request(1); // 1
     c.request(2); // 1
     c.request(3); // 1
     c.request(4); // 1
     c.request(5); // 1
-
-
     c.request(1); // 2
     c.request(1); // 3
     c.request(2); // 2
     c.request(2); // 3
     c.request(5); // 2
     c.request(5); // 3
-
     c.request(6);
-
     for(const auto& n : c.cache)
         std::cout << "Value: " << n << "\n";
-
     auto x = c.request(2);
-
     std::cout << x << std::endl;
-
     std::cout << c << std::endl;*/
 
     int hits = 0, capacity = 0, calls_amount = 0;
