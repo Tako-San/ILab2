@@ -36,9 +36,6 @@ public:
                             cache(0)
     {}
 
-    ~Cache_t( )
-    {}
-
     T & request( KeyT key )
     {
         auto search_res = hash_tbl.find(key);
