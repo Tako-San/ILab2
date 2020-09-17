@@ -42,12 +42,21 @@ public:
 
     T & request( KeyT key )
     {
-#define INCREMENT_AND_RETURN( )        \
+#define INCREMENT( )                   \
                                        \
     search_res->second.hits++;         \
     counter++;                         \
-    return *(search_res->second.link)  \
 
+
+        if (hash_tbl.empty())
+        {
+            LstIt link = put_in_cache(key);
+            hash_tbl[key] = {link, 0};
+
+            loneliest = hash_tbl.find(key);
+
+            return *link;
+        }
 
         HshIt search_res = hash_tbl.find(key);
 
@@ -55,17 +64,21 @@ public:
         {
             LstIt link = put_in_cache(key);
             hash_tbl[key] = {link, 0};
+
             loneliest = hash_tbl.find(key);
+
             return *link;
         }
-        else if (search_res == loneliest )
+        else if (search_res == loneliest)
         {
+            INCREMENT();
             loneliest = find_loneliest();
-            INCREMENT_AND_RETURN();
+            return *(search_res->second.link);
         }
         else if (search_res != hash_tbl.end())
         {
-            INCREMENT_AND_RETURN();
+            INCREMENT();
+            return *(search_res->second.link);
         }
         else
         {
@@ -73,7 +86,7 @@ public:
             std::cout << "Exit...\n";
             exit(1);
         }
-#undef INCREMENT_AND_RETURN
+#undef INCREMENT
     }
 
     unsigned get_counter( )
@@ -89,8 +102,9 @@ private:
         if (cache.size() >= cap)
         {
             LstIt link = loneliest->second.link;
-            hash_tbl.erase(loneliest);
             *link = data;
+
+            hash_tbl.erase(loneliest);
             return link;
         }
 
@@ -109,7 +123,7 @@ private:
         HshIt end = hash_tbl.end(),
               min = hash_tbl.begin();
 
-        for (HshIt it = hash_tbl.begin(); it != end; it++)
+        for (HshIt it = min; it != end; ++it)
             if (it->second.hits < min->second.hits)
                 min = it;
 
@@ -159,6 +173,10 @@ std::ostream & operator <<( std::ostream & ost, const Cache_t<T, KeyT> & unit )
         ost << "Key: " << elem.first << ", Val: " <<
                *(elem.second.link) << ", Hits: " <<
                elem.second.hits << std::endl;
+
+    /*ost << "LKey: " << unit.loneliest->first << ", LVal: " <<
+        *(unit.loneliest->second.link) << ", LHits: " <<
+        unit.loneliest->second.hits << std::endl;*/
 
     return ost;
 }
