@@ -27,20 +27,21 @@ struct Vec
     {}
 
 
-    bool operator == ( const Vec & that ) const
-    {
-    #define cmp( x ) std::abs(this->x - that.x) < ACCURACY
+    bool operator == ( const Vec & ) const;
 
-        return cmp(x) && cmp(y) && cmp(z);
+    Vec operator + ( const Vec & ) const;
+    Vec operator - ( const Vec & ) const;
 
-    #undef cmp
-    }
+    Vec & operator += ( const Vec & );
+    Vec & operator -= ( const Vec & );
 
-    friend std::ostream & operator << ( std::ostream & ost, const Vec & unit )
-    {
-        ost << "(" << unit.x << ", " <<  unit.y << ", " << unit.z << ")";
-        return ost;
-    }
+    Vec & operator = ( const Vec & );
+    Vec & operator - ( );
+
+    double operator ! ( ) const;
+    Vec operator % ( const Vec &v ) const;
+
+    friend std::ostream & operator << ( std::ostream & ost, const Vec & unit );
 };
 
 
