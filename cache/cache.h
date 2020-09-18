@@ -42,12 +42,6 @@ public:
 
     T & request( KeyT key )
     {
-#define INCREMENT( )                   \
-                                       \
-    search_res->second.hits++;         \
-    counter++;                         \
-
-
         if (hash_tbl.empty())
         {
             LstIt link = put_in_cache(key);
@@ -71,13 +65,17 @@ public:
         }
         else if (search_res == loneliest)
         {
-            INCREMENT();
+            search_res->second.hits++;
+            counter++;
+
             loneliest = find_loneliest();
             return *(search_res->second.link);
         }
         else if (search_res != hash_tbl.end())
         {
-            INCREMENT();
+            search_res->second.hits++;
+            counter++;
+
             return *(search_res->second.link);
         }
         else
@@ -86,7 +84,6 @@ public:
             std::cout << "Exit...\n";
             exit(1);
         }
-#undef INCREMENT
     }
 
     unsigned get_counter( )
