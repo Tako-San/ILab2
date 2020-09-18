@@ -130,7 +130,9 @@ private:
 
     T load_from_web( KeyT key )
     {
-        std::string line;
+        return key;
+
+        /*std::string line;
         std::ifstream web;
 
         web.open("/media/hdd/my_data/ILab2/cache/web.txt");
@@ -155,7 +157,7 @@ private:
 
         web.close();
         std::cout << "Not found in web, good bye" << std::endl;
-        exit(1);
+        exit(1);*/
     }
 
     template <typename Tp, typename KeyTp>
@@ -170,10 +172,6 @@ std::ostream & operator <<( std::ostream & ost, const Cache_t<T, KeyT> & unit )
         ost << "Key: " << elem.first << ", Val: " <<
                *(elem.second.link) << ", Hits: " <<
                elem.second.hits << std::endl;
-
-    /*ost << "LKey: " << unit.loneliest->first << ", LVal: " <<
-        *(unit.loneliest->second.link) << ", LHits: " <<
-        unit.loneliest->second.hits << std::endl;*/
 
     return ost;
 }
