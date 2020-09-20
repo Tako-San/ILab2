@@ -5,173 +5,160 @@
 #include <unordered_map>
 #include <iostream>
 
-#include <fstream>
 #include <string>
 #include <cstdlib>
 
 template <typename T, typename KeyT = long long int>
 struct Cache_t
 {
-private:
-    using Lst = typename std::list<T>;
-    using LstIt = typename std::list<T>::iterator;
+    struct Page;
+    struct Node;
+    struct FreqEl;
 
-    struct PageInfo
+    using NodeLst = typename std::list<Node>;
+    using Freqlst = typename std::list<FreqEl>;
+
+    using NodeIt = typename NodeLst::iterator;
+    using FreqIt = typename Freqlst::iterator;
+
+    using Map = typename std::unordered_map<KeyT, NodeIt>;
+    using MapIt = typename Map::iterator;
+
+    struct Page
     {
-        LstIt link;
-        size_t hits;
+        KeyT id;
+        T data;
+
+        explicit Page( KeyT id, T data ) : id(id), data(data)
+        {}
     };
 
-    using Map = typename std::unordered_map<KeyT, PageInfo>;
-    using HshIt = typename std::unordered_map<KeyT, PageInfo>::iterator;
+    struct Node
+    {
+        Page page;
+        FreqIt head;
 
-    unsigned counter;
-    size_t cap;
+        explicit Node( Page page, FreqIt head ) : page(page), head(head)
+        {}
 
-    Lst cache;
+        explicit Node( KeyT id, T data, FreqIt head ) : page(Page(id, data)),
+                                               head(head)
+        {}
+    };
+
+    struct FreqEl
+    {
+        size_t hits;
+        NodeLst nodes;
+
+        explicit FreqEl( size_t hits ) : hits(hits), nodes()
+        {}
+    };
+
+    size_t capacity;
+    size_t counter;
+
+    Freqlst freq_lst;
     Map hash_tbl;
 
-    HshIt loneliest;
-
-public:
-    explicit Cache_t( size_t cap ) : counter(0),
-                                     cap(cap),
-                                     cache(0),
-                                     loneliest(hash_tbl.end())
+    explicit Cache_t( size_t capacity ) : capacity(capacity),
+                                          counter(0),
+                                          freq_lst(),
+                                          hash_tbl()
     {}
 
     T & request( KeyT key )
     {
-        if (hash_tbl.empty())
+        MapIt srch = hash_tbl.find(key);
+
+        if (srch != hash_tbl.end())
         {
-            LstIt link = put_in_cache(key);
-            hash_tbl[key] = {link, 0};
-
-            loneliest = hash_tbl.find(key);
-
-            return *link;
+            increment(srch);
+            return srch->second->page.data;
         }
 
-        HshIt search_res = hash_tbl.find(key);
+        NodeIt tmp = put_in_cache(key);
+        hash_tbl[key] = tmp;
 
-        if (search_res == hash_tbl.end())
-        {
-            LstIt link = put_in_cache(key);
-            hash_tbl[key] = {link, 0};
-
-            loneliest = hash_tbl.find(key);
-
-            return *link;
-        }
-        else if (search_res == loneliest)
-        {
-            search_res->second.hits++;
-            counter++;
-
-            loneliest = find_loneliest();
-            return *(search_res->second.link);
-        }
-        else if (search_res != hash_tbl.end())
-        {
-            search_res->second.hits++;
-            counter++;
-
-            return *(search_res->second.link);
-        }
-        else
-        {
-            std::cout << "Unknown hash iterator.\n";
-            std::cout << "Exit...\n";
-            exit(1);
-        }
+        return tmp->page.data;
     }
 
-    unsigned get_counter( )
+    NodeIt put_in_cache( KeyT key )
+    {
+        T data = get_from_web(key);
+
+        if (hash_tbl.size() >= capacity)
+            del_min();
+
+        if (freq_lst.size() == 0 || freq_lst.front().hits > 0)
+            freq_lst.push_front(FreqEl(0));
+
+        freq_lst.front().nodes.push_front(Node(key, data, freq_lst.begin()));
+
+        return freq_lst.front().nodes.begin();
+    }
+
+    T get_from_web( KeyT key )
+    {
+        return 10 * key;
+    }
+
+    void del_min( )
+    {
+        NodeLst & nodes = freq_lst.front().nodes;
+        KeyT key = nodes.front().page.id;
+
+        nodes.erase(nodes.begin());
+        hash_tbl.erase(key);
+    }
+
+    void increment( MapIt map_it )
+    {
+        counter++;
+
+        FreqIt & cur_fr = map_it->second->head;
+        FreqIt old_fr = cur_fr;
+
+        size_t cur_hits = old_fr->hits + 1;
+
+        ++cur_fr;
+
+        if (cur_fr == freq_lst.end() || cur_fr->hits != cur_hits)
+        {
+            freq_lst.insert(cur_fr, FreqEl(cur_hits));
+            --cur_fr;
+        }
+
+        NodeLst & nodes_new = cur_fr->nodes;
+        NodeLst & nodes_old = old_fr->nodes;
+
+        nodes_new.splice(nodes_new.begin(), nodes_old, map_it->second);
+
+        if (nodes_old.empty())
+            freq_lst.erase(old_fr);
+    }
+
+    size_t get_counter()
     {
         return counter;
     }
-
-private:
-    LstIt put_in_cache( KeyT key )
-    {
-        T data = load_from_web(key);
-
-        if (cache.size() >= cap)
-        {
-            LstIt link = loneliest->second.link;
-            *link = data;
-
-            hash_tbl.erase(loneliest);
-            return link;
-        }
-
-        cache.push_front(data);
-        return cache.begin();
-    }
-
-    HshIt find_loneliest( )
-    {
-        if (hash_tbl.empty())
-        {
-            std::cout << "Hash table is empty\n";
-            exit(1);
-        }
-
-        HshIt end = hash_tbl.end(),
-              min = hash_tbl.begin();
-
-        for (HshIt it = min; it != end; ++it)
-            if (it->second.hits < min->second.hits)
-                min = it;
-
-        return min;
-    }
-
-
-    T load_from_web( KeyT key )
-    {
-        return key;
-
-        /*std::string line;
-        std::ifstream web;
-
-        web.open("/media/hdd/my_data/ILab2/cache/web.txt");
-
-        if (!web.is_open())
-        {
-            web.close();
-            std::cout << "Web is not availible" << std::endl;
-            exit(1);
-        }
-
-        while (getline(web, line))
-        {
-            char * pEnd = nullptr;
-
-            if (strtoll(line.c_str(), &pEnd, 10) == key)
-            {
-                web.close();
-                return strtoll(pEnd, nullptr, 10);
-            }
-        }
-
-        web.close();
-        std::cout << "Not found in web, good bye" << std::endl;
-        exit(1);*/
-    }
-
-    template <typename Tp, typename KeyTp>
-    friend std::ostream & operator <<( std::ostream &, const Cache_t<Tp, KeyTp> & );
 };
 
 
-template <typename T, typename KeyT>
-std::ostream & operator <<( std::ostream & ost, const Cache_t<T, KeyT> & unit )
+template<typename T, typename KeyT = long long int>
+std::ostream & operator << ( std::ostream & ost, const Cache_t<T, KeyT> & cache)
 {
-    for (auto & elem : unit.hash_tbl)
-        ost << "Key: " << elem.first << ", Val: " <<
-               *(elem.second.link) << ", Hits: " <<
-               elem.second.hits << std::endl;
+    ost << "--------------------------------------------\n";
+    for (auto & fl : cache.freq_lst)
+    {
+        ost << "Hits: " << fl.hits << "\n";
+        for (auto & nl : fl.nodes)
+        {
+            ost << "Key: " << nl.page.id << ", Data: " << nl.page.data << "\n";
+        }
+        ost << "\n";
+    }
+    ost << "--------------------------------------------\n";
 
     return ost;
 }
