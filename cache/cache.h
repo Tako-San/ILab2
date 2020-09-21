@@ -9,8 +9,10 @@
 #include <cstdlib>
 
 template <typename T, typename KeyT = long long int>
-struct Cache_t
+class Cache_t
 {
+private:
+
     struct Page;
     struct Node;
     struct FreqEl;
@@ -29,7 +31,7 @@ struct Cache_t
         KeyT id;
         T data;
 
-        explicit Page( KeyT id, T data ) : id(id), data(data)
+        Page( KeyT id, T data ) : id(id), data(data)
         {}
     };
 
@@ -38,10 +40,10 @@ struct Cache_t
         Page page;
         FreqIt head;
 
-        explicit Node( Page page, FreqIt head ) : page(page), head(head)
+        Node( Page page, FreqIt head ) : page(page), head(head)
         {}
 
-        explicit Node( KeyT id, T data, FreqIt head ) : page(Page(id, data)),
+        Node( KeyT id, T data, FreqIt head ) : page(Page(id, data)),
                                                head(head)
         {}
     };
@@ -61,11 +63,14 @@ struct Cache_t
     Freqlst freq_lst;
     Map hash_tbl;
 
+public:
+
     explicit Cache_t( size_t capacity ) : capacity(capacity),
                                           counter(0),
                                           freq_lst(),
                                           hash_tbl()
     {}
+
 
     T & request( KeyT key )
     {
@@ -83,6 +88,17 @@ struct Cache_t
         return tmp->page.data;
     }
 
+
+    size_t get_counter()
+    {
+        return counter;
+    }
+
+    template<typename Tp, typename KeyTp>
+    friend std::ostream & operator << ( std::ostream &, const Cache_t<Tp, KeyTp> &);
+
+private:
+
     NodeIt put_in_cache( KeyT key )
     {
         T data = get_from_web(key);
@@ -93,9 +109,12 @@ struct Cache_t
         if (freq_lst.size() == 0 || freq_lst.front().hits > 0)
             freq_lst.push_front(FreqEl(0));
 
-        freq_lst.front().nodes.push_front(Node(key, data, freq_lst.begin()));
 
-        return freq_lst.front().nodes.begin();
+        NodeLst & nodes = freq_lst.front().nodes;
+
+        nodes.push_front(Node(key, data, freq_lst.begin()));
+
+        return nodes.begin();
     }
 
     T get_from_web( KeyT key )
@@ -114,7 +133,7 @@ struct Cache_t
 
     void increment( MapIt map_it )
     {
-        counter++;
+        ++counter;
 
         FreqIt & cur_fr = map_it->second->head;
         FreqIt old_fr = cur_fr;
@@ -137,11 +156,6 @@ struct Cache_t
         if (nodes_old.empty())
             freq_lst.erase(old_fr);
     }
-
-    size_t get_counter()
-    {
-        return counter;
-    }
 };
 
 
@@ -154,7 +168,8 @@ std::ostream & operator << ( std::ostream & ost, const Cache_t<T, KeyT> & cache)
         ost << "Hits: " << fl.hits << "\n";
         for (auto & nl : fl.nodes)
         {
-            ost << "Key: " << nl.page.id << ", Data: " << nl.page.data << "\n";
+            ost << "    Key: " << nl.page.id
+                << ", Data: " << nl.page.data << "\n";
         }
         ost << "\n";
     }
