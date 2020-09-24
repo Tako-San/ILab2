@@ -1,28 +1,3 @@
-/*#include <vector>
-#include "cache.h"
-
-int main( int argc, char ** argv )
-{
-    Cache_t<int, int> lfu(2);
-
-    // for (int i = 0; i < 6; i++)
-    //     std::cout << "res: " << lfu.request(i / 2) << ", hsh_sz: " << lfu.hash_tbl.size() << "\n\n";
-
-    for (int i = 0; i < 3; i++)
-    {
-        // std::cout << "res: " << lfu.request(1) << ", hsh_sz: " << lfu.hash_tbl.size() << "\n";
-        // std::cout << "res: " << lfu.request(2) << ", hsh_sz: " << lfu.hash_tbl.size() << "\n";
-        lfu.request(1);
-        lfu.request(2);
-        std::cout << lfu << "\n";
-    }
-
-    std::cout << lfu;
-
-    return 0;
-}*/
-
-
 #include <vector>
 #include "cache.h"
 #include "O_N_cache/O_N_tst.h"
