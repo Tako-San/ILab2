@@ -89,7 +89,7 @@ public:
     }
 
 
-    size_t get_counter()
+    size_t get_counter() const
     {
         return counter;
     }
@@ -117,7 +117,7 @@ private:
         return nodes.begin();
     }
 
-    T get_from_web( KeyT key )
+    T get_from_web( KeyT key ) const
     {
         return 10 * key;
     }
