@@ -1,16 +1,27 @@
-//
-// Created by farid on 11.10.2020.
-//
-
 #ifndef ILAB2_LINE_H
 #define ILAB2_LINE_H
 
+#include "vec.h"
 
 
-class line {
+class Line
+{
+private:
+    Vec orig, dir;
 
+public:
+    Line( const Vec & r1, const Vec & r2 ) : orig(r1), dir(r2 - r1)
+    {}
+
+    Line( const Line & l ) : orig(l.orig), dir(l.dir)
+    {}
+
+    friend std::ostream & operator << ( std::ostream & ost, const Line & ln )
+    {
+        ost << "(" << ln.orig << " + t*" << ln.dir << ")";
+        return ost;
+    }
 };
-
 
 
 #endif //ILAB2_LINE_H

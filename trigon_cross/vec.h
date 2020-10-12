@@ -1,15 +1,17 @@
-#ifndef ILAB2_COME_UP_WITH_A_NAME_H
-#define ILAB2_COME_UP_WITH_A_NAME_H
+#ifndef ILAB2_VEC
+#define ILAB2_VEC
 
 #include <iostream>
 #include <cmath>
 
 #define ACCURACY 0.0001
 
-struct Vec
+class Vec
 {
+private:
     double x, y, z;
 
+public:
     Vec( double x, double y, double z ) : x(x),
                                           y(y),
                                           z(z)
@@ -26,23 +28,32 @@ struct Vec
                                z(r)
     {}
 
-
     bool operator == ( const Vec & ) const;
 
-    Vec operator + ( const Vec & ) const;
-    Vec operator - ( const Vec & ) const;
+    Vec & normalise( );
 
     Vec & operator += ( const Vec & );
     Vec & operator -= ( const Vec & );
+    Vec & operator *= ( double );
+    Vec & operator /= ( double );
 
     Vec & operator = ( const Vec & );
-    Vec & operator - ( );
+    Vec operator - ( );
 
-    double operator ! ( ) const;
-    Vec operator % ( const Vec &v ) const;
+    double operator ! ( ) const; // vector module
+
+    friend double operator & ( const Vec &, const Vec & ); // dot product
+    friend Vec operator % ( const Vec &, const Vec & );    // cross product
+    friend Vec operator + ( const Vec &, const Vec & );
+    friend Vec operator - ( const Vec &, const Vec & );
+
+    friend Vec operator * ( const Vec &, double );
+    friend Vec operator * ( double, const Vec & );
+
+    friend Vec normalise( const  Vec & );
 
     friend std::ostream & operator << ( std::ostream & ost, const Vec & unit );
 };
 
 
-#endif //ILAB2_COME_UP_WITH_A_NAME_H
+#endif //ILAB2_VEC

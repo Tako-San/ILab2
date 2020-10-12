@@ -9,16 +9,11 @@ bool Vec::operator == ( const Vec & v ) const
 #undef cmp
 }
 
-Vec Vec::operator + ( const Vec & v ) const
+Vec & Vec::normalise( )
 {
-    return Vec(x + v.x, y + v.y, z + v.z);
+    *this /= !(*this);
+    return *this;
 }
-
-Vec Vec::operator - ( const Vec & v ) const
-{
-    return Vec(x - v.x, y - v.y, z - v.z);
-}
-
 
 Vec & Vec::operator += ( const Vec & v )
 {
@@ -39,11 +34,20 @@ Vec & Vec::operator -= ( const Vec & v )
     return *this;
 }
 
-Vec & Vec::operator - ( )
+Vec & Vec::operator *= ( double num )
 {
-    x = -x;
-    y = -y;
-    z = -z;
+    x *= num;
+    y *= num;
+    z *= num;
+
+    return *this;
+}
+
+Vec & Vec::operator /= ( double num )
+{
+    x /= num;
+    y /= num;
+    z /= num;
 
     return *this;
 }
@@ -57,11 +61,9 @@ Vec & Vec::operator = ( const Vec & v )
     return *this;
 }
 
-
-std::ostream & operator << ( std::ostream & ost, const Vec & unit )
+Vec Vec::operator - ( )
 {
-    ost << "(" << unit.x << ", " <<  unit.y << ", " << unit.z << ")";
-    return ost;
+    return Vec(-x, -y, -z);
 }
 
 double Vec::operator ! ( ) const
@@ -69,9 +71,50 @@ double Vec::operator ! ( ) const
     return sqrt(x*x + y*y + z*z);
 }
 
-Vec Vec::operator % ( const Vec &v ) const
+double operator & ( const  Vec & v1, const Vec & v2 )
 {
-    return Vec(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
+    return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
 
+Vec operator % ( const Vec & v1, const Vec & v2)
+{
+    return Vec(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
+}
+
+Vec operator + ( const Vec & v1, const Vec & v2 )
+{
+    return Vec(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+}
+
+Vec operator - ( const Vec & v1, const Vec & v2 )
+{
+    return Vec(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+}
+
+Vec operator * ( const Vec & v, double n )
+{
+    /*Vec newborn(v);
+    newborn *= n;
+    return newborn;*/
+    return Vec(v) *= n;
+}
+
+Vec operator * ( double n, const Vec & v )
+{
+    /*Vec newborn(v);
+    newborn *= n;
+    return newborn;*/
+    return Vec(v) *= n;
+}
+
+Vec normalise( const  Vec & v )
+{
+    return Vec(v).normalise();
+}
+
+std::ostream & operator << ( std::ostream & ost, const Vec & unit )
+{
+    ost << "(" << unit.x << ", " <<  unit.y << ", " << unit.z << ")";
+    return ost;
+}
 
