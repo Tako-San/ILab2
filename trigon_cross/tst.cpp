@@ -85,8 +85,8 @@ int main( )
 
 
     // Triangle
-    Triangle tr1{Vec{0, 0, 0}, Vec{1, 0,  0}, Vec{0, 1, 0}};
-    Triangle tr2{Vec{0, 0, 1}, Vec{0, 0, -1}, Vec{0.5, 0.5, 0}};
+    Triangle tr1{Vec{0, 0, 0}, Vec{1, 0, 0}, Vec{0, 1, 0}};
+    Triangle tr2{Vec{0, 0, 1}, Vec{1, 1, 0}, Vec{0, 0, -1}};
 
     cout << "intersect? " << (is_intersect3D(tr1, tr2) ? "yes" : "no") << endl;
 

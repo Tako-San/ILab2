@@ -123,8 +123,5 @@ bool cmp_seg(double t1[], double t2[])
     if (t2[0] > t2[1])
         std::swap(t2[0], t2[1]);
 
-    if (t1[1] < t2[0] || t1[0] > t2[1])
-        return false;
-
-    return false;
+    return !((t1[1] < t2[0]) || (t1[0] > t2[1]));
 }
