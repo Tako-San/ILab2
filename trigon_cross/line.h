@@ -13,12 +13,11 @@ public:
     Line( const Vec & r1, const Vec & r2 ) : orig(r1), dir(r2 - r1)
     {}
 
-    Line( const Line & l ) : orig(l.orig), dir(l.dir)
-    {}
+    Line( const Line & l ) = default;
 
     friend std::ostream & operator << ( std::ostream & ost, const Line & ln )
     {
-        ost << "(" << ln.orig << " + t*" << ln.dir << ")";
+        ost << ln.orig << " + " << ln.dir << " * t";
         return ost;
     }
 };
