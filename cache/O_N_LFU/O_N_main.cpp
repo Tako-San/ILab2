@@ -1,5 +1,5 @@
 #include <vector>
-#include "O_N_cache.h"
+#include "O_N_LFU.h"
 #include "O_N_tst.h"
 
 int main( int argc, char ** argv )

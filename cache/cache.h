@@ -94,6 +94,13 @@ public:
         return counter;
     }
 
+    void dump()
+    {
+        std::cout << "------------LIST DUMP-----------------------\n";
+        std::cout << *this << "\n";
+        std::cout << "Total hits: " << this->get_counter() << std::endl;
+    }
+
     template<typename Tp, typename KeyTp>
     friend std::ostream & operator << ( std::ostream &, const Cache_t<Tp, KeyTp> &);
 

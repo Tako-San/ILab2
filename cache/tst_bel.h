@@ -1,15 +1,13 @@
-//
-// Created by farid on 27.09.2020.
-//
-
 #ifndef ILAB2_TST_BEL_H
 #define ILAB2_TST_BEL_H
 
+#include <iostream>
+#include <fstream>
+#include <vector>
 
-class tst_bel
-{
-
-};
+unsigned test_from_console( );
+unsigned test_from_file( const std::string & );
+unsigned read_ans( const std::string & );
 
 
 #endif //ILAB2_TST_BEL_H
