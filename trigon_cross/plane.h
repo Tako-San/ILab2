@@ -26,7 +26,7 @@ public:
 
     double sdst( const Vec & pt )
     {
-        return (pt & nrm) + dst;
+        return ((pt & nrm) + dst);
     }
 
     Vec get_nrm( )
@@ -34,12 +34,10 @@ public:
         return nrm;
     }
 
-    double get_dst( )
+    double get_dst( ) const
     {
         return dst;
     }
-
-    static Line intersect( const Plane & pl1, const Plane & pl2 );
 
     friend std::ostream & operator << ( std::ostream & ost, const Plane & pl )
     {
@@ -49,10 +47,5 @@ public:
         return ost;
     }
 };
-
-Line Plane::intersect( const Plane &pl1, const Plane &pl2 )
-{
-    return Line(Vec(0), Vec(0));
-}
 
 #endif //ILAB2_PLANE_H

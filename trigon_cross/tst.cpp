@@ -1,17 +1,21 @@
 #include <iostream>
+
 #include "vec.h"
 #include "line.h"
 #include "plane.h"
+#include "triangle.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
 
+bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 );
+
 int main( )
 {
     // Vectors
 
-    Vec v1{1, 0, 0};
+    /*Vec v1{1, 0, 0};
     Vec v2{1};
     Vec v3{v1};
     Vec v4{0, 1, 0};
@@ -66,7 +70,7 @@ int main( )
     cout << "l2: " << l2 << endl << endl;
 
 
-    //Planes
+    // Planes
     Plane pl1{v1, 0};
     Plane pl2{pl1};
     Plane pl3{v1, v4};
@@ -77,9 +81,14 @@ int main( )
     cout << "pl1: " << pl1 << endl;
     cout << "pl2: " << pl2 << endl;
     cout << "pl3: " << pl3 << endl;
-    cout << "pl4: " << pl4 << endl << endl;
+    cout << "pl4: " << pl4 << endl << endl;*/
 
+
+    // Triangle
+    Triangle tr1{Vec{1, 0, 0}, Vec{0, 1, 0}, Vec{0, 0, 1}};
+    Triangle tr2{Vec{2, 0, 0}, Vec{0, 2, 0}, Vec{0, 0, 2}};
+
+    cout << "intersect? " << (is_intersect3D(tr1, tr2) ? "yes" : "no") << endl;
 
     return 0;
 }
-

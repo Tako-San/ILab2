@@ -114,6 +114,12 @@ std::ostream & operator << ( std::ostream & ost, const Vec & v )
 
 
 
+bool operator || ( const Vec & v1, const  Vec & v2 )
+{
+    // TODO: figure out
+    return false;
+}
+
 Vec operator + ( const Vec & v1, const Vec & v2 )
 {
     // return Vec(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);

@@ -20,8 +20,10 @@ public:
         return Plane(v1, v2, v3);
     }
 
-    bool intersect_3D ( const Triangle & tr1, const Triangle & tr2 );
-    bool intersect_2D ( const Triangle & tr1, const Triangle & tr2 );
+    Vec operator [] ( unsigned idx ) const
+    {
+        return *(&v1 + idx % 3);
+    }
 };
 
 #endif //ILAB2_TRIANGLE_H

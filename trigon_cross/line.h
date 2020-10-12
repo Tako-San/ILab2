@@ -10,7 +10,10 @@ private:
     Vec orig, dir;
 
 public:
-    Line( const Vec & r1, const Vec & r2 ) : orig(r1), dir(r2 - r1)
+    Line( const Vec & v1, const Vec & v2 ) : orig(v1), dir(v2 - v1)
+    {}
+
+    Line( ) : orig(Vec{}), dir(Vec{})
     {}
 
     Line( const Line & l ) = default;
