@@ -3,42 +3,54 @@
 #include "plane.h"
 #include "triangle.h"
 
+#include "geom.h"
+
+using std::abs;
+
 const Vec ZERO_VEC{0};
 const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
-
-bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 );
-bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );
-
-Line intersection( const Plane & pl1, const Plane & pl2 );
-bool is_parallel( const Plane & pl1, const Plane & pl2 );
-bool lst_fnc_idk_how_2_call_it( const Triangle & tr1, const Triangle & tr2, const Line & int_line );
 
 bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 {
     Plane pl1 = tr1.plane();
 
-    double sdst11 = pl1.sdst(tr2[0]),
-           sdst12 = pl1.sdst(tr2[1]),
-           sdst13 = pl1.sdst(tr2[2]);
+    double sd1[3] = {};
 
-    if (((sdst11 * sdst12 >= 0) && (sdst11 * sdst13 >= 0) && (sdst12 * sdst13 >= 0)))
-        return false;
+    for (int i = 0; i < 3; ++i)
+        sd1[i] = pl1.sdst(tr2[i]);
 
     Plane pl2 = tr2.plane();
 
-    if (pl1 == pl2)
+    if (pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC &&
+        abs(pl1.get_dst()) == abs(pl2.get_dst()))
         return is_intersect2D(tr1, tr2); // TODO: написать
 
-    double sdst21 = pl2.sdst(tr1[1]),
-           sdst22 = pl2.sdst(tr1[2]),
-           sdst23 = pl2.sdst(tr1[3]);
-
-    if (!((sdst21 * sdst22 >= 0) && (sdst21 * sdst23 >= 0) && (sdst22 * sdst23 >= 0)))
+    if (((sd1[0] * sd1[1] >= 0) &&
+         (sd1[0] * sd1[2] >= 0) &&
+         (sd1[1] * sd1[2] >= 0)))
         return false;
 
-    Line int_line = intersection(pl1, pl2); // TODO: написать
 
-    return lst_fnc_idk_how_2_call_it(tr1, tr2, int_line); // TODO: написать
+    double sd2[3] = {};
+
+    for (int i = 0; i < 3; ++i)
+        sd2[i] = pl2.sdst(tr1[i]);
+
+    if (!((sd2[0] * sd2[1] >= 0) && (sd2[0] * sd2[2] >= 0) && (sd2[1] * sd2[2] >= 0)))
+        return false;
+
+    Line int_line = intersection(pl1, pl2);
+
+    if (int_line.is_invalid())
+        return false;
+
+    double t1[2] = {};
+    double t2[2] = {};
+
+    find_cross(tr1, sd1, int_line, t1);
+    find_cross(tr2, sd2, int_line, t2);
+
+    return cmp_seg(t1, t2);
 }
 
 bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
@@ -54,8 +66,6 @@ bool is_parallel( const Plane & pl1, const Plane & pl2 )
 
 Line intersection( const Plane & pl1, const Plane & pl2 )
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
-
     Vec n1 = pl1.get_nrm(),
         n2 = pl2.get_nrm();
 
@@ -79,8 +89,42 @@ Line intersection( const Plane & pl1, const Plane & pl2 )
     return Line{a * n1 + b * n2, n1n2_cross};
 }
 
-bool lst_fnc_idk_how_2_call_it( const Triangle & tr1, const Triangle & tr2, const Line & int_line )
+
+void find_cross( const Triangle & tr, const double sd[], const Line & int_line, double t[] )
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    int rg = 0, // rogue
+        m0 = 0, // mate0
+        m1 = 0; // mate1
+
+    if ((sd[0] * sd[1]) >= 0)
+        rg = 2;
+    else if ((sd[1] * sd[2]) >= 0)
+        rg = 0;
+    else
+        rg = 1;
+
+    m0 = (rg + 1) % 3;
+    m1 = (rg + 2) % 3;
+
+    double pr[3] = {};
+
+    for (int i = 0; i < 3; ++i)
+        pr[i] = int_line.get_dir() & (tr[i] - int_line.get_orig());
+
+    t[0] = pr[m0] - (pr[rg] - pr[m0]) * sd[m0] / (sd[m0] - sd[rg]);
+    t[1] = pr[m1] - (pr[rg] - pr[m1]) * sd[m1] / (sd[m1] - sd[rg]);
+}
+
+bool cmp_seg(double t1[], double t2[])
+{
+    if (t1[0] > t1[1])
+        std::swap(t1[0], t1[1]);
+
+    if (t2[0] > t2[1])
+        std::swap(t2[0], t2[1]);
+
+    if (t1[1] < t2[0] || t1[0] > t2[1])
+        return false;
+
     return false;
 }

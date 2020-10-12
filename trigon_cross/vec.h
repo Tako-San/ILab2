@@ -22,7 +22,10 @@ public:
     Vec( double x, double y, double z ) : x(x), y(y), z(z)
     {}
 
-    explicit Vec( double r = 0 ) : x(r), y(r), z(r)
+    explicit Vec( double r ) : x(r), y(r), z(r)
+    {}
+
+    Vec( ) : Vec{0}
     {}
 
     Vec( const Vec & v ) = default;

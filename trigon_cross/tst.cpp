@@ -5,11 +5,11 @@
 #include "plane.h"
 #include "triangle.h"
 
+#include "geom.h"
+
 using std::cout;
 using std::cin;
 using std::endl;
-
-bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 );
 
 int main( )
 {
@@ -85,8 +85,8 @@ int main( )
 
 
     // Triangle
-    Triangle tr1{Vec{1, 0, 0}, Vec{0, 1, 0}, Vec{0, 0, 1}};
-    Triangle tr2{Vec{-2, 0, 0}, Vec{0, -2, 0}, Vec{0, 0, -2}};
+    Triangle tr1{Vec{0, 0, 0}, Vec{1, 0,  0}, Vec{0, 1, 0}};
+    Triangle tr2{Vec{0, 0, 1}, Vec{0, 0, -1}, Vec{0.5, 0.5, 0}};
 
     cout << "intersect? " << (is_intersect3D(tr1, tr2) ? "yes" : "no") << endl;
 

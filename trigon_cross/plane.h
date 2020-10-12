@@ -47,10 +47,10 @@ public:
         return ost;
     }
 
-    bool operator == ( const Plane & pl2 ) const
+    /*bool operator == ( const Plane & pl2 ) const
     {
-        return (get_dst() * get_nrm()) == (pl2.get_dst() * pl2.get_nrm());
-    }
+        return ((dst * nrm) == (pl2.get_dst() * pl2.get_nrm()));
+    }*/
 };
 
 
