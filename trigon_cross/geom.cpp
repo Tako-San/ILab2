@@ -36,7 +36,7 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
     for (int i = 0; i < 3; ++i)
         sd2[i] = pl2.sdst(tr1[i]);
 
-    if (!((sd2[0] * sd2[1] >= 0) && (sd2[0] * sd2[2] >= 0) && (sd2[1] * sd2[2] >= 0)))
+    if (((sd2[0] * sd2[1] >= 0) && (sd2[0] * sd2[2] >= 0) && (sd2[1] * sd2[2] >= 0)))
         return false;
 
     Line int_line = intersection(pl1, pl2);
@@ -49,6 +49,8 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 
     find_cross(tr1, sd1, int_line, t1);
     find_cross(tr2, sd2, int_line, t2);
+
+    std::cout << "marker ";
 
     return cmp_seg(t1, t2);
 }
