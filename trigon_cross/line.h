@@ -26,4 +26,5 @@ public:
 };
 
 
+
 #endif //ILAB2_LINE_H

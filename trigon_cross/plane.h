@@ -24,12 +24,12 @@ public:
 
     Plane( const Plane & pl ) = default;
 
-    double sdst( const Vec & pt )
+    double sdst( const Vec & pt ) const
     {
         return ((pt & nrm) + dst);
     }
 
-    Vec get_nrm( )
+    Vec get_nrm( ) const
     {
         return nrm;
     }
@@ -46,6 +46,12 @@ public:
 
         return ost;
     }
+
+    bool operator == ( const Plane & pl2 ) const
+    {
+        return (get_dst() * get_nrm()) == (pl2.get_dst() * pl2.get_nrm());
+    }
 };
+
 
 #endif //ILAB2_PLANE_H

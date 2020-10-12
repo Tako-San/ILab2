@@ -1,6 +1,5 @@
 #include "vec.h"
 
-
 bool Vec::operator == ( const Vec & v ) const
 {
 #define cmp( x ) std::abs(x - v.x) < ACCURACY
@@ -113,12 +112,6 @@ std::ostream & operator << ( std::ostream & ost, const Vec & v )
 }
 
 
-
-bool operator || ( const Vec & v1, const  Vec & v2 )
-{
-    // TODO: figure out
-    return false;
-}
 
 Vec operator + ( const Vec & v1, const Vec & v2 )
 {

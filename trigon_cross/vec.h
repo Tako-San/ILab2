@@ -47,8 +47,6 @@ public:
     friend std::ostream & operator << ( std::ostream &, const Vec & );
 };
 
-bool operator || ( const Vec &, const  Vec &);
-
 Vec operator + ( const Vec &, const Vec & );
 Vec operator - ( const Vec &, const Vec & );
 Vec operator * ( const Vec &, double );
