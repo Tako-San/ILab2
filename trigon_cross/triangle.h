@@ -24,6 +24,12 @@ public:
     {
         return *(&v1 + idx % 3);
     }
+
+    friend std::ostream & operator << ( std::ostream & ost, const Triangle & tr )
+    {
+
+        return ost;
+    }
 };
 
 #endif //ILAB2_TRIANGLE_H

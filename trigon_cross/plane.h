@@ -26,7 +26,7 @@ public:
 
     double sdst( const Vec & pt ) const
     {
-        return ((pt & nrm) + dst);
+        return ((pt & nrm) - dst);
     }
 
     Vec get_nrm( ) const

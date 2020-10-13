@@ -7,6 +7,8 @@
 
 using std::abs;
 using std::swap;
+using std::cout;
+using std::endl;
 
 const Vec ZERO_VEC{0};
 const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
@@ -15,29 +17,30 @@ const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
 bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 {
     Plane pl1 = tr1.plane();
-
-    double sd1[3] = {};
-
-    for (int i = 0; i < 3; ++i)
-        sd1[i] = pl1.sdst(tr2[i]);
-
     Plane pl2 = tr2.plane();
+
 
     if (pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC &&
         abs(pl1.get_dst()) == abs(pl2.get_dst()))
         return is_intersect2D(tr1, tr2); // TODO: написать
+
+    double sd2[3] = {};
+    double sd1[3] = {};
+
+    for (int i = 0; i < 3; ++i)
+    {
+        sd2[i] = pl1.sdst(tr2[i]);
+        sd1[i] = pl2.sdst(tr1[i]);
+    }
 
     if (((sd1[0] * sd1[1] >= 0) &&
          (sd1[0] * sd1[2] >= 0) &&
          (sd1[1] * sd1[2] >= 0)))
         return false;
 
-    double sd2[3] = {};
-
-    for (int i = 0; i < 3; ++i)
-        sd2[i] = pl2.sdst(tr1[i]);
-
-    if (((sd2[0] * sd2[1] >= 0) && (sd2[0] * sd2[2] >= 0) && (sd2[1] * sd2[2] >= 0)))
+    if (((sd2[0] * sd2[1] >= 0) &&
+         (sd2[0] * sd2[2] >= 0) &&
+         (sd2[1] * sd2[2] >= 0)))
         return false;
 
     Line int_line = intersection(pl1, pl2);
@@ -57,7 +60,10 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 
 bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
 {
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    cout << "FUNC: " << __PRETTY_FUNCTION__ << "\n\n";
+
+
+
     return false;
 }
 
@@ -80,7 +86,7 @@ Line intersection( const Plane & pl1, const Plane & pl2 )
            n2_2 = n2 & n2;
 
     double a = (s2 * n1n2 - s1 * n2_2) / (n1n2 * n1n2 - n1_2 * n2_2);
-    double b = (s1 * n1n2 - s1 * n2_2) / (n1n2 * n1n2 - n1_2 * n2_2);
+    double b = (s1 * n1n2 - s2 * n1_2) / (n1n2 * n1n2 - n1_2 * n2_2);
 
     return Line{a * n1 + b * n2, n1n2_cross};
 }
@@ -88,9 +94,9 @@ Line intersection( const Plane & pl1, const Plane & pl2 )
 
 void find_cross( const Triangle & tr, const double sd[], const Line & int_line, double t[] )
 {
-    int rg = 0, // rogue
-        m0 = 0, // mate0
-        m1 = 0; // mate1
+    int rg, /* rogue */
+        m0, /* mate0 */
+        m1; /* mate1 */
 
     if ((sd[0] * sd[1]) >= 0)
         rg = 2;

@@ -10,7 +10,7 @@ private:
     Vec orig, dir;
 
 public:
-    Line( const Vec & v1, const Vec & v2 ) : orig(v1), dir(v2 - v1)
+    Line( const Vec & orig, const Vec & dir ) : orig(orig), dir(normalise(dir))
     {}
 
     Line( ) : orig(Vec{}), dir(Vec{})

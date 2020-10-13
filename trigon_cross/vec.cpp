@@ -92,7 +92,9 @@ double Vec::operator ! ( ) const
 /* dot product */
 double operator & ( const  Vec & v1, const Vec & v2 )
 {
-    return (v1[X] * v2[X] + v1[Y] * v2[Y] + v1[Z] * v2[Z]);
+    double res = v1[X] * v2[X] + v1[Y] * v2[Y] + v1[Z] * v2[Z];
+    // std::cout << "\n" << v1 << " & " << v2 << " = " << res << "\n";
+    return res;
 }
 
 /* vector product */
@@ -121,8 +123,8 @@ Vec operator + ( const Vec & v1, const Vec & v2 )
 
 Vec operator - ( const Vec & v1, const Vec & v2 )
 {
-    // return Vec(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
-    return Vec(v1) -= v2;
+    return Vec(v1[X] - v2[X], v1[Y] - v2[Y], v1[Z] - v2[Z]);
+    // return Vec(v1) -= v2;
 }
 
 Vec operator * ( const Vec & v, double n )
