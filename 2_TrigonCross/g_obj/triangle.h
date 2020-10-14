@@ -13,6 +13,9 @@ public:
     Triangle( const Vec & v1, const Vec & v2, const Vec & v3 ) : v1(v1), v2(v2), v3(v3)
     {}
 
+    Triangle( ) : v1{}, v2{}, v3{}
+    {}
+
     Triangle( const Triangle & tr ) = default;
 
     Plane plane( ) const
