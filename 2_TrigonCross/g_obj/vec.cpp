@@ -1,5 +1,10 @@
 #include "vec.h"
 
+double & Vec::get(int idx)
+{
+    return *(&x + idx % 3);
+}
+
 bool Vec::operator == ( const Vec & v ) const
 {
 #define cmp( x ) std::abs(x - v.x) < ACCURACY
@@ -19,6 +24,16 @@ bool Vec::operator != ( const Vec & v ) const
 Vec & Vec::normalise( )
 {
     return (*this /= (*this).len());
+}
+
+Vec Vec::perp2D( ) const
+{
+    return Vec{y, -x, 0};
+}
+
+void Vec::print( ) const
+{
+    std::cout << "(" << x << ", " <<  y << ", " << z << ")^T";
 }
 
 
@@ -114,7 +129,6 @@ std::istream & operator >> ( std::istream & ist, Vec & v)
 }
 
 
-
 Vec operator + ( const Vec & v1, const Vec & v2 )
 {
     // return Vec(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
@@ -144,8 +158,6 @@ Vec normalise( const Vec & v )
 {
     return Vec(v).normalise();
 }
-
-
 
 std::ostream & operator << ( std::ostream & ost, const Vec & v )
 {

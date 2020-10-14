@@ -20,24 +20,19 @@ public:
         return Plane(v1, v2, v3);
     }
 
-    const Vec & operator [] ( unsigned idx ) const
-    {
-        return *(&v1 + idx % 3);
-    }
+    const Vec & operator [] ( unsigned idx ) const;
 
-    friend std::istream & operator >> ( std::istream & ist, Triangle & tr )
-    {
-        ist >> tr.v1 >> tr.v2 >> tr.v3;
-        return ist;
-    }
+    void print( ) const;
+
+    friend std::istream & operator >> ( std::istream & ist, Triangle & tr );
 };
 
-std::ostream & operator << ( std::ostream & ost, const Triangle & tr )
+/*std::ostream & operator << ( std::ostream & ost, const Triangle & tr )
 {
     for (int i = 0; i < 3; ++i)
         ost << "v[" << i << "] = " << tr[0] << " ";
     ost << ";";
     return ost;
-}
+}*/
 
 #endif //ILAB2_TRIANGLE_H

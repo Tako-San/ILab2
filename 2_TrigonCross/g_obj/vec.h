@@ -13,10 +13,14 @@ enum Coords
     Z = 2
 };
 
+class Triangle;
+
 class Vec
 {
 private:
     double x, y, z;
+
+    double & get(int idx);
 
 public:
     Vec( double x, double y, double z ) : x(x), y(y), z(z)
@@ -35,6 +39,8 @@ public:
     bool operator != ( const Vec & ) const;
 
     Vec & normalise( );
+    Vec perp2D( ) const;
+    void print() const;
 
     Vec & operator += ( const Vec & );
     Vec & operator -= ( const Vec & );
@@ -48,6 +54,7 @@ public:
     double operator [] ( unsigned ) const; // get vector coorinate by number
 
     friend std::istream & operator >> ( std::istream &, Vec &);
+    friend bool is_intersect2D( const Triangle &, const Triangle & );
 };
 
 Vec operator + ( const Vec &, const Vec & );
@@ -60,6 +67,6 @@ Vec operator % ( const Vec &, const Vec & );    // cross product
 
 Vec normalise( const Vec & );
 
-std::ostream & operator << ( std::ostream &, const Vec & );
+std::ostream & operator << ( std::ostream & ost, const Vec & v );
 
 #endif //ILAB2_VEC

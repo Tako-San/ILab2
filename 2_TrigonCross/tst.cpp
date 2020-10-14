@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "vec.h"
-#include "line.h"
-#include "plane.h"
-#include "triangle.h"
+#include "g_obj/vec.h"
+#include "g_obj/line.h"
+#include "g_obj/plane.h"
+#include "g_obj/triangle.h"
 
 #include "geom.h"
 
@@ -15,7 +15,7 @@ int main( )
 {
     // Vectors
 
-    /*Vec v1{1, 0, 0};
+    Vec v1{1, 0, 0};
     Vec v2{1};
     Vec v3{v1};
     Vec v4{0, 1, 0};
@@ -48,7 +48,7 @@ int main( )
     cout << "v1[Y] = " << v1[Y] << endl;
     cout << "v1[Z] = " << v1[Z] << endl << endl;
 
-    cout << "!v1 = " << !v1 << endl << endl;
+    cout << "!v1 = " << v1.len() << endl << endl;
 
     cout << "v1 + v2 = " << v1 + v2 << endl;
     cout << "v1 - v2 = " << v1 - v2 << endl << endl;
@@ -81,14 +81,16 @@ int main( )
     cout << "pl1: " << pl1 << endl;
     cout << "pl2: " << pl2 << endl;
     cout << "pl3: " << pl3 << endl;
-    cout << "pl4: " << pl4 << endl << endl;*/
+    cout << "pl4: " << pl4 << endl << endl;
 
 
     // Triangle
-    Triangle tr1{Vec{1, 0, 0}, Vec{0, 1,  0}, Vec{0, 0, 1}};
-    Triangle tr2{Vec{0, 0, 1}, Vec{0, 0, -1}, Vec{1, 1, 0}};
+    Triangle tr1{Vec{-2, 0, 0}, Vec{0, -2,  0}, Vec{-1, -1, 0}};
+    Triangle tr2{Vec{1, 0, 0}, Vec{0, 1, 0}, Vec{0}};
 
     cout << "intersect?\n" << (is_intersect3D(tr1, tr2) ? "YES" : "NO") << endl;
+
+
 
     return 0;
 }

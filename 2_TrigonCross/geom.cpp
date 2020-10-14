@@ -1,8 +1,3 @@
-#include "vec.h"
-#include "line.h"
-#include "plane.h"
-#include "triangle.h"
-
 #include "geom.h"
 
 using std::abs;
@@ -60,13 +55,115 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 }
 
 
+int ind_of_max( double a, double b, double c )
+{
+    int num = 0;
+    double max;
+
+    if (a > b)
+    {
+        num = 0;
+        max = a;
+    }
+    else
+    {
+        num = 1;
+        max = b;
+    }
+
+    if (max < c)
+        num = 2;
+
+    return num;
+}
+
 bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
 {
-    cout << "FUNC: " << __PRETTY_FUNCTION__ << "\n\n";
+    Vec norm{};
+    
+    double OXY = abs(norm & Vec{0, 0, 1}),
+           OXZ = abs(norm & Vec{0, 1, 0}),
+           OYZ = abs(norm & Vec{1, 0, 0});
 
-    // TODO: write this
+    size_t maxind = ind_of_max(OYZ, OXZ, OXY);
+
+    Vec vtr1[3] = {};
+    Vec vtr2[3] = {};
+
+    size_t j = 0;
+    for (size_t i = 0; i < 2; ++i)
+    {
+        if (i == maxind)
+            continue;
+
+        vtr1[0].get(j) = tr1[0][i];
+        vtr2[0].get(j) = tr2[0][i];
+        vtr1[1].get(j) = tr1[1][i];
+        vtr2[1].get(j) = tr2[1][i];
+        vtr1[2].get(j) = tr1[2][i];
+        vtr2[2].get(j) = tr2[2][i];
+        ++j;
+    }
+    return tst_intr(Triangle(tr1[0], tr1[1], tr1[2]),
+                    Triangle(tr2[0], tr2[1], tr2[2]));
 
     return false;
+}
+
+int get_mid_ind(int i0, int i1, int N )
+{
+    if (i0 < i1)
+        return (i0 + i1) / 2;
+    else
+        return (i0 + i1 + N) / 2 % N;
+}
+
+int get_extreme_ind( const Triangle & tr, const Vec & pt )
+{
+    int i0 = 0, i1 = 0;
+    while (true)
+    {
+        int mid = get_mid_ind(i0, i1, 3);
+        int next = (mid + 1) % 3;
+        Vec E{tr[next] - tr[mid]};
+        
+        if ((E & pt) > 0)
+        {
+            if (mid != i0)
+                i0 = mid;
+            else
+                return i1;
+        }
+        else
+        {
+            int prev = (mid + 3 - 1) % 3;
+            E = tr[mid] - tr[prev];
+            if ((E & pt) < 0)
+                i1 = mid;
+            else
+                return mid;
+        }
+    }
+}
+
+bool tst_intr( const Triangle & tr1, const Triangle & tr2 )
+{
+    for (int i0 = 0, i1 = 2; i0 < 3; i1 = i0, ++i0)
+    {
+        Vec D1{(tr1[i0] - tr1[i1]).perp2D()},
+            D2{(tr2[i0] - tr2[i1]).perp2D()};
+
+        int min1 = get_extreme_ind(tr1, -D1),
+            min2 = get_extreme_ind(tr2, -D2);
+
+        Vec diff1{tr2[min1] - tr1[i0]},
+            diff2{tr1[min2] - tr2[i0]};
+
+        if ((D1 & diff1) > 0 || (D2 & diff2) > 0)
+            return false;
+    }
+
+    return true;
 }
 
 

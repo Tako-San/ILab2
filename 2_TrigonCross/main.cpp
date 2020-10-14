@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 
-#include "vec.h"
-#include "line.h"
-#include "plane.h"
-#include "triangle.h"
+#include "g_obj/vec.h"
+#include "g_obj/line.h"
+#include "g_obj/plane.h"
+#include "g_obj/triangle.h"
 
 #include "geom.h"
 

@@ -24,27 +24,14 @@ public:
 
     Plane( const Plane & pl ) = default;
 
-    double sdst( const Vec & pt ) const
-    {
-        return ((pt & nrm) - dst);
-    }
+    double sdst( const Vec & pt ) const;
 
-    const Vec & get_nrm( ) const
-    {
-        return nrm;
-    }
+    const Vec & get_nrm( ) const;
+    double get_dst( ) const;
 
-    double get_dst( ) const
-    {
-        return dst;
-    }
+    void print() const;
 };
 
-std::ostream & operator << ( std::ostream & ost, const Plane & pl )
-{
-    ost << "nrm: " << pl.get_nrm() <<
-         ", dst: " << pl.get_dst();
-    return ost;
-}
+std::ostream & operator << ( std::ostream & ost, const Plane & pl );
 
 #endif //ILAB2_PLANE_H
