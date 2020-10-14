@@ -44,10 +44,10 @@ public:
     Vec & operator = ( const Vec & );
     Vec operator - ( ) const;
 
+    double len ( ) const;
     double operator [] ( unsigned ) const; // get vector coorinate by number
-    double operator ! ( ) const; // vector module
 
-    friend std::ostream & operator << ( std::ostream &, const Vec & );
+    friend std::istream & operator >> ( std::istream &, Vec &);
 };
 
 Vec operator + ( const Vec &, const Vec & );
@@ -60,5 +60,6 @@ Vec operator % ( const Vec &, const Vec & );    // cross product
 
 Vec normalise( const Vec & );
 
+std::ostream & operator << ( std::ostream &, const Vec & );
 
 #endif //ILAB2_VEC

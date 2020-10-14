@@ -13,6 +13,14 @@ using std::endl;
 const Vec ZERO_VEC{0};
 const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
 
+inline bool is_one_sign( double n0, double n1, double n2)
+{
+    if (n0 * n1 < 0)
+        return false;
+    if (n1 * n2 < 0)
+        return false;
+    return n0 * n2 >= 0;
+}
 
 bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 {
@@ -21,7 +29,7 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 
 
     if (pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC &&
-        abs(pl1.get_dst()) == abs(pl2.get_dst()))
+        abs(abs(pl1.get_dst()) - abs(pl2.get_dst())) < ACCURACY)
         return is_intersect2D(tr1, tr2); // TODO: написать
 
     double sd2[3] = {};
@@ -33,14 +41,8 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
         sd1[i] = pl2.sdst(tr1[i]);
     }
 
-    if (((sd1[0] * sd1[1] >= 0) &&
-         (sd1[0] * sd1[2] >= 0) &&
-         (sd1[1] * sd1[2] >= 0)))
-        return false;
-
-    if (((sd2[0] * sd2[1] >= 0) &&
-         (sd2[0] * sd2[2] >= 0) &&
-         (sd2[1] * sd2[2] >= 0)))
+    if (is_one_sign(sd1[0], sd1[1], sd1[2]) ||
+        is_one_sign(sd2[0], sd2[1], sd2[2]))
         return false;
 
     Line int_line = intersection(pl1, pl2);
@@ -62,7 +64,7 @@ bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
 {
     cout << "FUNC: " << __PRETTY_FUNCTION__ << "\n\n";
 
-
+    // TODO: write this
 
     return false;
 }
@@ -118,7 +120,7 @@ void find_cross( const Triangle & tr, const double sd[], const Line & int_line, 
 }
 
 
-bool cmp_seg(double t1[], double t2[])
+bool cmp_seg( double t1[], double t2[] )
 {
     if (t1[0] > t1[1])
         swap(t1[0], t1[1]);

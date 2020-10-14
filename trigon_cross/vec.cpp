@@ -18,7 +18,7 @@ bool Vec::operator != ( const Vec & v ) const
 
 Vec & Vec::normalise( )
 {
-    return (*this /= !(*this));
+    return (*this /= (*this).len());
 }
 
 
@@ -82,7 +82,7 @@ double Vec::operator [] ( unsigned idx ) const
     return *(&x + idx % 3);
 }
 
-double Vec::operator ! ( ) const
+double Vec::len( ) const
 {
     return sqrt(x*x + y*y + z*z);
 }
@@ -107,10 +107,10 @@ Vec operator % ( const Vec & v1, const Vec & v2)
 
 
 
-std::ostream & operator << ( std::ostream & ost, const Vec & v )
+std::istream & operator >> ( std::istream & ist, Vec & v)
 {
-    ost << "(" << v.x << ", " <<  v.y << ", " << v.z << ")^T";
-    return ost;
+    ist >> v.x >> v.y >> v.z;
+    return ist;
 }
 
 
@@ -146,3 +146,9 @@ Vec normalise( const Vec & v )
 }
 
 
+
+std::ostream & operator << ( std::ostream & ost, const Vec & v )
+{
+    ost << "(" << v[X] << ", " <<  v[Y] << ", " << v[Z] << ")^T";
+    return ost;
+}

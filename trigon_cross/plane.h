@@ -29,7 +29,7 @@ public:
         return ((pt & nrm) - dst);
     }
 
-    Vec get_nrm( ) const
+    const Vec & get_nrm( ) const
     {
         return nrm;
     }
@@ -38,20 +38,13 @@ public:
     {
         return dst;
     }
-
-    friend std::ostream & operator << ( std::ostream & ost, const Plane & pl )
-    {
-        ost << "nrm: " << pl.nrm <<
-             ", dst: " << pl.dst;
-
-        return ost;
-    }
-
-    /*bool operator == ( const Plane & pl2 ) const
-    {
-        return ((dst * nrm) == (pl2.get_dst() * pl2.get_nrm()));
-    }*/
 };
 
+std::ostream & operator << ( std::ostream & ost, const Plane & pl )
+{
+    ost << "nrm: " << pl.get_nrm() <<
+         ", dst: " << pl.get_dst();
+    return ost;
+}
 
 #endif //ILAB2_PLANE_H
