@@ -1,19 +1,16 @@
 #include "pair.h"
-#include "node.h"
 #include "tree.h"
 
 using std::cout;
 using std::endl;
 
-using Pii = Pair<int, int>;
-
 int main()
 {
-    Tree<Pii> tree1;
+    Tree<Pair<int, int>> t1;
 
-    tree1[5] = 50;
+    t1[5] = 50;
 
-    cout << "t[5] = " << tree1[5].get_val() << endl;
+    cout << "t[5] = " << t1[5].get_val() << endl;
 
     return 0;
 }

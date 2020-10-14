@@ -21,17 +21,23 @@ public:
     {}
 
     Tree( const Tree & ) = delete;
+
+    ~Tree()
+    {
+        root->clear();
+    }
+
     Tree & operator = ( const Tree & ) = delete;
 
-
-    void add( const Data_t & data )
-    { root->add(data); }
 
     Data_t & find( const Data_t & data )
     {
         NodeT * res = root->find(data);
         return res->data_;
     }
+
+    void add( const Data_t & data )
+    { root->add(data); }
 
     int depth( )
     { return root->depth(); }
