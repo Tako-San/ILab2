@@ -25,7 +25,7 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 
     if (pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC &&
         abs(abs(pl1.get_dst()) - abs(pl2.get_dst())) < ACCURACY)
-        return is_intersect2D(tr1, tr2); // TODO: написать
+        return is_intersect2D(tr1, tr2);
 
     double sd2[3] = {};
     double sd1[3] = {};
@@ -106,8 +106,6 @@ bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
     }
     return tst_intr(Triangle(tr1[0], tr1[1], tr1[2]),
                     Triangle(tr2[0], tr2[1], tr2[2]));
-
-    return false;
 }
 
 int get_mid_ind(int i0, int i1, int N )
