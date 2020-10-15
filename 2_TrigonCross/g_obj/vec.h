@@ -20,7 +20,7 @@ class Vec
 private:
     double x, y, z;
 
-    double & get(int idx);
+    double & get( unsigned idx );
 
 public:
     Vec( double x, double y, double z ) : x(x), y(y), z(z)

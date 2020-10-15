@@ -17,19 +17,15 @@ int main( )
     unsigned N;
     cin >> N;
 
-    std::vector<Triangle> tr;
+    std::vector<Triangle> tr{N};
     std::vector<unsigned> is_intr = {0};
 
     for (unsigned i = 0; i < N; ++i)
-    {
-        Triangle tmp{};
-        cin >> tmp;
-        tr.push_back(tmp);
-    }
+        cin >> tr[i];
 
     for (unsigned i = 0; i < N; ++i)
         for (unsigned j = i + 1; j < N; ++j)
-            if(is_intersect3D(tr[i], tr[j]))
+            if (is_intersect3D(tr[i], tr[j]))
                 ++is_intr[i], ++is_intr[j];
 
     for (unsigned i = 0; i < N; ++i)

@@ -1,6 +1,6 @@
 #include "vec.h"
 
-double & Vec::get(int idx)
+double & Vec::get(unsigned idx)
 {
     return *(&x + idx % 3);
 }

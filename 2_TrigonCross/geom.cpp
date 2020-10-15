@@ -8,7 +8,7 @@ using std::endl;
 const Vec ZERO_VEC{0};
 const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
 
-inline bool is_one_sign( double n0, double n1, double n2)
+inline bool is_one_sign( double n0, double n1, double n2 )
 {
     if (n0 * n1 < 0)
         return false;
@@ -55,26 +55,26 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 }
 
 
-int ind_of_max( double a, double b, double c )
+unsigned ind_of_max( double a, double b, double c )
 {
-    int num = 0;
+    int ind = 0;
     double max;
 
     if (a > b)
     {
-        num = 0;
+        ind = 0;
         max = a;
     }
     else
     {
-        num = 1;
+        ind = 1;
         max = b;
     }
 
     if (max < c)
-        num = 2;
+        ind = 2;
 
-    return num;
+    return ind;
 }
 
 bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
@@ -85,23 +85,22 @@ bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
            OXZ = abs(norm & Vec{0, 1, 0}),
            OYZ = abs(norm & Vec{1, 0, 0});
 
-    size_t maxind = ind_of_max(OYZ, OXZ, OXY);
+    unsigned maxind = ind_of_max(OYZ, OXZ, OXY);
 
     Vec vtr1[3] = {};
     Vec vtr2[3] = {};
 
-    size_t j = 0;
-    for (size_t i = 0; i < 2; ++i)
+    unsigned j = 0;
+    for (unsigned i = 0; i < 2; ++i)
     {
         if (i == maxind)
             continue;
 
-        vtr1[0].get(j) = tr1[0][i];
-        vtr2[0].get(j) = tr2[0][i];
-        vtr1[1].get(j) = tr1[1][i];
-        vtr2[1].get(j) = tr2[1][i];
-        vtr1[2].get(j) = tr1[2][i];
-        vtr2[2].get(j) = tr2[2][i];
+        for (unsigned k = 0; k < 3; ++k)
+        {
+            vtr1[k].get(j) = tr1[k][i];
+            vtr2[k].get(j) = tr2[k][i];
+        }
         ++j;
     }
     return tst_intr(Triangle(tr1[0], tr1[1], tr1[2]),
