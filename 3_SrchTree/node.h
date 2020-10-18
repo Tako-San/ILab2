@@ -9,8 +9,6 @@ using std::cout;
 using std::endl;
 using std::abs;
 
-// using Data_t = typename Map_t;
-
 template <typename Data_t>
 class Node
 {
@@ -22,8 +20,8 @@ public:
     Node * rght_;
 
 public:
-    Node(): data_(), prnt_(nullptr),
-            left_(nullptr), rght_(nullptr)
+    Node() : data_(), prnt_(nullptr),
+             left_(nullptr), rght_(nullptr)
     {};
 
     Node( Data_t & data ) : data_(data), prnt_(nullptr),
@@ -96,20 +94,15 @@ public:
         int res = abs(left_->depth() - rght_->depth()) <= 1 ? 1 : 0;
         return res;
     }
-
-    void del(Data_t &to_del) //tree
-    {
-        del(to_del.key);
-    }
     
-    void del(key_t key)
+    void del( Data_t to_del )
     {
         if (this == nullptr)
             return;
-        if (key < data_)
-            left_->del(key);
-        else if (key > data_)
-            rght_->del(key);
+        if (to_del < data_)
+            left_->del(to_del);
+        else if (to_del > data_)
+            rght_->del(to_del);
         else if (left_ != nullptr && rght_ != nullptr)
         {
             Node *tmp;
@@ -159,7 +152,7 @@ public:
         }
     }
 
-    void clear() //tree
+    void clear( ) //tree
     {
         if(this == nullptr)
             return;
@@ -172,7 +165,7 @@ public:
         delete this;
     }
     
-    void print() //tree
+    void print( ) //tree
     {
         if(left_!= nullptr)
             left_->print();
@@ -203,7 +196,7 @@ public:
     }
 
 
-    void print_lvl(int lvl) //tree
+    void print_lvl( int lvl ) //tree
     {
         if(this == nullptr)
             return;
@@ -216,9 +209,8 @@ public:
         }
     }
 
-    friend std::ostream & operator << (std::ostream & ost, const Node &node)
+    friend std::ostream & operator << ( std::ostream & ost, const Node &node )
     {
-        //out<<"Data: ("<<node.data<<"), this: "<<&node<<", prnt_: "<<node.prnt_<<", lt: "<<node.left<<", rt: "<<node.rght_<<endl;
         ost << node.data_;
 
         return ost;
