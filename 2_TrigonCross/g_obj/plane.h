@@ -11,7 +11,7 @@ private:
     double dst;
 
 public:
-    Plane( const Vec & v1, double dst ) : nrm(normalise(v1)), dst(dst)
+    Plane( const Vec & norm, double dst ) : nrm(normalise(norm)), dst(dst)
     {}
 
     Plane( const Vec & v1, const Vec & v2, const Vec & v3 ) : nrm(normalise((v2 - v1) % (v3 - v1))),

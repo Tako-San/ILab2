@@ -1,6 +1,11 @@
 #include "triangle.h"
 
 
+Plane Triangle::plane( ) const
+{
+    return Plane(v1, v2, v3);
+}
+
 const Vec & Triangle::operator [] ( unsigned idx ) const
 {
     return *(&v1 + idx % 3);
