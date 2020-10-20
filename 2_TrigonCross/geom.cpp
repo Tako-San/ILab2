@@ -107,7 +107,7 @@ bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
                     Triangle(tr2[0], tr2[1], tr2[2]));
 }
 
-int get_mid_ind(int i0, int i1, int N )
+int get_mid_ind( int i0, int i1, int N )
 {
     if (i0 < i1)
         return (i0 + i1) / 2;

@@ -6,17 +6,17 @@
 #ifndef ILAB2_GEOM_H
 #define ILAB2_GEOM_H
 
-bool is_intersect3D( const Triangle &, const Triangle & );
-bool is_intersect2D( const Triangle &, const Triangle & );
+bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 );
+bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );
 
-Line intersection( const Plane &, const Plane & );
+Line intersection( const Plane & pl1, const Plane & pl2 );
 
-void find_cross( const Triangle &, const double[], const Line &, double[] );
-bool cmp_seg(double[], double[]);
+void find_cross( const Triangle & tr, const double sd[], const Line & int_line, double t[] );
+bool cmp_seg( double t1[], double t2[] );
 
-int get_mid_ind( int, int, int );
-int get_extreme_ind( const Triangle &, const Vec & );
-bool tst_intr( const Triangle &, const Triangle & );
+int get_mid_ind( int i0, int i1, int N );
+int get_extreme_ind( const Triangle & tr, const Vec & pt );
+bool tst_intr( const Triangle & tr1, const Triangle & tr2 );
 
 
 #endif //ILAB2_GEOM_H
