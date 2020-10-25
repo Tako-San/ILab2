@@ -9,10 +9,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 include_directories(geom)
 
-add_subdirectory(/usr/src/googletest gtest)
+# add_subdirectory(/usr/src/googletest gtest)
 add_subdirectory(geom)
 
 # add_executable(main tst.cpp)
 add_executable(main main.cpp)
 
-target_link_libraries(main gtest geom)
+target_link_libraries(main geom)
