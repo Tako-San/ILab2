@@ -4,7 +4,7 @@
 #include "vec.h"
 #include "plane.h"
 
-class Triangle
+class Triangle final
 {
 private:
     Vec v1, v2, v3;

@@ -4,7 +4,7 @@
 #include "vec.h"
 #include "line.h"
 
-class Plane
+class Plane final
 {
 private:
     Vec nrm;

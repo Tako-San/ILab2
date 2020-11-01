@@ -15,7 +15,7 @@ enum Coords
 
 class Triangle;
 
-class Vec
+class Vec final
 {
 private:
     double x, y, z;

@@ -4,7 +4,7 @@
 #include "vec.h"
 
 
-class Line
+class Line final
 {
 private:
     Vec orig, dir;
