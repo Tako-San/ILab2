@@ -7,6 +7,7 @@
 
 using std::vector;
 using std::list;
+using std::pair;
 
 template <typename DataT>
 class OctTree;
@@ -23,8 +24,9 @@ public:
 
     Box zone_;
 
-    using DataIt = typename list<DataT>::iterator;
-    vector<DataIt> data_;
+    using PairIt = typename list<pair<DataT, OctNode<DataT> *>>::iterator;
+    // vector<DataIt> data_;
+    vector<PairIt> data_;
 
     void clear_sub( )
     {
@@ -70,10 +72,10 @@ public:
 
     bool need_children( ) const
     {
-        return data_.size() >= 2 && zone_.diag() > 1 && !has_children;
+        return data_.size() >= 7 && zone_.diag() > 1 && !has_children;
     }
 
-    bool insert( DataIt data/*MapIt data*/, bool hate_children = false )
+    OctNode<DataT> * insert( PairIt data, bool hate_children = false )
     {
         /*std::cout << "HELLO, I AM HERE TO INSERT\n";
         std::cout << "box: " << zone_ << std::endl;
@@ -83,20 +85,19 @@ public:
 
         std::cout << "    new item: " << *data << std::endl;*/
 
-        if (!is_in(*data/*data->first*/))
-            return false;
+        if (!is_in(data->first))
+            return nullptr;
 
         if (!hate_children && need_children())
             divide();
 
         if (has_children)
             for (auto ch : child_)
-                if (ch->is_in(*data/*data->first*/))
+                if (ch->is_in(data->first))
                     return ch->insert(data);
 
         data_.push_back(data);
-        // data->second = this;
-        return true;
+        return this;
     }
 
     OctNode<DataT> * find_box( const DataT & data )
@@ -150,15 +151,15 @@ private:
 
         has_children = true;
 
-        using VecIt = typename vector<DataIt>::iterator;
-        std::vector<DataIt> new_data{};
+        using VecIt = typename vector<PairIt>::iterator;
+        std::vector<PairIt> new_data{};
 
         for (VecIt cur = data_.begin(), end = data_.end(); cur != end; ++cur)
         {
             bool in_ch{false};
 
             for (auto ch : child_)
-                if (ch->is_in(**cur))
+                if (ch->is_in(((*cur)->first)))
                 {
                     ch->insert(*cur, true);
                     in_ch = true;

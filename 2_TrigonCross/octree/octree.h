@@ -14,8 +14,8 @@ class OctTree
 public:
 
     OctNode<DataT> * root_;
-    list<DataT> data_;
-    // map<DataT, OctNode *> data_;
+    // list<DataT> data_;
+    list<pair<DataT, OctNode<DataT> *>> data_;
 
 public:
 
@@ -55,30 +55,23 @@ public:
         if (!root_->is_in(data))
             return false;
 
-        data_.push_front(data);
-        return root_->insert(data_.begin());
-        // data_[data] = nullptr;
-        // return root_->insert(data_.find(data));
+        data_.push_back({data, nullptr});
+        OctNode<DataT> * srch = root_->insert(--data_.end());
+
+        if (srch == nullptr)
+        {
+            data_.pop_back();
+            return false;
+        }
+
+        data_.back().second = srch;
+        return true;
     }
 
-    bool fill( const list<DataT> & data )
-    {
-        vector<DataT> out{};
-
-        for (auto & elem : data)
-            if (!root_->insert(elem))
-                out.push_back(elem);
-
-        if (out.empty())
-            std::cout << "\nout:" << out << "\n";
-
-        return !out.empty();
-    }
-
-    OctNode<DataT> * find_box( const DataT & data )
+    /*OctNode<DataT> * find_box( const DataT & data )
     {
         return root_->find_box(data);
-    }
+    }*/
 };
 
 

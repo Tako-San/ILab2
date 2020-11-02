@@ -37,8 +37,7 @@ int main( )
     std::vector<Triangle> tr{N};
     std::vector<unsigned> is_intr{};
 
-    for (auto elem : is_intr)
-        cout << elem;
+    is_intr.resize(N);
     
     cout << "Input triangle\n";
     cin >> tr[0];
@@ -61,22 +60,33 @@ int main( )
         }
     }
 
-    Vec minv{vmin[0], vmin[1], vmin[2]},
-        maxv{vmax[0], vmax[1], vmax[2]};
+    Vec minv{vmin[0] - 1, vmin[1] - 1, vmin[2] - 1},
+        maxv{vmax[0] + 1, vmax[1] + 1, vmax[2] + 1};
     
     OctTree<Triangle> scene{Box(minv, maxv)};
 
     for (auto t : tr)
-        scene.insert(t);
+        if (!scene.insert(t))
+            return 1;
 
-    for (unsigned i = 0; i < N; ++i)
+    int idx = 0;
+    auto & lst = scene.data_;
+    for (auto cur = lst.cbegin(), end = lst.cend(); cur != end; ++cur, ++idx)
     {
-        is_intr.push_back(0);
-        auto found = scene.find_box(tr[i]);
-        if (found != nullptr)
-            for (auto & cur : found->data_)
-                if (is_intersect3D(tr[i], *cur) && tr[i] != (*cur))
-                    ++is_intr[i];
+        auto & mates = cur->second->data_;
+
+        /*for (ulong i = 0; i < mates.size(); ++i)
+        {
+            if (is_intersect3D(cur->first, mates[i]->first))
+                ++is_intr[idx];
+        }*/
+
+    // TODO: рассмотреть случай когда треугольник лежит не в листе, а в промежуточном узле
+
+        //for (auto mate = mates.cbegin(), mend = mates.cend(); mate != mend; ++mate)
+        for (auto mate : cur->second->data_)
+            if ( mate != cur && is_intersect3D(cur->first, mate->first))
+                ++is_intr[idx];
     }
 
 
