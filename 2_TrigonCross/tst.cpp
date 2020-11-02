@@ -214,7 +214,6 @@ TEST(octree, constructors)
 
     EXPECT_EQ(octree.insert(Vec{-10, -10, 10}), true);
     EXPECT_EQ(octree.insert(Vec{10, -10, -10}), true);
-
 }
 
 int main( int argc, char ** argv )

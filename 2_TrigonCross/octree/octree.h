@@ -34,6 +34,15 @@ public:
         root_->clear_sub();
     }
 
+    bool insert( const DataT & data )
+    {
+        if (!root_->is_in(data))
+            return false;
+
+        data_.push_front(data);
+        return root_->insert(data_.begin());
+    }
+
     bool fill( const list<DataT> & data )
     {
         vector<DataT> out{};
@@ -46,15 +55,6 @@ public:
             std::cout << "\nout:" << out << "\n";
 
         return !out.empty();
-    }
-
-    bool insert( const DataT & data )
-    {
-        if (!root_->zone_.is_in(data))
-            return false;
-
-        data_.push_front(data);
-        return root_->insert(data_.begin());
     }
 };
 

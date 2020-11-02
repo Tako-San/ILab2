@@ -31,9 +31,9 @@ public:
         if(this == nullptr)
             return;
 
-        std::cout << std::endl << this << std::endl;
+        std::cout << std::endl << "box: " << zone_ << std::endl;
         for (auto elem : data_)
-            std::cout << *elem << "\n";
+            std::cout << "      >>>  " << *elem << "\n";
 
         for (auto & ch_it : child_)
             if (ch_it != nullptr)
@@ -58,32 +58,32 @@ public:
     friend class OctTree<DataT>;
 
 
-    bool is_in( const DataT & d )
+    bool is_in( const DataT & d ) const
     {
         return zone_.is_in(d);
     }
 
-    bool is_in( const DataT * d )
+    bool is_in( const DataT * d ) const
     {
         return zone_.is_in(*d);
     }
 
-    bool need_children( )
+    bool need_children( ) const
     {
         return data_.size() >= 2 && zone_.diag() > 1 && !has_children;
     }
 
     bool insert( DataIt data, bool hate_children = false )
     {
-        std::cout << "HELLO, I AM HERE TO INSERT\n";
+        /*std::cout << "HELLO, I AM HERE TO INSERT\n";
         std::cout << "box: " << zone_ << std::endl;
 
         for (DataIt item : data_)
             std::cout << "    item: " << *item << std::endl;
 
-        std::cout << "    new item: " << *data << std::endl;
+        std::cout << "    new item: " << *data << std::endl;*/
 
-        if (!zone_.is_in(*data))
+        if (!is_in(*data))
             return false;
 
         if (!hate_children && need_children())
@@ -91,20 +91,20 @@ public:
 
         if (has_children)
             for (auto ch : child_)
-                if (ch->zone_.is_in(*data))
+                if (ch->is_in(*data))
                     return ch->insert(data);
 
         data_.push_back(data);
         return true;
     }
 
+private:
+
     #define mid(A)                  \
         (min[A] + max[A]) / 2       \
 
-    void divide( )
+    void div_box( )
     {
-        std::cout << "\nHELLO, I AM HERE TO DIVIDE\n\n";
-
         Box sub_box[8] = {};
 
         Vec min{zone_.get_min()};
@@ -125,6 +125,14 @@ public:
 
         for (int i = 0; i < 8; ++i)
             child_[i] = new OctNode<DataT> {sub_box[i], this};
+    }
+    #undef mid
+
+    void divide( )
+    {
+        std::cout << "\nHELLO, I AM HERE TO DIVIDE\n\n";
+
+        div_box();
 
         has_children = true;
 
@@ -136,7 +144,7 @@ public:
             bool in_ch{false};
 
             for (auto ch : child_)
-                if (ch->zone_.is_in(**cur))
+                if (ch->is_in(**cur))
                 {
                     ch->insert(*cur, true);
                     in_ch = true;
@@ -150,7 +158,6 @@ public:
         data_.clear();
         data_ = new_data;
     }
-    #undef mid
 };
 
 
