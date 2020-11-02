@@ -1,30 +1,32 @@
 #ifndef ILAB2_OCTREE_H
 #define ILAB2_OCTREE_H
 
-#include <vector>
+#include <list>
 #include "octnode.h"
 
-using std::vector;
-using std::pair;
+using std::list;
 
-template <typename Data_t>
+template <typename DataT>
 class OctTree
 {
 public:
 
-    OctNode<Data_t> * root_;
-    vector<Data_t> data_;
+    OctNode<DataT> * root_;
+    list<DataT> data_;
 
 public:
 
     OctTree( ) : root_{}, data_{}
     {
-        root_ = new OctNode<Data_t>;
+        root_ = new OctNode<DataT>;
     }
 
-    OctTree( const Box & zone, const vector<Data_t> data = vector<Data_t>{0} ) : root_{},  data_{data}
+    OctTree( const Box & zone, const list<DataT> & data ) : root_{},  data_{}
     {
-        root_ = new OctNode<Data_t>{zone};
+        root_ = new OctNode<DataT>{zone};
+        
+        for (DataT dat : data)
+            insert(dat);
     }
 
     ~OctTree( )
@@ -32,9 +34,9 @@ public:
         root_->clear_sub();
     }
 
-    bool fill( const vector<Data_t> data )
+    bool fill( const list<DataT> & data )
     {
-        vector<Data_t> out{};
+        vector<DataT> out{};
 
         for (auto & elem : data)
             if (!root_->insert(elem))
@@ -46,14 +48,13 @@ public:
         return !out.empty();
     }
 
-    bool insert( const Data_t & data )
+    bool insert( const DataT & data )
     {
         if (!root_->zone_.is_in(data))
             return false;
 
-        Data_t tmp{data};
-        data_.push_back(tmp);
-        return root_->insert(tmp);
+        data_.push_front(data);
+        return root_->insert(data_.begin());
     }
 };
 

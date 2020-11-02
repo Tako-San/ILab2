@@ -15,6 +15,8 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+using std::list;
+
 TEST(vector, getters)
 {
     Vec v{1, 2, 3};
@@ -198,24 +200,21 @@ TEST(triangles, intersection)
 
 TEST(octree, constructors)
 {
-    Vec v1{-10, -10, -10};
-    Vec v2{10, 10, 10};
+    Vec v1{-100};
+    Vec v2{100};
 
     Box zone{v1, v2};
 
-    vector<Vec> dots;
-    dots.push_back(Vec{-7, -6, -2});
+    list<Vec> dots;
+    dots.push_front(Vec{-10, -10, -10});
 
     OctTree<Vec> octree{zone, dots};
 
-    Vec v3{5};
-    octree.insert(v3);
+    EXPECT_EQ(octree.insert(Vec{10}), true);
 
-    octree.insert(Vec{-1, -2, 3});
-    octree.insert(Vec{8, -9, -4});
+    EXPECT_EQ(octree.insert(Vec{-10, -10, 10}), true);
+    EXPECT_EQ(octree.insert(Vec{10, -10, -10}), true);
 
-    for (auto & elem : octree.data_)
-        std::cout << elem << std::endl;
 }
 
 int main( int argc, char ** argv )

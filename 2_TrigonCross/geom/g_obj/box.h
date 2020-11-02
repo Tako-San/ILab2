@@ -26,11 +26,13 @@ public:
 
     bool is_invalid( ) const;
 
-    const Vec & get_min( );
-    const Vec & get_max( );
+    const Vec & get_min( ) const;
+    const Vec & get_max( ) const;
 
-    double diag( );
+    double diag( ) const;
 };
+
+std::ostream & operator << ( std::ostream & ost, const Box & box );
 
 
 #endif //TRIANGLES_BOX_H

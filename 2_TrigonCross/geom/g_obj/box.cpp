@@ -44,17 +44,25 @@ bool Box::is_invalid( ) const
 
 #undef MIN_VS_MAX
 
-const Vec & Box::get_min( )
+const Vec & Box::get_min( ) const
 {
     return min_;
 }
 
-const Vec & Box::get_max( )
+const Vec & Box::get_max( ) const
 {
     return max_;
 }
 
-double Box::diag( )
+double Box::diag( ) const
 {
     return Vec{max_ - min_}.len();
+}
+
+
+
+std::ostream & operator << ( std::ostream & ost, const Box & box )
+{
+    ost << "min = " << box.get_min() << ", max = " << box.get_max();
+    return ost;
 }

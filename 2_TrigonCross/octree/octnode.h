@@ -6,11 +6,12 @@
 #include "../geom/g_obj/box.h"
 
 using std::vector;
+using std::list;
 
-template <typename Data_t>
+template <typename DataT>
 class OctTree;
 
-template <typename Data_t>
+template <typename DataT>
 class OctNode final
 {
 public:
@@ -21,14 +22,18 @@ public:
     bool has_children{false};
 
     Box zone_;
-    vector<Data_t *> data_;
 
-    using Data_it = typename vector<Data_t *>::iterator;
+    using DataIt = typename list<DataT>::iterator;
+    vector<DataIt> data_;
 
     void clear_sub( )
     {
         if(this == nullptr)
             return;
+
+        std::cout << std::endl << this << std::endl;
+        for (auto elem : data_)
+            std::cout << *elem << "\n";
 
         for (auto & ch_it : child_)
             if (ch_it != nullptr)
@@ -50,41 +55,46 @@ public:
     OctNode & operator = ( const OctNode & ) = default;
 
 
-    friend class OctTree<Data_t>;
+    friend class OctTree<DataT>;
 
 
-    bool is_in( const Data_t & d )
+    bool is_in( const DataT & d )
     {
         return zone_.is_in(d);
     }
 
-    bool is_in( const Data_t * d )
+    bool is_in( const DataT * d )
     {
         return zone_.is_in(*d);
     }
 
     bool need_children( )
     {
-        /*if (data_.size() >= 2)
-            return true;
-        return false;*/
-        return data_.size() >= 2 && zone_.diag() > 1;
+        return data_.size() >= 2 && zone_.diag() > 1 && !has_children;
     }
 
-    bool insert( Data_t & data, bool hate_children = false )
+    bool insert( DataIt data, bool hate_children = false )
     {
-        if (!zone_.is_in(data))
+        std::cout << "HELLO, I AM HERE TO INSERT\n";
+        std::cout << "box: " << zone_ << std::endl;
+
+        for (DataIt item : data_)
+            std::cout << "    item: " << *item << std::endl;
+
+        std::cout << "    new item: " << *data << std::endl;
+
+        if (!zone_.is_in(*data))
             return false;
 
-        if (!hate_children && !has_children && need_children())
+        if (!hate_children && need_children())
             divide();
 
         if (has_children)
-            for (auto & ch_it : child_)
-                if (ch_it->zone_.is_in(data))
-                    return ch_it->insert(data);
+            for (auto ch : child_)
+                if (ch->zone_.is_in(*data))
+                    return ch->insert(data);
 
-        data_.push_back(&data);
+        data_.push_back(data);
         return true;
     }
 
@@ -93,7 +103,8 @@ public:
 
     void divide( )
     {
-        std::cout << "HELLO, I AM HERE TO DIVIDE\n";
+        std::cout << "\nHELLO, I AM HERE TO DIVIDE\n\n";
+
         Box sub_box[8] = {};
 
         Vec min{zone_.get_min()};
@@ -113,23 +124,31 @@ public:
         sub_box[7] = Box{{midx, miny, midz}, {maxx, midy, maxz}};
 
         for (int i = 0; i < 8; ++i)
-            child_[i] = new OctNode<Data_t> {sub_box[i], this};
+            child_[i] = new OctNode<DataT> {sub_box[i], this};
 
         has_children = true;
 
-        for (Data_it cur = data_.begin(), end = data_.end(); cur != end; ++cur)
+        using VecIt = typename vector<DataIt>::iterator;
+        std::vector<DataIt> new_data{};
+
+        for (VecIt cur = data_.begin(), end = data_.end(); cur != end; ++cur)
         {
             bool in_ch{false};
-            for (int i = 0; i < 8; ++i)
-                if (child_[i]->insert(**cur, true))
+
+            for (auto ch : child_)
+                if (ch->zone_.is_in(**cur))
                 {
+                    ch->insert(*cur, true);
                     in_ch = true;
                     break;
                 }
-            if (in_ch)
-                std::cout << "doin stuff\n";
-                // data_.erase(cur);
+
+            if (!in_ch)
+                new_data.push_back(*cur);
         }
+
+        data_.clear();
+        data_ = new_data;
     }
     #undef mid
 };
