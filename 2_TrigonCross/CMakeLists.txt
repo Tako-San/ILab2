@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(Triangles)
 
 # find_package(GTest REQUIRED)
-find_package(Threads REQUIRED)
+# find_package(Threads REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 
