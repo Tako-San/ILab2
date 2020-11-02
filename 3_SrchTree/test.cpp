@@ -1,16 +1,45 @@
+#include <vector>
 #include "pair.h"
 #include "tree.h"
 
+using std::cin;
 using std::cout;
 using std::endl;
 
-int main()
+using std::string;
+using std::vector;
+
+int main( )
 {
-    Tree<Pair<int, int>> t1;
+    Tree<Pair<string, string>> t1;
 
-    t1[5] = 50;
+    string key{};
+    string val{};
 
-    cout << "t[5] = " << t1[5].get_val() << endl;
+    unsigned num{};
+
+    cout << "Input elem num: ";
+    cin >> num;
+
+    vector<string> keys{};
+
+    for (unsigned i = 0; i < num; ++i)
+    {
+        cout << "Input key: ";
+        cin >> key;
+
+        keys.push_back(key);
+
+        cout << "Input val: ";
+        cin >> val;
+
+        t1[key] = val;
+    }
+
+    for (const string & elem : keys)
+    {
+        cout << "t[" << elem << "] = " << t1[elem].get_val() << ";" << endl;
+    }
 
     return 0;
 }

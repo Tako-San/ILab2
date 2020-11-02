@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
-# set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 include_directories(../include ${GTEST_INCLUDE_DIRS})
 
@@ -23,6 +23,5 @@ add_subdirectory(geom)
 add_executable(trig main.cpp)
 
 target_link_libraries(trig geom ${GTEST_LIBRARIES} Threads::Threads)
-# target_link_libraries(trig geom)
 
 enable_testing()

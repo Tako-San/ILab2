@@ -14,7 +14,7 @@ class OctTree
 public:
 
     OctNode<DataT> * root_;
-    // list<DataT> data_;
+
     list<pair<DataT, OctNode<DataT> *>> data_;
 
 public:
@@ -67,11 +67,6 @@ public:
         data_.back().second = srch;
         return true;
     }
-
-    /*OctNode<DataT> * find_box( const DataT & data )
-    {
-        return root_->find_box(data);
-    }*/
 };
 
 

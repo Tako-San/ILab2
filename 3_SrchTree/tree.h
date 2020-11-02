@@ -5,6 +5,7 @@
 #include <iostream>
 #include "node.h"
 
+
 template <typename Data_t>
 class Tree
 {
@@ -22,7 +23,7 @@ public:
 
     Tree( const Tree & ) = delete;
 
-    ~Tree()
+    ~Tree( )
     {
         root->clear();
     }

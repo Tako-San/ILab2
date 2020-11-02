@@ -224,3 +224,21 @@ bool cmp_seg( double t1[], double t2[] )
 
     return !((t1[1] < t2[0]) || (t1[0] > t2[1]));
 }
+
+
+bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::iterator pair_it )
+{
+    OctNode<Triangle> & node = *(pair_it->second);
+    Triangle & obj = pair_it->first;
+
+    for (auto mate : node.get_data())
+        if (mate != pair_it && is_intersect3D(obj, mate->first))
+            return true;
+
+    if (node.is_parent())
+        for (auto ch : node.child_)
+            if (ch->intersect_subtree(obj))
+                return true;
+
+    return false;
+}

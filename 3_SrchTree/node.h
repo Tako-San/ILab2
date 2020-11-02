@@ -89,7 +89,7 @@ public:
         return depth;
     }
     
-    bool is_balanced() //tree
+    bool is_balanced( ) //tree
     {
         int res = abs(left_->depth() - rght_->depth()) <= 1 ? 1 : 0;
         return res;
@@ -154,17 +154,17 @@ public:
 
     void clear( ) //tree
     {
-        if(this == nullptr)
-            return;
+            if(this == nullptr)
+                return;
 
-        if(left_!= nullptr)
-            left_->clear();
-        if(rght_ != nullptr)
-            rght_->clear();
+            if(left_!= nullptr)
+                left_->clear();
+            if(rght_ != nullptr)
+                rght_->clear();
 
-        delete this;
+            delete this;
     }
-    
+
     void print( ) //tree
     {
         if(left_!= nullptr)
@@ -180,7 +180,7 @@ public:
         if(rght_ != nullptr)
             rght_->print();
     }
-    
+
     void print_leafs() //tree
     {
         if(this == nullptr)
@@ -209,7 +209,7 @@ public:
         }
     }
 
-    friend std::ostream & operator << ( std::ostream & ost, const Node &node )
+    friend std::ostream & operator << ( std::ostream & ost, const Node & node )
     {
         ost << node.data_;
 

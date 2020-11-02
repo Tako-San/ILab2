@@ -24,6 +24,9 @@ public:
 
     void print( ) const;
 
+    double min_coord( unsigned idx ) const;
+    double max_coord( unsigned idx ) const;
+
     friend std::istream & operator >> ( std::istream & ist, Triangle & tr );
 };
 

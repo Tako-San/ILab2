@@ -26,6 +26,12 @@ public:
 
     Pair & operator = ( const Pair & pair ) = default;
 
+    Pair & operator = ( const Val & val )
+    {
+        val_ = val;
+        return *this;
+    }
+
     const Key & get_key( )
     { return key_; }
 

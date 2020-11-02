@@ -5,6 +5,10 @@
 #include "../geom/g_obj/vec.h"
 #include "../geom/g_obj/box.h"
 
+#include "../geom/geom.h"
+
+const unsigned CHILDREN_NUM = 7;
+
 using std::vector;
 using std::list;
 using std::pair;
@@ -15,7 +19,7 @@ class OctTree;
 template <typename DataT>
 class OctNode final
 {
-public:
+private:
 
     OctNode * parent_;
 
@@ -25,7 +29,6 @@ public:
     Box zone_;
 
     using PairIt = typename list<pair<DataT, OctNode<DataT> *>>::iterator;
-    // vector<DataIt> data_;
     vector<PairIt> data_;
 
     void clear_sub( )
@@ -33,16 +36,15 @@ public:
         if(this == nullptr)
             return;
 
-        // std::cout << std::endl << "box: " << zone_ << std::endl;
-        // for (auto elem : data_)
-        //     std::cout << "      >>>  " << *elem << "\n";
-
         for (auto & ch_it : child_)
             if (ch_it != nullptr)
                 ch_it->clear_sub();
 
         delete this;
     }
+
+    friend class OctTree<DataT>;
+    friend bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::iterator pair_it );
 
 public:
 
@@ -56,9 +58,20 @@ public:
 
     OctNode & operator = ( const OctNode & ) = default;
 
+    const vector<PairIt> & get_data( ) const
+    {
+        return data_;
+    }
 
-    friend class OctTree<DataT>;
+    const OctNode ** get_children( ) const
+    {
+        return child_;
+    }
 
+    bool is_parent( ) const
+    {
+        return has_children;
+    }
 
     bool is_in( const DataT & d ) const
     {
@@ -72,19 +85,11 @@ public:
 
     bool need_children( ) const
     {
-        return data_.size() >= 7 && zone_.diag() > 1 && !has_children;
+        return data_.size() >= CHILDREN_NUM && zone_.diag() > 1 && !has_children;
     }
 
     OctNode<DataT> * insert( PairIt data, bool hate_children = false )
     {
-        /*std::cout << "HELLO, I AM HERE TO INSERT\n";
-        std::cout << "box: " << zone_ << std::endl;
-
-        for (DataIt item : data_)
-            std::cout << "    item: " << *item << std::endl;
-
-        std::cout << "    new item: " << *data << std::endl;*/
-
         if (!is_in(data->first))
             return nullptr;
 
@@ -100,18 +105,26 @@ public:
         return this;
     }
 
-    OctNode<DataT> * find_box( const DataT & data )
+    bool intersect_subtree( DataT obj )
     {
-        if (!is_in(data))
-            return nullptr;
+        if (typeid(DataT) != typeid(Triangle))
+        {
+            std::cout << "\n" << __func__ << " is only for type Triangle\n\n";
+            return false;
+        }
+
+        for (auto mate : data_)
+            if (is_intersect3D(obj, mate->first))
+                return true;
 
         if (has_children)
             for (auto ch : child_)
-                if (ch->is_in(data))
-                    return find_box(data);
+                if (ch->intersect_subtree(obj))
+                    return true;
 
-        return this;
+        return false;
     }
+
 
 private:
 
@@ -145,8 +158,6 @@ private:
 
     void divide( )
     {
-        // std::cout << "\nHELLO, I AM HERE TO DIVIDE\n\n";
-
         div_box();
 
         has_children = true;

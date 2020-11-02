@@ -23,6 +23,25 @@ void Triangle::print( ) const
 }
 
 
+double Triangle::min_coord( unsigned idx ) const
+{
+    const Triangle & tr = *this;
+    double res = tr[0][idx];
+    for (int i = 1; i < 3; ++i)
+        res = tr[i][idx] < res ? tr[i][idx] : res;
+    return res;
+}
+
+double Triangle::max_coord( unsigned idx ) const
+{
+    const Triangle & tr = *this;
+    double res = tr[0][idx];
+    for (int i = 1; i < 3; ++i)
+        res = tr[i][idx] > res ? tr[i][idx] : res;
+    return res;
+}
+
+
 std::istream & operator >> ( std::istream & ist, Triangle & tr )
 {
     ist >> tr.v1 >> tr.v2 >> tr.v3;
