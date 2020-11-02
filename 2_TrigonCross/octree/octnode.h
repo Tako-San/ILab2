@@ -5,26 +5,34 @@
 #include "../geom/g_obj/vec.h"
 #include "../geom/g_obj/box.h"
 
+using std::vector;
+
+template <typename Data_t>
+class OctTree;
+
 template <typename Data_t>
 class OctNode final
 {
-private:
+public:
     
     OctNode * parent_;
+
     OctNode * child_[8];
+    bool has_children{false};
 
     Box zone_;
+    vector<Data_t *> data_;
 
-    std::vector<Data_t*> data_;
+    using Data_it = typename vector<Data_t *>::iterator;
 
     void clear_sub( )
     {
         if(this == nullptr)
             return;
 
-        for (int i = 0; i < 8; ++i)
-            if (child_[i] != nullptr)
-                child_[i]->clear_sub();
+        for (auto & ch_it : child_)
+            if (ch_it != nullptr)
+                ch_it->clear_sub();
 
         delete this;
     }
@@ -34,12 +42,16 @@ public:
     OctNode( ) : parent_{nullptr}, child_{}, zone_{}, data_{}
     {}
 
-    OctNode( Box zone, OctNode * parent = nullptr ) : parent_{parent}, child_{}, zone_{zone}
+    explicit OctNode( Box zone, OctNode * parent = nullptr ) : parent_{parent}, child_{}, zone_{zone}
     {}
 
     OctNode( const OctNode & ) = default;
 
     OctNode & operator = ( const OctNode & ) = default;
+
+
+    friend class OctTree<Data_t>;
+
 
     bool is_in( const Data_t & d )
     {
@@ -51,11 +63,37 @@ public:
         return zone_.is_in(*d);
     }
 
-#define mid(A)                  \
-    (min[A] + max[A]) / 2       \
+    bool need_children( )
+    {
+        /*if (data_.size() >= 2)
+            return true;
+        return false;*/
+        return data_.size() >= 2 && zone_.diag() > 1;
+    }
+
+    bool insert( Data_t & data, bool hate_children = false )
+    {
+        if (!zone_.is_in(data))
+            return false;
+
+        if (!hate_children && !has_children && need_children())
+            divide();
+
+        if (has_children)
+            for (auto & ch_it : child_)
+                if (ch_it->zone_.is_in(data))
+                    return ch_it->insert(data);
+
+        data_.push_back(&data);
+        return true;
+    }
+
+    #define mid(A)                  \
+        (min[A] + max[A]) / 2       \
 
     void divide( )
     {
+        std::cout << "HELLO, I AM HERE TO DIVIDE\n";
         Box sub_box[8] = {};
 
         Vec min{zone_.get_min()};
@@ -75,40 +113,25 @@ public:
         sub_box[7] = Box{{midx, miny, midz}, {maxx, midy, maxz}};
 
         for (int i = 0; i < 8; ++i)
-            child_ = new OctNode<Data_t> {sub_box[i], this};
+            child_[i] = new OctNode<Data_t> {sub_box[i], this};
 
-        for (auto dat : data_)
+        has_children = true;
+
+        for (Data_it cur = data_.begin(), end = data_.end(); cur != end; ++cur)
         {
-            bool in_child = false;
-
+            bool in_ch{false};
             for (int i = 0; i < 8; ++i)
-                if (child_[i]->is_in(dat))
+                if (child_[i]->insert(**cur, true))
                 {
-                    child_->data_.push_back(dat);
-                    in_child = true;
+                    in_ch = true;
                     break;
                 }
-
-            if (in_child)
-                data_.erase(dat);
+            if (in_ch)
+                std::cout << "doin stuff\n";
+                // data_.erase(cur);
         }
     }
-
-#undef mid
-
-    bool insert( Data_t & data )
-    {
-        if (!zone_.is_in(data))
-            return false;
-
-        for (int i = 0; i < 8; ++i)
-            if (child_[i] != nullptr)
-                if (child_[i]->zone_.is_in(data))
-                    return child_[i].insert(data);
-
-        data_.push_back(&data);
-        return true;
-    }
+    #undef mid
 };
 
 

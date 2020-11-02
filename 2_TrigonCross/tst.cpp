@@ -5,6 +5,9 @@
 #include "g_obj/plane.h"
 #include "g_obj/triangle.h"
 
+#include "octree/octree.h"
+
+
 #include "geom/geom.h"
 #include "gtest/gtest.h"
 
@@ -191,6 +194,28 @@ TEST(triangles, intersection)
     Triangle tr2{Vec{2, 0, 0}, Vec{0, 2, 0}, Vec{0, 0, 0.5}};
 
     EXPECT_EQ(is_intersect3D(tr1, tr2), true);
+}
+
+TEST(octree, constructors)
+{
+    Vec v1{-10, -10, -10};
+    Vec v2{10, 10, 10};
+
+    Box zone{v1, v2};
+
+    vector<Vec> dots;
+    dots.push_back(Vec{-7, -6, -2});
+
+    OctTree<Vec> octree{zone, dots};
+
+    Vec v3{5};
+    octree.insert(v3);
+
+    octree.insert(Vec{-1, -2, 3});
+    octree.insert(Vec{8, -9, -4});
+
+    for (auto & elem : octree.data_)
+        std::cout << elem << std::endl;
 }
 
 int main( int argc, char ** argv )

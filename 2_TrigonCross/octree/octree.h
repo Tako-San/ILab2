@@ -10,18 +10,22 @@ using std::pair;
 template <typename Data_t>
 class OctTree
 {
-private:
+public:
 
     OctNode<Data_t> * root_;
     vector<Data_t> data_;
 
 public:
 
-    OctTree( ) : root_{new OctNode<Data_t>}, data_{}
-    {}
+    OctTree( ) : root_{}, data_{}
+    {
+        root_ = new OctNode<Data_t>;
+    }
 
-    OctTree( const vector<Data_t> data ) : data_{data}
-    {}
+    OctTree( const Box & zone, const vector<Data_t> data = vector<Data_t>{0} ) : root_{},  data_{data}
+    {
+        root_ = new OctNode<Data_t>{zone};
+    }
 
     ~OctTree( )
     {
@@ -32,7 +36,7 @@ public:
     {
         vector<Data_t> out{};
 
-        for (auto elem : data)
+        for (auto & elem : data)
             if (!root_->insert(elem))
                 out.push_back(elem);
 
@@ -44,7 +48,12 @@ public:
 
     bool insert( const Data_t & data )
     {
-        return root_->insert(data);
+        if (!root_->zone_.is_in(data))
+            return false;
+
+        Data_t tmp{data};
+        data_.push_back(tmp);
+        return root_->insert(tmp);
     }
 };
 

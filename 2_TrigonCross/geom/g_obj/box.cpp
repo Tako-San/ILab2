@@ -53,3 +53,8 @@ const Vec & Box::get_max( )
 {
     return max_;
 }
+
+double Box::diag( )
+{
+    return Vec{max_ - min_}.len();
+}

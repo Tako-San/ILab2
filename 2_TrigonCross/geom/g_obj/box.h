@@ -28,6 +28,8 @@ public:
 
     const Vec & get_min( );
     const Vec & get_max( );
+
+    double diag( );
 };
 
 
