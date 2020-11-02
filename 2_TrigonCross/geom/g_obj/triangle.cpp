@@ -36,3 +36,17 @@ std::ostream & operator << ( std::ostream & ost, const Triangle & tr )
     ost << ";";
     return ost;
 }
+
+
+bool operator == ( const Triangle & lhs, const Triangle & rhs)
+{
+    for (int i = 0; i < 3; ++i)
+        if (lhs[i] != rhs[i])
+            return false;
+    return true;
+}
+
+bool operator != ( const Triangle & lhs, const Triangle & rhs)
+{
+    return !(lhs == rhs);
+}

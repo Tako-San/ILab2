@@ -15,7 +15,7 @@ template <typename DataT>
 class OctNode final
 {
 public:
-    
+
     OctNode * parent_;
 
     OctNode * child_[8];
@@ -31,9 +31,9 @@ public:
         if(this == nullptr)
             return;
 
-        std::cout << std::endl << "box: " << zone_ << std::endl;
-        for (auto elem : data_)
-            std::cout << "      >>>  " << *elem << "\n";
+        // std::cout << std::endl << "box: " << zone_ << std::endl;
+        // for (auto elem : data_)
+        //     std::cout << "      >>>  " << *elem << "\n";
 
         for (auto & ch_it : child_)
             if (ch_it != nullptr)
@@ -73,7 +73,7 @@ public:
         return data_.size() >= 2 && zone_.diag() > 1 && !has_children;
     }
 
-    bool insert( DataIt data, bool hate_children = false )
+    bool insert( DataIt data/*MapIt data*/, bool hate_children = false )
     {
         /*std::cout << "HELLO, I AM HERE TO INSERT\n";
         std::cout << "box: " << zone_ << std::endl;
@@ -83,7 +83,7 @@ public:
 
         std::cout << "    new item: " << *data << std::endl;*/
 
-        if (!is_in(*data))
+        if (!is_in(*data/*data->first*/))
             return false;
 
         if (!hate_children && need_children())
@@ -91,11 +91,25 @@ public:
 
         if (has_children)
             for (auto ch : child_)
-                if (ch->is_in(*data))
+                if (ch->is_in(*data/*data->first*/))
                     return ch->insert(data);
 
         data_.push_back(data);
+        // data->second = this;
         return true;
+    }
+
+    OctNode<DataT> * find_box( const DataT & data )
+    {
+        if (!is_in(data))
+            return nullptr;
+
+        if (has_children)
+            for (auto ch : child_)
+                if (ch->is_in(data))
+                    return find_box(data);
+
+        return this;
     }
 
 private:
@@ -130,7 +144,7 @@ private:
 
     void divide( )
     {
-        std::cout << "\nHELLO, I AM HERE TO DIVIDE\n\n";
+        // std::cout << "\nHELLO, I AM HERE TO DIVIDE\n\n";
 
         div_box();
 

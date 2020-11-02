@@ -1,9 +1,11 @@
 #ifndef ILAB2_OCTREE_H
 #define ILAB2_OCTREE_H
 
+#include <map>
 #include <list>
 #include "octnode.h"
 
+using std::map;
 using std::list;
 
 template <typename DataT>
@@ -13,6 +15,7 @@ public:
 
     OctNode<DataT> * root_;
     list<DataT> data_;
+    // map<DataT, OctNode *> data_;
 
 public:
 
@@ -21,10 +24,23 @@ public:
         root_ = new OctNode<DataT>;
     }
 
-    OctTree( const Box & zone, const list<DataT> & data ) : root_{},  data_{}
+    OctTree( const Box & zone ) : data_{}
+    {
+        root_ = new OctNode<DataT>{zone};
+    }
+
+    OctTree( const Box & zone, const list<DataT> & data ) : data_{}
     {
         root_ = new OctNode<DataT>{zone};
         
+        for (DataT dat : data)
+            insert(dat);
+    }
+
+    OctTree( const Box & zone, const vector<DataT> & data ) : data_{}
+    {
+        root_ = new OctNode<DataT>{zone};
+
         for (DataT dat : data)
             insert(dat);
     }
@@ -41,6 +57,8 @@ public:
 
         data_.push_front(data);
         return root_->insert(data_.begin());
+        // data_[data] = nullptr;
+        // return root_->insert(data_.find(data));
     }
 
     bool fill( const list<DataT> & data )
@@ -55,6 +73,11 @@ public:
             std::cout << "\nout:" << out << "\n";
 
         return !out.empty();
+    }
+
+    OctNode<DataT> * find_box( const DataT & data )
+    {
+        return root_->find_box(data);
     }
 };
 

@@ -28,5 +28,7 @@ public:
 };
 
 std::ostream & operator << ( std::ostream & ost, const Triangle & tr );
+bool operator == ( const Triangle & lhs, const Triangle & rhs);
+bool operator != ( const Triangle & lhs, const Triangle & rhs);
 
 #endif //ILAB2_TRIANGLE_H
