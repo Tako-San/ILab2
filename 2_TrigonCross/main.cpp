@@ -10,8 +10,6 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-using std::max;
-
 double find_min( const Triangle & tr, uint idx )
 {
     double res = tr[0][idx];
@@ -26,6 +24,38 @@ double find_max( const Triangle & tr, uint idx )
     for (int i = 1; i < 3; ++i)
         res = tr[i][idx] > res ? tr[i][idx] : res;
     return res;
+}
+
+bool intersect_subtree( OctNode<Triangle> & node, Triangle obj)
+{
+    for (auto mate : node.data_)
+        if (is_intersect3D(obj, mate->first))
+            return true;
+
+    if (node.has_children)
+        for (auto ch : node.child_)
+            if (intersect_subtree(*ch, obj))
+                return true;
+
+    return false;
+}
+
+
+bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::iterator pair_it )
+{
+    OctNode<Triangle> & node = *(pair_it->second);
+    Triangle & obj = pair_it->first;
+
+    for (auto mate : node.data_)
+        if (mate != pair_it && is_intersect3D(obj, mate->first))
+            return true;
+
+    if (node.has_children)
+        for (auto ch : node.child_)
+            if (intersect_subtree(*ch, obj))
+                return true;
+
+    return false;
 }
 
 int main( )
@@ -71,21 +101,11 @@ int main( )
 
     int idx = 0;
     auto & lst = scene.data_;
-    for (auto cur = lst.cbegin(), end = lst.cend(); cur != end; ++cur, ++idx)
+    for (auto cur = lst.begin(), end = lst.end(); cur != end; ++cur, ++idx)
     {
-        auto & mates = cur->second->data_;
-
-        /*for (ulong i = 0; i < mates.size(); ++i)
-        {
-            if (is_intersect3D(cur->first, mates[i]->first))
-                ++is_intr[idx];
-        }*/
-
-    // TODO: рассмотреть случай когда треугольник лежит не в листе, а в промежуточном узле
-
-        //for (auto mate = mates.cbegin(), mend = mates.cend(); mate != mend; ++mate)
-        for (auto mate : cur->second->data_)
-            if ( mate != cur && is_intersect3D(cur->first, mate->first))
+        auto & node = *(cur->second);
+        for (auto mate : node.data_)
+            if (intersect_octree(cur))
                 ++is_intr[idx];
     }
 
