@@ -1,9 +1,10 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <initializer_list>
+#include <vector>
+#include <cmath>
 
-using std::initializer_list;
+using std::vector;
 
 template <typename DataT>
 class Matrix final
@@ -22,7 +23,7 @@ public:
         memory_allocation(rows_, cols_);
     }
 
-    Matrix( int rows, int cols, const initializer_list<DataT> & dat ) : rows_{rows}, cols_{cols}
+    Matrix( int rows, int cols, const vector<DataT> & dat ) : rows_{rows}, cols_{cols}
     {
         memory_allocation(rows_, cols_);
 
@@ -58,16 +59,54 @@ public:
     ~Matrix( )
     {
         if (!is_inv)
-            memory_free();
+            kill();
     }
-    
+
+    static Matrix eye( int n )
+    {
+        return Matrix<DataT> {n, n};
+    }
+
+    static Matrix eye( int n, const vector<DataT> & dat )
+    {
+        return Matrix<DataT> {n, n, dat};
+    }
+
+    double det( )
+    {
+        if ((cols_ != rows_) || is_invalid())
+            return NAN;
+
+        // TODO: write
+    }
+
+    void transpose( )
+    {
+        // TODO: write
+    }
+
+    int col( ) const
+    {
+        return cols_;
+    }
+
+    int row( ) const
+    {
+        return rows_;
+    }
+
+    DataT * operator [] ( int idx )
+    {
+        return is_inv ? nullptr : data_[idx];
+    }
+
     Matrix<DataT> & operator += ( const Matrix<DataT> & m )
     {
         if (is_inv)
             return *this;
         else if (!sum_suitable(m) || m.is_inv)
         {
-            memory_free();
+            kill();
             return *this;
         }
 
@@ -84,7 +123,7 @@ public:
             return *this;
         else if (!sum_suitable(m) || m.is_inv)
         {
-            memory_free();
+            kill();
             return *this;
         }
 
@@ -107,18 +146,27 @@ public:
         return *this;
     }
 
-    DataT * operator [] ( int idx )
+    Matrix operator - ( ) const
     {
-        return is_inv ? nullptr : data_[idx];
+        vector<DataT> data{};
+
+        for (int i = 0; i < rows_; ++i)
+            for (int j = 0; j < cols_; ++j)
+                data.push_back(-data_[i][j]);
+
+        return Matrix<DataT>{rows_, cols_, data};
     }
 
     bool sum_suitable( const Matrix<DataT> & matr ) const
     {
         return cols_ == matr.cols_ && rows_ == matr.rows_;
     }
-    
-    bool is_invalid() const
+
+    bool is_invalid( )
     {
+        if ((!is_inv) & ((cols_ < 0) || (rows_ < 0)))
+            kill();
+
         return is_inv;
     }
 
@@ -127,13 +175,20 @@ private:
 
     void memory_allocation( int rows, int cols )
     {
+        if ((rows < 0) || (cols < 0))
+        {
+            cols_ = rows_ = -1;
+            is_inv = true;
+            return;
+        }
+
         data_ = new DataT * [rows];
 
         for (int i = 0; i < rows; ++i)
             data_[i] = new DataT [cols];
     }
-    
-    void memory_free( )
+
+    void kill( )
     {
         for (int i = 0; i < rows_; ++i)
             delete [] data_[i];
@@ -146,7 +201,7 @@ private:
     
     void memory_resize( int rows, int cols )
     {
-        memory_free();
+        kill();
 
         rows_ = rows;
         cols_ = cols;
@@ -176,6 +231,12 @@ template<typename DataT>
 Matrix<DataT> operator * ( double mul, const Matrix<DataT> & matr )
 {
     return (Matrix<DataT>{matr} *= mul);
+}
+
+template<typename DataT>
+Matrix<DataT> transpose( const Matrix<DataT> & matr )
+{
+    return (Matrix<DataT>{matr}.transpose());
 }
 
 #endif //MATRIX_H
