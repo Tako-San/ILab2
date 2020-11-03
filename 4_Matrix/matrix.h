@@ -29,7 +29,7 @@ public:
         int max = rows_ * cols_;
         int idx = 0;
 
-        for (auto cur = dat.begin(), end = dat.end(); cur != end & idx < max; ++cur, ++idx )
+        for (auto cur = dat.begin(), end = dat.end(); (cur != end) & (idx < max); ++cur, ++idx )
         {
             int row = idx / cols_,
                 col = idx % cols_;
@@ -39,25 +39,37 @@ public:
 
     Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{orig.cols_}
     {
+        if (orig.is_inv)
+        {
+            is_inv = true;
+            return;
+        }
+
         memory_allocation(rows_, cols_);
 
         for (int i = 0, max = cols_ * rows_; i < max; ++i)
         {
-            int col = i / cols_,
-                row = i % cols_;
+            int row = i / cols_,
+                col = i % cols_;
             data_[row][col] = orig.data_[row][col];
         }
     }
 
     ~Matrix( )
     {
-        memory_free();
+        if (!is_inv)
+            memory_free();
     }
     
     Matrix<DataT> & operator += ( const Matrix<DataT> & m )
     {
-        if (!size_suitable(m))
+        if (is_inv)
+            return *this;
+        else if (!sum_suitable(m) || m.is_inv)
+        {
             memory_free();
+            return *this;
+        }
 
         for (int i = 0; i < rows_; ++i)
             for (int j = 0; j < cols_; ++j)
@@ -68,8 +80,13 @@ public:
 
     Matrix<DataT> & operator -= ( const Matrix<DataT> & m )
     {
-        if (!size_suitable(m))
+        if (is_inv)
+            return *this;
+        else if (!sum_suitable(m) || m.is_inv)
+        {
             memory_free();
+            return *this;
+        }
 
         for (int i = 0; i < rows_; ++i)
             for (int j = 0; j < cols_; ++j)
@@ -80,6 +97,9 @@ public:
 
     Matrix<DataT> & operator *= ( double mul )
     {
+        if (is_inv)
+            return *this;
+
         for (int i = 0; i < rows_; ++i)
             for (int j = 0; j < cols_; ++j)
                 data_[i][j] *= mul;
@@ -89,12 +109,17 @@ public:
 
     DataT * operator [] ( int idx )
     {
-        return data_[idx];
+        return is_inv ? nullptr : data_[idx];
     }
 
-    bool size_suitable( const Matrix<DataT> & matr ) const
+    bool sum_suitable( const Matrix<DataT> & matr ) const
     {
-        return cols_ == matr.cols_ && rows_ == matr.rows_ && !is_inv && !matr.is_inv;
+        return cols_ == matr.cols_ && rows_ == matr.rows_;
+    }
+    
+    bool is_invalid() const
+    {
+        return is_inv;
     }
 
 
@@ -121,10 +146,10 @@ private:
     
     void memory_resize( int rows, int cols )
     {
+        memory_free();
+
         rows_ = rows;
         cols_ = cols;
-        
-        memory_free();
         memory_allocation(rows_, cols_);
     }
 };
