@@ -58,6 +58,40 @@ TEST(op, plus_minus)
     EXPECT_EQ((m3 + m4).is_invalid(), true);
 }
 
+TEST(det, little)
+{
+    Matrix<double> m1{4, 4, {3, 0, 0, 0,
+                             0, 3, 0, 0,
+                             0, 0, 3, 0,
+                             0, 0, 0, 3}};
+    EXPECT_DOUBLE_EQ(m1.det(), 81);
+
+    Matrix<double> m2{4, 4, {0, 3, 0, 0,
+                             3, 0, 0, 0,
+                             0, 0, 3, 0,
+                             0, 0, 0, 3}};
+    EXPECT_DOUBLE_EQ(m2.det(), 81);
+
+    Matrix<double> m3{4, 4, {1, 2, 3, 4,
+                             2, 0, 1, 3,
+                             4, 1, 1, 2,
+                             0, 1, 3, 1}};
+    EXPECT_DOUBLE_EQ(m3.det(), -39);
+
+    Matrix<double> m4{4, 4, {1, 2, 3, 4,
+                             2, 0, 1, 3,
+                             4, 1, 1, 2,
+                             0, 0, 0, 0}};
+    EXPECT_DOUBLE_EQ(m4.det(), 0);
+
+    Matrix<double> m5{4, 4, { 3, -3, -5,  8,
+                             -3,  2,  4, -6,
+                              2, -5, -7,  5,
+                             -4,  3,  5, -6}};
+
+    EXPECT_DOUBLE_EQ(m5.det(), 18);
+}
+
 int main( int argc, char ** argv )
 {
     testing::InitGoogleTest(&argc, argv);

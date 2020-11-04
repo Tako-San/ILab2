@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cmath>
+#include <cstdint>
 
 using std::vector;
 
@@ -77,12 +78,47 @@ public:
         if ((cols_ != rows_) || is_invalid())
             return NAN;
 
-        // TODO: write
+        for (int i = 0; i < cols_; ++i)
+        {
+            bool zero_col = true;
+
+            if (data_[i][i] == 0)
+            {
+                for (int j = i; j < rows_; ++j)
+                    if (data_[j][i] != 0)
+                    {
+                        swap_lines(j, i);
+                        zero_col = false;
+                        break;
+                    }
+            }
+            else
+                zero_col = false;
+
+            if (zero_col)
+                return 0;
+
+            for (int k = i + 1; k < rows_; ++k)
+            {
+                if (data_[k][i] == 0)
+                    continue;
+
+                double mul = data_[k][i] / data_[i][i];
+                add_line(k, i, -mul);
+            }
+        }
+
+        double res = 1;
+        for (int i = 0; i < cols_; ++i)
+            res *= data_[i][i];
+
+        return res;
     }
 
-    void transpose( )
+    bool transpose( )
     {
         // TODO: write
+        return false;
     }
 
     int col( ) const
@@ -95,7 +131,7 @@ public:
         return rows_;
     }
 
-    DataT * operator [] ( int idx )
+    DataT * operator [] ( uint idx )
     {
         return is_inv ? nullptr : data_[idx];
     }
@@ -156,6 +192,51 @@ public:
 
         return Matrix<DataT>{rows_, cols_, data};
     }
+    
+    bool swap_lines( uint l1, uint l2 )
+    {
+        if ((l1 > cols_) || (l2 > cols_) || is_invalid())
+            return false;
+
+        DataT * tmp = data_[l1];
+        data_[l1] = data_[l2];
+        data_[l2] = tmp;
+
+        return true;
+    }
+
+    bool add_line( uint to, uint from, double mul = 1 )
+    {
+        if ((to > cols_) || (from > cols_) || is_invalid())
+            return false;
+
+        for (int i = 0; i < cols_; ++i)
+            data_[to][i] += mul * data_[from][i];
+
+        return true;
+    }
+
+    bool sub_line( uint minuend, uint subtrahend )
+    {
+        if ((minuend > cols_) || (subtrahend > cols_) || is_invalid())
+            return false;
+
+        for (int i = 0; i < cols_; ++i)
+            data_[minuend][i] -= data_[subtrahend][i];
+
+        return true;
+    }
+
+    bool mul_line( uint l, int mul )
+    {
+        if ((l > cols_) || is_invalid())
+            return false;
+
+        for (int i = 0; i < cols_; ++i)
+            data_[l][i] *= mul;
+
+        return true;
+    }
 
     bool sum_suitable( const Matrix<DataT> & matr ) const
     {
@@ -169,7 +250,6 @@ public:
 
         return is_inv;
     }
-
 
 private:
 
@@ -208,6 +288,24 @@ private:
         memory_allocation(rows_, cols_);
     }
 };
+
+template <typename DataT>
+std::ostream & operator << ( std::ostream & ost, Matrix<DataT> & matr )
+{
+    uint cols = matr.col(),
+         rows = matr.row();
+
+    for (uint i = 0; i < rows; ++i)
+    {
+        ost << "|";
+        for (uint j = 0; j < cols; ++j)
+            ost << " " << (matr[i][j]) << " ";
+        ost << "|\n";
+    }
+
+    return ost;
+}
+
 
 template<typename DataT>
 Matrix<DataT> operator + ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
