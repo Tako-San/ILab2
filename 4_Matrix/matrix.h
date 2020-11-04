@@ -41,9 +41,10 @@ public:
 
     Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{orig.cols_}
     {
-        if (orig.is_inv)
+        if (orig.is_invalid())
         {
             is_inv = true;
+            rows_ = cols_ = -1;
             return;
         }
 
@@ -55,12 +56,12 @@ public:
                 col = i % cols_;
             data_[row][col] = orig.data_[row][col];
         }
+
     }
 
     ~Matrix( )
     {
-        if (!is_invalid())
-            kill();
+        kill();
     }
 
     static Matrix eye( int n )
@@ -84,8 +85,9 @@ public:
         {
             bool zero_col = true;
 
-            if (data_[i][i] == 0)
-            {
+            if (data_[i][i] != 0)
+                zero_col = false;
+            else
                 for (int j = i; j < rows_; ++j)
                     if (data_[j][i] != 0)
                     {
@@ -94,9 +96,6 @@ public:
                         sign = -sign;
                         break;
                     }
-            }
-            else
-                zero_col = false;
 
             if (zero_col)
                 return 0;
@@ -124,54 +123,113 @@ public:
         return false;
     }
 
-    int col( ) const
+    int cols( ) const
     {
         return cols_;
     }
 
-    int row( ) const
+    int rows( ) const
     {
         return rows_;
     }
 
-    DataT * operator [] ( uint idx )
+    DataT * operator [] ( int idx )
     {
-        return is_invalid() ? nullptr : data_[idx];
+        DataT * res = is_invalid() ? nullptr : data_[idx];
+
+        return res;
     }
 
-    Matrix<DataT> & operator += ( const Matrix<DataT> & m )
+    Matrix<DataT> & operator = ( const Matrix<DataT> & orig )
     {
-        if (is_invalid())
+        if ((&orig == this) || is_invalid())
             return *this;
 
-        else if (!sum_suitable(m) || m.is_inv)
+        if (orig.is_invalid())
         {
-            kill();
+            is_inv = true;
             return *this;
         }
 
-        for (int i = 0; i < rows_; ++i)
-            for (int j = 0; j < cols_; ++j)
-                data_[i][j] += m.data_[i][j];
+        if (rows_ != orig.rows_ || cols_ != orig.cols())
+        {
+            memory_resize(rows_, cols_);
+
+            rows_ = orig.rows_;
+            cols_ = orig.cols_;
+        }
+
+        for (int i = 0, max = cols_ * rows_; i < max; ++i)
+        {
+            int row = i / cols_,
+                    col = i % cols_;
+            data_[row][col] = orig.data_[row][col];
+        }
 
         return *this;
     }
 
-    Matrix<DataT> & operator -= ( const Matrix<DataT> & m )
+    Matrix<DataT> & operator += ( const Matrix<DataT> & matr )
     {
         if (is_invalid())
             return *this;
 
-        else if (!sum_suitable(m) || m.is_inv)
+        else if (!sum_suitable(matr) || matr.is_invalid())
         {
-            kill();
+            is_inv = true;
             return *this;
         }
 
         for (int i = 0; i < rows_; ++i)
             for (int j = 0; j < cols_; ++j)
-                data_[i][j] -= m.data_[i][j];
+                data_[i][j] += matr.data_[i][j];
 
+        return *this;
+    }
+
+    Matrix<DataT> & operator -= ( const Matrix<DataT> & matr )
+    {
+        if (is_invalid())
+            return *this;
+
+        else if (!sum_suitable(matr) || matr.is_invalid())
+        {
+            is_inv = true;
+            return *this;
+        }
+
+        for (int i = 0; i < rows_; ++i)
+            for (int j = 0; j < cols_; ++j)
+                data_[i][j] -= matr.data_[i][j];
+
+        return *this;
+    }
+
+    Matrix<DataT> & operator %= ( const Matrix<DataT> & matr )
+    {
+        if (is_invalid())
+            return *this;
+
+        if ((cols_ != matr.rows_) || matr.is_invalid())
+        {
+            is_inv = true;
+            return *this;
+        }
+
+        Matrix<DataT> tmp{rows_, matr.cols_};
+
+        if (tmp.is_invalid())
+        {
+            is_inv = true;
+            return *this;
+        }
+
+        for (int i = 0; i < tmp.rows_; ++i)
+            for (int j = 0; j < tmp.cols_; ++j)
+                for (int k = 0; k < cols_; ++k)
+                    tmp[i][j] += data_[i][k] * matr.data_[k][j];
+
+        *this = tmp;
         return *this;
     }
 
@@ -201,7 +259,7 @@ public:
         return Matrix<DataT>{rows_, cols_, data};
     }
     
-    bool swap_lines( uint l1, uint l2 )
+    bool swap_lines( int l1, int l2 )
     {
         if ((l1 > cols_) || (l2 > cols_) || is_invalid())
             return false;
@@ -213,7 +271,7 @@ public:
         return true;
     }
 
-    bool add_line( uint to, uint from, double mul = 1 )
+    bool add_line( int to, int from, double mul = 1 )
     {
         if ((to > cols_) || (from > cols_) || is_invalid())
             return false;
@@ -224,7 +282,7 @@ public:
         return true;
     }
 
-    bool mul_line( uint l, int mul )
+    bool mul_line( int l, int mul )
     {
         if ((l > cols_) || is_invalid())
             return false;
@@ -237,13 +295,22 @@ public:
 
     bool sum_suitable( const Matrix<DataT> & matr ) const
     {
-        return cols_ == matr.cols_ && rows_ == matr.rows_;
+        return (cols_ == matr.cols_) && (rows_ == matr.rows_) &&
+               !is_invalid() && !matr.is_invalid();
     }
 
     bool is_invalid( )
     {
-        if ((!is_inv) & ((cols_ < 0) || (rows_ < 0)))
-            kill();
+        if ((cols_ < 0) || (rows_ < 0))
+            is_inv = true;
+
+        return is_inv;
+    }
+
+    bool is_invalid( ) const
+    {
+        if ((cols_ < 0) || (rows_ < 0))
+            return true;
 
         return is_inv;
     }
@@ -267,6 +334,9 @@ private:
 
     void kill( )
     {
+        if (cols_ < 0 || rows_ < 0)
+            return;
+
         for (int i = 0; i < rows_; ++i)
             delete [] data_[i];
 
@@ -280,6 +350,7 @@ private:
     {
         kill();
 
+        is_inv = false;
         rows_ = rows;
         cols_ = cols;
         memory_allocation(rows_, cols_);
@@ -289,13 +360,16 @@ private:
 template <typename DataT>
 std::ostream & operator << ( std::ostream & ost, Matrix<DataT> & matr )
 {
-    uint cols = matr.col(),
-         rows = matr.row();
+    if (matr.is_invalid())
+        ost << "INVALID MATRIX";
 
-    for (uint i = 0; i < rows; ++i)
+    int cols = matr.cols(),
+         rows = matr.rows();
+
+    for (int i = 0; i < rows; ++i)
     {
         ost << "|";
-        for (uint j = 0; j < cols; ++j)
+        for (int j = 0; j < cols; ++j)
             ost << " " << (matr[i][j]) << " ";
         ost << "|\n";
     }
@@ -319,7 +393,7 @@ Matrix<DataT> operator - ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs 
 template<typename DataT>
 Matrix<DataT> operator % ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
-    // TODO: write
+    return (Matrix<DataT>{lhs} %= rhs);
 }
 
 template<typename DataT>

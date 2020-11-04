@@ -70,7 +70,7 @@ TEST(det, little)
                              3, 0, 0, 0,
                              0, 0, 3, 0,
                              0, 0, 0, 3}};
-    EXPECT_DOUBLE_EQ(m2.det(), 81);
+    EXPECT_DOUBLE_EQ(m2.det(), -81);
 
     Matrix<double> m3{4, 4, {1, 2, 3, 4,
                              2, 0, 1, 3,
@@ -90,6 +90,20 @@ TEST(det, little)
                              -4,  3,  5, -6}};
 
     EXPECT_DOUBLE_EQ(m5.det(), 18);
+}
+
+TEST(op, matr_mul)
+{
+    Matrix<double> m1{1, 4, {1, 1, 1, 1}};
+    Matrix<double> m2{4, 2, {1, 1,
+                             1, 1,
+                             1, 1,
+                             1, 1}};
+
+    Matrix<double> m3 = m1 % m2;
+
+    EXPECT_DOUBLE_EQ(m3[0][0], 4);
+    EXPECT_DOUBLE_EQ(m3[0][1], 4);
 }
 
 int main( int argc, char ** argv )
