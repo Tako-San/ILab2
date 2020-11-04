@@ -59,7 +59,7 @@ public:
 
     ~Matrix( )
     {
-        if (!is_inv)
+        if (!is_invalid())
             kill();
     }
 
@@ -78,6 +78,8 @@ public:
         if ((cols_ != rows_) || is_invalid())
             return NAN;
 
+        double sign = 1;
+
         for (int i = 0; i < cols_; ++i)
         {
             bool zero_col = true;
@@ -89,6 +91,7 @@ public:
                     {
                         swap_lines(j, i);
                         zero_col = false;
+                        sign = -sign;
                         break;
                     }
             }
@@ -108,7 +111,7 @@ public:
             }
         }
 
-        double res = 1;
+        double res = sign;
         for (int i = 0; i < cols_; ++i)
             res *= data_[i][i];
 
@@ -133,13 +136,14 @@ public:
 
     DataT * operator [] ( uint idx )
     {
-        return is_inv ? nullptr : data_[idx];
+        return is_invalid() ? nullptr : data_[idx];
     }
 
     Matrix<DataT> & operator += ( const Matrix<DataT> & m )
     {
-        if (is_inv)
+        if (is_invalid())
             return *this;
+
         else if (!sum_suitable(m) || m.is_inv)
         {
             kill();
@@ -155,8 +159,9 @@ public:
 
     Matrix<DataT> & operator -= ( const Matrix<DataT> & m )
     {
-        if (is_inv)
+        if (is_invalid())
             return *this;
+
         else if (!sum_suitable(m) || m.is_inv)
         {
             kill();
@@ -172,7 +177,7 @@ public:
 
     Matrix<DataT> & operator *= ( double mul )
     {
-        if (is_inv)
+        if (is_invalid())
             return *this;
 
         for (int i = 0; i < rows_; ++i)
@@ -184,6 +189,9 @@ public:
 
     Matrix operator - ( ) const
     {
+        if (is_invalid())
+            return *this;
+
         vector<DataT> data{};
 
         for (int i = 0; i < rows_; ++i)
@@ -212,17 +220,6 @@ public:
 
         for (int i = 0; i < cols_; ++i)
             data_[to][i] += mul * data_[from][i];
-
-        return true;
-    }
-
-    bool sub_line( uint minuend, uint subtrahend )
-    {
-        if ((minuend > cols_) || (subtrahend > cols_) || is_invalid())
-            return false;
-
-        for (int i = 0; i < cols_; ++i)
-            data_[minuend][i] -= data_[subtrahend][i];
 
         return true;
     }
@@ -317,6 +314,12 @@ template<typename DataT>
 Matrix<DataT> operator - ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
     return (Matrix<DataT>{lhs} -= rhs);
+}
+
+template<typename DataT>
+Matrix<DataT> operator % ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
+{
+    // TODO: write
 }
 
 template<typename DataT>
