@@ -12,7 +12,7 @@ TEST(ctor, init_lst)
     Matrix<int> m{2, 3, {1, 2, 3, 4, 5, 6}};
 
     for (int i = 0; i < 6; ++i)
-        EXPECT_EQ(m[i / 3][i % 3], i + 1);
+        EXPECT_EQ(m.elem(i / 3, i % 3), i + 1);
 }
 
 TEST(ctor, copy)
@@ -21,7 +21,7 @@ TEST(ctor, copy)
     Matrix<int> m2{m1};
 
     for (int i = 0; i < 6; ++i)
-        EXPECT_EQ(m2[i / 3][i % 3], i + 1);
+        EXPECT_EQ(m2.elem(i / 3, i % 3), i + 1);
 }
 
 TEST(op, mul)
@@ -29,15 +29,15 @@ TEST(op, mul)
     Matrix<int> m1{1, 4, {0, 1, 2, 3}};
     m1 *= 2;
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m1[i / 4][i % 4], 2 * i);
+        EXPECT_EQ(m1.elem(i / 4, i % 4), 2 * i);
 
     Matrix<int> m2{m1 * 2};
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m2[i / 4][i % 4], 4 * i);
+        EXPECT_EQ(m2.elem(i / 4, i % 4), 4 * i);
 
     Matrix<int> m3{2 * m1};
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m3[i / 4][i % 4], 4 * i);
+        EXPECT_EQ(m3.elem(i / 4, i % 4), 4 * i);
 }
 
 TEST(op, plus_minus)
@@ -46,16 +46,11 @@ TEST(op, plus_minus)
     Matrix<int> m2{m1};
     Matrix<int> sum = m1 + m2;
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(sum[i / 2][i % 2], 2 * i);
+        EXPECT_EQ(sum.elem(i / 2, i % 2), 2 * i);
 
     Matrix<int> diff = m1 - m2;
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(diff[i / 2][i % 2], 0);
-
-    Matrix<int> m3{1, 3};
-    Matrix<int> m4{2, 3};
-
-    EXPECT_EQ((m3 + m4).is_invalid(), true);
+        EXPECT_EQ(diff.elem(i / 2, i % 2), 0);
 }
 
 TEST(det, little)
@@ -102,8 +97,31 @@ TEST(op, matr_mul)
 
     Matrix<double> m3 = m1 % m2;
 
-    EXPECT_DOUBLE_EQ(m3[0][0], 4);
-    EXPECT_DOUBLE_EQ(m3[0][1], 4);
+    EXPECT_DOUBLE_EQ(m3.elem(0, 0), 4);
+    EXPECT_DOUBLE_EQ(m3.elem(0, 1), 4);
+}
+
+TEST(constructor, copy)
+{
+    Matrix<int> m1{2, 2, {0, 1, 2, 3}};
+    Matrix<int> m2{m1};
+
+    Matrix<int> m3 = m1 + m2;
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m3.elem(i / 2, i % 2), 2 * i);
+}
+
+TEST(elem_ops, add)
+{
+    Matrix<int> m1{2, 2, {1, 1, 1, 1}};
+
+    m1.add_line(1, 0, 3);
+
+    EXPECT_EQ(m1.elem(0, 0), 1);
+    EXPECT_EQ(m1.elem(0, 1), 1);
+    EXPECT_EQ(m1.elem(1, 0), 4);
+    EXPECT_EQ(m1.elem(1, 1), 4);
 }
 
 int main( int argc, char ** argv )

@@ -11,7 +11,7 @@ using std::vector;
 
 int main( )
 {
-    int size = 0;
+    uint size = 0;
     cin >> size;
 
     vector<double> raw{};
