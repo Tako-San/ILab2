@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <cassert>
 #include <cmath>
 
 using std::vector;
@@ -10,6 +11,31 @@ using std::vector;
 template <typename DataT>
 class Matrix final
 {
+    class RowT final
+    {
+    private:
+        DataT * row_;
+        uint len_;
+
+        RowT( DataT * row, uint len ) : row_{row}, len_{len}
+        {}
+
+        friend class Matrix<DataT>;
+
+    public:
+        DataT & operator [] ( uint col )
+        {
+            assert(col < len_);
+            return row_[col];
+        }
+
+        const DataT & operator [] ( uint col ) const
+        {
+            assert(col < len_);
+            return row_[col];
+        }
+    };
+
 private:
     DataT ** data_;
 
@@ -60,7 +86,7 @@ public:
             for (uint j = 0; j < n; ++j)
                 data.push_back(j == i ? 1 : 0);
 
-        return Matrix<DataT> {n, n, data};
+        return Matrix<DataT> {n, n, std::move(data)};
     }
 
     long double det( )
@@ -106,10 +132,23 @@ public:
         return res;
     }
 
-    bool transpose( )
+    Matrix<DataT> & transpose( )
     {
-        // TODO: write
-        return false;
+        vector<DataT> data{};
+
+        data.resize(rows_ * cols_);
+
+        for (uint i = 0; i < cols_; ++i)
+            for (uint j = 0; j < rows_; ++j)
+                data[i * rows_ + j] = data_[j][i];
+
+        if (cols_ != rows_)
+            resize(cols_, rows_);
+
+        for (uint i = 0, end = rows_ * cols_; i < end; ++i)
+            data_[i / cols_][i % cols_] = data[i];
+
+        return *this;
     }
 
     uint cols( ) const
@@ -120,6 +159,12 @@ public:
     uint rows( ) const
     {
         return rows_;
+    }
+
+    RowT operator [] ( uint row ) const
+    {
+        assert(row < rows_);
+        return RowT{data_[row], cols_};
     }
 
     DataT & elem( uint row, uint col )
@@ -204,9 +249,9 @@ public:
             for (uint j = 0; j < cols_; ++j)
                 data.push_back(-data_[i][j]);
 
-        return Matrix<DataT>{rows_, cols_, data};
+        return Matrix<DataT>{rows_, cols_, std::move(data)};
     }
-    
+
     bool swap_lines( uint l1, uint l2 )
     {
         assert(l1 < cols_);
@@ -247,20 +292,18 @@ public:
 
 private:
 
-    DataT * operator [] ( uint idx )
-    {
-        return data_[idx];
-    }
-
     void memory_allocation( uint rows, uint cols )
     {
-        if (rows * cols == 0)
+        rows_ = rows;
+        cols_ = cols;
+
+        if (rows_ * cols_ == 0)
             return;
 
-        data_ = new DataT * [rows];
+        data_ = new DataT * [rows_]{};
 
-        for (uint i = 0; i < rows; ++i)
-            data_[i] = new DataT [cols];
+        for (uint i = 0; i < rows_; ++i)
+            data_[i] = new DataT [cols_]{};
     }
 
     void kill( )
@@ -272,21 +315,21 @@ private:
             delete [] data_[i];
 
         delete [] data_;
+
+        data_ = nullptr;
+        cols_ = rows_ = 0;
     }
-    
+
     void resize( uint rows, uint cols )
     {
+        assert( rows * cols != 0 );
         kill();
-
-        rows_ = rows;
-        cols_ = cols;
-
-        memory_allocation(rows_, cols_);
+        memory_allocation(rows, cols);
     }
 };
 
 template <typename DataT>
-std::ostream & operator << ( std::ostream & ost, Matrix<DataT> & matr )
+std::ostream & operator << ( std::ostream & ost, const Matrix<DataT> & matr )
 {
     uint cols = matr.cols(),
          rows = matr.rows();
@@ -295,13 +338,12 @@ std::ostream & operator << ( std::ostream & ost, Matrix<DataT> & matr )
     {
         ost << "|";
         for (uint j = 0; j < cols; ++j)
-            ost << " " << (matr.elem(i, j)) << " ";
+            ost << " " << matr[i][j] << " ";
         ost << "|\n";
     }
 
     return ost;
 }
-
 
 template<typename DataT>
 Matrix<DataT> operator + ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
