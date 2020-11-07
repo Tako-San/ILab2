@@ -43,14 +43,14 @@ private:
 
 public:
 
-    Matrix( uint rows, uint cols ) : rows_{rows}, cols_{cols}
+    Matrix( uint rows, uint cols )
     {
-        memory_allocation(rows_, cols_);
+        memory_allocation(rows, cols);
     }
 
-    Matrix( uint rows, uint cols, const vector<DataT> & dat ) : rows_{rows}, cols_{cols}
+    Matrix( uint rows, uint cols, const vector<DataT> & dat )
     {
-        memory_allocation(rows_, cols_);
+        memory_allocation(rows, cols);
 
         uint max_num = rows_ * cols_;
         uint vec_len = dat.size();
@@ -65,9 +65,9 @@ public:
         }
     }
 
-    Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{orig.cols_}
+    Matrix( const Matrix<DataT> & orig )
     {
-        memory_allocation(rows_, cols_);
+        memory_allocation(orig.rows_, orig.cols_);
 
         for (uint i = 0; i < rows_; ++i)
             for (uint j = 0; j < cols_; ++j)
@@ -86,27 +86,28 @@ public:
             for (uint j = 0; j < n; ++j)
                 data.push_back(j == i ? 1 : 0);
 
-        return Matrix<DataT> {n, n, std::move(data)};
+        return Matrix<DataT> {n, n, data};
     }
 
-    long double det( )
+    long double det( ) const
     {
         if ((cols_ != rows_))
             return NAN;
 
         long double sign = 1;
 
+        Matrix<DataT> tmp{*this};
         for (uint i = 0; i < cols_; ++i)
         {
             bool zero_col = true;
 
-            if (data_[i][i] != 0)
+            if (tmp.data_[i][i] != 0)
                 zero_col = false;
             else
                 for (uint j = i + 1; j < rows_; ++j)
-                    if (data_[j][i] != 0)
+                    if (tmp.data_[j][i] != 0)
                     {
-                        swap_lines(j, i);
+                        tmp.swap_lines(j, i);
                         zero_col = false;
                         sign = -sign;
                         break;
@@ -117,17 +118,18 @@ public:
 
             for (uint k = i + 1; k < rows_; ++k)
             {
-                if (data_[k][i] == 0)
+                if (tmp.data_[k][i] == 0)
                     continue;
 
-                long double mul = data_[k][i] / data_[i][i];
-                add_line(k, i, -mul);
+                long double mul = static_cast<long double>(tmp.data_[k][i])
+                                / static_cast<long double>(tmp.data_[i][i]);
+                tmp.add_line(k, i, -mul);
             }
         }
 
         long double res = sign;
         for (uint i = 0; i < cols_; ++i)
-            res *= data_[i][i];
+            res *= static_cast<long double>(tmp.data_[i][i]);
 
         return res;
     }
@@ -249,7 +251,7 @@ public:
             for (uint j = 0; j < cols_; ++j)
                 data.push_back(-data_[i][j]);
 
-        return Matrix<DataT>{rows_, cols_, std::move(data)};
+        return Matrix<DataT>{rows_, cols_, data};
     }
 
     bool swap_lines( uint l1, uint l2 )
@@ -364,13 +366,13 @@ Matrix<DataT> operator % ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs 
 }
 
 template<typename DataT>
-Matrix<DataT> operator * ( const Matrix<DataT> & matr, double mul )
+Matrix<DataT> operator * ( const Matrix<DataT> & matr, DataT mul )
 {
     return (Matrix<DataT>{matr} *= mul);
 }
 
 template<typename DataT>
-Matrix<DataT> operator * ( double mul, const Matrix<DataT> & matr )
+Matrix<DataT> operator * ( DataT mul, const Matrix<DataT> & matr )
 {
     return (Matrix<DataT>{matr} *= mul);
 }
