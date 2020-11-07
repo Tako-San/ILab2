@@ -124,6 +124,29 @@ TEST(elem_ops, add)
     EXPECT_EQ(m1.elem(1, 1), 4);
 }
 
+TEST(oper, square_brace)
+{
+    Matrix<int> m1{2, 2, {0, 1, 2, 3}};
+
+    EXPECT_EQ(m1[1][1], 3);
+}
+
+TEST(oper, transpose)
+{
+    Matrix<int> m{1, 4, {0, 1, 2, 3}};
+
+    m.transpose();
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m[i][0], i);
+
+    Matrix<int> m1{transpose(m)};
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m1[0][i], i);
+}
+
+
 int main( int argc, char ** argv )
 {
     testing::InitGoogleTest(&argc, argv);
