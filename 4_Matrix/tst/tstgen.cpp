@@ -45,31 +45,27 @@ int main( int ac, char ** av )
 
     srand(clock());
 
-    int end = 2 * sz;
+    int end = 5 * sz;
 
-    //for (int i = 0; i < sz; ++i)
-        for (int j = 0; j < end; ++j)
+    for (int i = 0; i < end; ++i)
+    {
+        long double sign = (rand() % 2 == 0) ? 1 : -1;
+
+        uint r1 = rand() % sz;
+        uint r2 = rand() % sz;
+
+        while (r2 == r1)
         {
-            //if (j == i)
-              //  continue;
-
-            long double sign = (rand() % 2 == 0) ? 1 : -1;
-
-            uint r1 = rand() % sz;
-            uint r2 = rand() % sz;
-
-            while (r2 == r1)
-            {
-                srand(clock());
-                r2 = rand() % sz;
-            }
-
-            uint div = rand();
-            while (div == 0)
-                div = rand();
-
-            matr.add_line(r1, r2, sign * rand() / div);
+            srand(clock());
+            r2 = rand() % sz;
         }
+
+        uint div = rand() % 10;
+        while (div == 0)
+            div = rand() % 10;
+
+        matr.add_line(r1, r2, sign * (rand() % 10) / div);
+    }
 
     cout << sz << endl;
     print_raw(matr);

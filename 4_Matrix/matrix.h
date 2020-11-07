@@ -103,7 +103,7 @@ public:
             if (data_[i][i] != 0)
                 zero_col = false;
             else
-                for (uint j = i; j < rows_; ++j)
+                for (uint j = i + 1; j < rows_; ++j)
                     if (data_[j][i] != 0)
                     {
                         swap_lines(j, i);
