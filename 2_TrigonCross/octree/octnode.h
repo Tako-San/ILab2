@@ -7,7 +7,7 @@
 
 #include "../geom/geom.h"
 
-const unsigned CHILDREN_NUM = 7;
+const unsigned CHILDREN_NUM = 4;
 
 using std::vector;
 using std::list;
