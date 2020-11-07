@@ -13,7 +13,6 @@ int main( )
 {
     // init
     size_t N;
-    //cout << "Input number of triangles: ";
     cin >> N;
 
     std::vector<Triangle> tr{N};
@@ -22,7 +21,6 @@ int main( )
     is_intr.resize(N);
 
     // input
-    //cout << "Input triangle\n";
     cin >> tr[0];
     
     double vmin[3] = {tr[0].min_coord(X), tr[0].min_coord(Y), tr[0].min_coord(Z)};
@@ -30,7 +28,6 @@ int main( )
     
     for (unsigned i = 1; i < N; ++i)
     {
-        //cout << "Input triangle\n";
         cin >> tr[i];
         
         for (int j = 0; j < 3; ++j)
@@ -57,14 +54,12 @@ int main( )
     int idx = 0;
     auto & lst = scene.data_;
     for (auto cur = lst.begin(), end = lst.end(); cur != end; ++cur, ++idx)
-    {
-        auto & node = *(cur->second);
-        for (auto mate : node.get_data())
-            if (intersect_octree(cur))
-                ++is_intr[idx];
-    }
+        if (intersect_octree(cur))
+            ++is_intr[idx];
 
     // output
+    uint count = 0;
+
     for (unsigned i = 0; i < N; ++i)
         if (is_intr[i] > 0)
             cout << i << endl;

@@ -7,7 +7,8 @@
 
 #include "../geom/geom.h"
 
-const unsigned CHILDREN_NUM = 4;
+const unsigned CHILDREN_NUM = 3;
+const double MIN_DIAG = 0.03;
 
 using std::vector;
 using std::list;
@@ -85,7 +86,7 @@ public:
 
     bool need_children( ) const
     {
-        return data_.size() >= CHILDREN_NUM && zone_.diag() > 1 && !has_children;
+        return !has_children && data_.size() >= CHILDREN_NUM && zone_.diag() > MIN_DIAG;
     }
 
     OctNode<DataT> * insert( PairIt data, bool hate_children = false )
@@ -97,11 +98,17 @@ public:
             divide();
 
         if (has_children)
+        {
             for (auto ch : child_)
-                if (ch->is_in(data->first))
-                    return ch->insert(data);
+            {
+                auto res = ch->insert(data);
+                if (res != nullptr)
+                    return res;
+            }
+        }
 
         data_.push_back(data);
+        data->second = this;
         return this;
     }
 
@@ -109,7 +116,7 @@ public:
     {
         if (typeid(DataT) != typeid(Triangle))
         {
-            std::cout << "\n" << __func__ << " is only for type Triangle\n\n";
+            std::cerr << "\n" << __func__ << " is only for type Triangle\n\n";
             return false;
         }
 
@@ -146,6 +153,7 @@ private:
         sub_box[1] = Box{{minx, midy, minz}, {midx, maxy, midz}};
         sub_box[2] = Box{{midx, midy, minz}, {maxx, maxy, midz}};
         sub_box[3] = Box{{midx, miny, minz}, {maxx, midy, midz}};
+
         sub_box[4] = Box{{minx, miny, midz}, {midx, midy, maxz}};
         sub_box[5] = Box{{minx, midy, midz}, {midx, maxy, maxz}};
         sub_box[6] = Box{{midx, midy, midz}, {maxx, maxy, maxz}};
@@ -170,9 +178,9 @@ private:
             bool in_ch{false};
 
             for (auto ch : child_)
-                if (ch->is_in(((*cur)->first)))
+                if (ch->is_in((*cur)->first))
                 {
-                    ch->insert(*cur, true);
+                    (*cur)->second = ch->insert(*cur, true);
                     in_ch = true;
                     break;
                 }

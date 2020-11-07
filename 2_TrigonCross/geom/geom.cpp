@@ -10,11 +10,11 @@ const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
 
 inline bool is_one_sign( double n0, double n1, double n2 )
 {
-    if (n0 * n1 < 0)
+    if (n0 * n1 <= 0)
         return false;
-    if (n1 * n2 < 0)
+    if (n1 * n2 <= 0)
         return false;
-    return n0 * n2 >= 0;
+    return n0 * n2 > 0;
 }
 
 bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
@@ -23,8 +23,8 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
     Plane pl2 = tr2.plane();
 
 
-    if (pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC &&
-        abs(abs(pl1.get_dst()) - abs(pl2.get_dst())) < ACCURACY)
+    if ((pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC) &&
+        (abs(abs(pl1.get_dst()) - abs(pl2.get_dst())) < ACCURACY))
         return is_intersect2D(tr1, tr2);
 
     double sd2[3] = {};
@@ -79,7 +79,7 @@ unsigned ind_of_max( double a, double b, double c )
 
 bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
 {
-    Vec norm{};
+    Vec norm{tr1.plane().get_nrm()};
     
     double OXY = abs(norm & Vec{0, 0, 1}),
            OXZ = abs(norm & Vec{0, 1, 0}),
@@ -87,24 +87,23 @@ bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
 
     unsigned maxind = ind_of_max(OYZ, OXZ, OXY);
 
-    Vec vtr1[3] = {};
-    Vec vtr2[3] = {};
+    Vec tr_v1[3] = {};
+    Vec tr_v2[3] = {};
 
-    unsigned j = 0;
-    for (unsigned i = 0; i < 2; ++i)
+    for (unsigned i = 0, j = 0; i < 3 && j < 2; ++i)
     {
         if (i == maxind)
             continue;
 
         for (unsigned k = 0; k < 3; ++k)
         {
-            vtr1[k].get(j) = tr1[k][i];
-            vtr2[k].get(j) = tr2[k][i];
+            tr_v1[k].get(j) = tr1[k][i];
+            tr_v2[k].get(j) = tr2[k][i];
         }
         ++j;
     }
-    return tst_intr(Triangle(tr1[0], tr1[1], tr1[2]),
-                    Triangle(tr2[0], tr2[1], tr2[2]));
+    return tst_intr(Triangle(tr_v1[0], tr_v1[1], tr_v1[2]),
+                    Triangle(tr_v2[0], tr_v2[1], tr_v2[2]));
 }
 
 int get_mid_ind( int i0, int i1, int N )
@@ -124,7 +123,7 @@ int get_extreme_ind( const Triangle & tr, const Vec & pt )
         int next = (mid + 1) % 3;
         Vec E{tr[next] - tr[mid]};
         
-        if ((E & pt) > 0)
+        if ((pt & E) > 0)
         {
             if (mid != i0)
                 i0 = mid;
@@ -135,7 +134,7 @@ int get_extreme_ind( const Triangle & tr, const Vec & pt )
         {
             int prev = (mid + 3 - 1) % 3;
             E = tr[mid] - tr[prev];
-            if ((E & pt) < 0)
+            if ((pt & E) < 0)
                 i1 = mid;
             else
                 return mid;
@@ -150,8 +149,8 @@ bool tst_intr( const Triangle & tr1, const Triangle & tr2 )
         Vec D1{(tr1[i0] - tr1[i1]).perp2D()},
             D2{(tr2[i0] - tr2[i1]).perp2D()};
 
-        int min1 = get_extreme_ind(tr1, -D1),
-            min2 = get_extreme_ind(tr2, -D2);
+        int min1 = get_extreme_ind(tr2, -D1),
+            min2 = get_extreme_ind(tr1, -D2);
 
         Vec diff1{tr2[min1] - tr1[i0]},
             diff2{tr1[min2] - tr2[i0]};
@@ -231,8 +230,8 @@ bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::itera
     OctNode<Triangle> & node = *(pair_it->second);
     Triangle & obj = pair_it->first;
 
-    for (auto mate : node.get_data())
-        if (mate != pair_it && is_intersect3D(obj, mate->first))
+    for (auto mate : node.data_)
+        if (&(*mate) != &(*pair_it) && is_intersect3D(obj, mate->first))
             return true;
 
     if (node.is_parent())

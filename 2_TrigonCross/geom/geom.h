@@ -8,6 +8,11 @@
 #include "g_obj/triangle.h"
 #include "../octree/octree.h"
 
+using std::pair;
+using std::list;
+
+template <typename DataT>
+class OctNode;
 
 bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 );
 bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );
