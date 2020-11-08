@@ -1,18 +1,19 @@
 #include <iostream>
 #include "gtest/gtest.h"
 
-#include "matrix.h"
+#include "matrix.hpp"
 
 using std::cout;
 using std::cin;
 using std::endl;
+using std::string;
 
 TEST(ctor, init_lst)
 {
     Matrix<int> m{2, 3, {1, 2, 3, 4, 5, 6}};
 
     for (int i = 0; i < 6; ++i)
-        EXPECT_EQ(m.elem(i / 3, i % 3), i + 1);
+        EXPECT_EQ(m[i / 3][i % 3], i + 1);
 }
 
 TEST(ctor, copy)
@@ -21,7 +22,7 @@ TEST(ctor, copy)
     Matrix<int> m2{m1};
 
     for (int i = 0; i < 6; ++i)
-        EXPECT_EQ(m2.elem(i / 3, i % 3), i + 1);
+        EXPECT_EQ(m2[i / 3][i % 3], i + 1);
 }
 
 TEST(op, mul)
@@ -29,15 +30,15 @@ TEST(op, mul)
     Matrix<int> m1{1, 4, {0, 1, 2, 3}};
     m1 *= 2;
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m1.elem(i / 4, i % 4), 2 * i);
+        EXPECT_EQ(m1[i / 4][i % 4], 2 * i);
 
     Matrix<int> m2{m1 * 2};
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m2.elem(i / 4, i % 4), 4 * i);
+        EXPECT_EQ(m2[i / 4][i % 4], 4 * i);
 
     Matrix<int> m3{2 * m1};
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m3.elem(i / 4, i % 4), 4 * i);
+        EXPECT_EQ(m3[i / 4][i % 4], 4 * i);
 }
 
 TEST(op, plus_minus)
@@ -46,11 +47,11 @@ TEST(op, plus_minus)
     Matrix<int> m2{m1};
     Matrix<int> sum = m1 + m2;
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(sum.elem(i / 2, i % 2), 2 * i);
+        EXPECT_EQ(sum[i / 2][i % 2], 2 * i);
 
     Matrix<int> diff = m1 - m2;
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(diff.elem(i / 2, i % 2), 0);
+        EXPECT_EQ(diff[i / 2][i % 2], 0);
 }
 
 TEST(det, little)
@@ -95,10 +96,10 @@ TEST(op, matr_mul)
                              1, 1,
                              1, 1}};
 
-    Matrix<double> m3 = m1 % m2;
+    Matrix<double> m3 = m1 * m2;
 
-    EXPECT_DOUBLE_EQ(m3.elem(0, 0), 4);
-    EXPECT_DOUBLE_EQ(m3.elem(0, 1), 4);
+    EXPECT_DOUBLE_EQ(m3[0][0], 4);
+    EXPECT_DOUBLE_EQ(m3[0][1], 4);
 }
 
 TEST(constructor, copy)
@@ -109,7 +110,7 @@ TEST(constructor, copy)
     Matrix<int> m3 = m1 + m2;
 
     for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(m3.elem(i / 2, i % 2), 2 * i);
+        EXPECT_EQ(m3[i / 2][i % 2], 2 * i);
 }
 
 TEST(elem_ops, add)
@@ -118,10 +119,10 @@ TEST(elem_ops, add)
 
     m1.add_line(1, 0, 3);
 
-    EXPECT_EQ(m1.elem(0, 0), 1);
-    EXPECT_EQ(m1.elem(0, 1), 1);
-    EXPECT_EQ(m1.elem(1, 0), 4);
-    EXPECT_EQ(m1.elem(1, 1), 4);
+    EXPECT_EQ(m1[0][0], 1);
+    EXPECT_EQ(m1[0][1], 1);
+    EXPECT_EQ(m1[1][0], 4);
+    EXPECT_EQ(m1[1][1], 4);
 }
 
 TEST(oper, square_brace)
@@ -144,6 +145,26 @@ TEST(oper, transpose)
 
     for (int i = 0; i < 4; ++i)
         EXPECT_EQ(m1[0][i], i);
+}
+
+TEST(types, string)
+{
+    vector<string> str_v = {"hello", "world", "i am", "matrix"};
+    Matrix<string> m1{1, 4, str_v};
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m1[0][i % 4], str_v[i]);
+
+    m1.transpose();
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m1[i][0], str_v[i]);
+
+    Matrix<string> m2 = m1 + m1;
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m2[i][0], str_v[i] + str_v[i]);
+
 }
 
 

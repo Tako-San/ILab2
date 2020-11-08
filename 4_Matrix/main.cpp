@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
-#include "matrix.h"
+#include "matrix.hpp"
 
 using std::cout;
 using std::cin;
