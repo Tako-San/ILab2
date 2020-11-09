@@ -27,6 +27,27 @@ TEST(ctor, copy)
         EXPECT_EQ(m2[i / 3][i % 3], i + 1);
 }
 
+TEST(ctor, iter)
+{
+    vector<int> v{0, 1, 2, 3, 4, 5};
+
+    Matrix<int> m1{2, 3, v.begin(), v.end()};
+
+    for (int i = 0; i < 6; ++i)
+        EXPECT_EQ(m1[i / 3][i % 3], i);
+
+    Matrix<int> m2{2, 3, v.rbegin(), v.rend()};
+}
+
+TEST(ctor, func)
+{
+    Matrix<int> m{2, 3, [](size_t i, size_t j)->int{return i + j;}};
+
+    for (int i = 0; i < 2; ++i)
+        for (int j = 0; j < 3; ++j)
+            EXPECT_EQ(m[i][j], i + j);
+}
+
 TEST(op, mul)
 {
     Matrix<int> m1{1, 4, {0, 1, 2, 3}};

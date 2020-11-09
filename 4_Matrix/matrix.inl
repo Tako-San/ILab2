@@ -1,40 +1,70 @@
 
 template <typename DataT>
-Matrix<DataT>::Matrix( uint rows, uint cols ) : rows_{rows}, cols_{cols}
+Matrix<DataT>::Matrix( size_t rows, size_t cols ) : rows_{rows},
+                                                    cols_{cols}
 {
     memory_allocation(rows, cols);
 }
 
 template <typename DataT>
-Matrix<DataT>::Matrix( uint rows, uint cols, const vector<DataT> & dat ) : rows_{rows}, cols_{cols}
+Matrix<DataT>::Matrix( size_t rows, size_t cols, const vector<DataT> & dat ) : rows_{rows},
+                                                                               cols_{cols}
 {
     memory_allocation(rows, cols);
 
-    uint max_num = rows_ * cols_;
-    uint vec_len = dat.size();
+    size_t max_num = rows_ * cols_;
+    size_t vec_len = dat.size();
 
-    uint end = vec_len < max_num ? vec_len : max_num;
+    size_t end = vec_len < max_num ? vec_len : max_num;
 
-    for(uint i = 0; i < end; ++i)
-    {
-        uint row = i / cols_,
-                col = i % cols_;
-        data_[row][col] = dat[i];
-    }
+    for(size_t i = 0; i < end; ++i)
+        data_[i / cols_][i % cols_] = dat[i];
+}
+
+
+template <typename DataT>
+template <typename IterT>
+Matrix<DataT>::Matrix( size_t rows, size_t cols, const IterT & begin, const IterT & end ) : rows_{rows},
+                                                                                            cols_{cols}
+{
+    memory_allocation(rows, cols);
+
+    size_t i = 0;
+    size_t el_num = rows_ * cols_;
+
+    for (IterT cur = begin; cur != end, i < el_num; ++i, ++cur)
+        data_[i / cols_][i % cols_] = *cur;
+
 }
 
 template <typename DataT>
-Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{orig.cols_}
+Matrix<DataT>::Matrix( size_t rows, size_t cols, func action ) : rows_{rows},
+                                                                 cols_{cols}
+{
+    memory_allocation(rows, cols);
+
+    size_t end = rows_ * cols_;
+
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
+            data_[i][j] = action(i, j);
+}
+
+template <typename DataT>
+Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_},
+                                                      cols_{orig.cols_}
 {
     memory_allocation(orig.rows_, orig.cols_);
 
-    for (uint i = 0; i < rows_; ++i)
-        for (uint j = 0; j < cols_; ++j)
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
             data_[i][j] = orig.data_[i][j];
 }
 
 template <typename DataT>
-Matrix<DataT>::Matrix( Matrix<DataT> && orig ) : rows_{orig.rows_}, cols_{orig.cols_}, data_{orig.data_}
+Matrix<DataT>::Matrix( Matrix<DataT> && orig ) : rows_{orig.rows_},
+                                                 cols_{orig.cols_},
+                                                 data_{orig.data_}
 {
     orig.data_ = nullptr;
     orig.cols_ = orig.rows_ = 0;
@@ -47,14 +77,9 @@ Matrix<DataT>::~Matrix( )
 }
 
 template <typename DataT>
-Matrix<DataT> Matrix<DataT>::eye( uint n )
+Matrix<DataT> Matrix<DataT>::eye( size_t n )
 {
-    vector<DataT> data{};
-    for (uint i = 0; i < n; ++i)
-        for (uint j = 0; j < n; ++j)
-            data.push_back(j == i ? 1 : 0);
-
-    return std::move(Matrix<DataT> {n, n, data});
+    return std::move(Matrix<DataT> {n, n, [](size_t i, size_t j)->DataT{ return i == j;}});
 }
 
 template <typename DataT>
@@ -66,14 +91,14 @@ long double Matrix<DataT>::det( ) const
     long double sign = 1;
 
     Matrix<DataT> tmp{*this};
-    for (uint i = 0; i < cols_; ++i)
+    for (size_t i = 0; i < cols_; ++i)
     {
         bool zero_col = true;
 
         if (tmp.data_[i][i] != 0)
             zero_col = false;
         else
-            for (uint j = i + 1; j < rows_; ++j)
+            for (size_t j = i + 1; j < rows_; ++j)
                 if (tmp.data_[j][i] != 0)
                 {
                     tmp.swap_lines(j, i);
@@ -85,7 +110,7 @@ long double Matrix<DataT>::det( ) const
         if (zero_col)
             return 0;
 
-        for (uint k = i + 1; k < rows_; ++k)
+        for (size_t k = i + 1; k < rows_; ++k)
         {
             if (tmp.data_[k][i] == 0)
                 continue;
@@ -97,7 +122,7 @@ long double Matrix<DataT>::det( ) const
     }
 
     long double res = sign;
-    for (uint i = 0; i < cols_; ++i)
+    for (size_t i = 0; i < cols_; ++i)
         res *= static_cast<long double>(tmp.data_[i][i]);
 
     return res;
@@ -110,33 +135,33 @@ Matrix<DataT> & Matrix<DataT>::transpose( )
 
     data.resize(rows_ * cols_);
 
-    for (uint i = 0; i < cols_; ++i)
-        for (uint j = 0; j < rows_; ++j)
+    for (size_t i = 0; i < cols_; ++i)
+        for (size_t j = 0; j < rows_; ++j)
             data[i * rows_ + j] = data_[j][i];
 
     if (cols_ != rows_)
         resize(cols_, rows_);
 
-    for (uint i = 0, end = rows_ * cols_; i < end; ++i)
+    for (size_t i = 0, end = rows_ * cols_; i < end; ++i)
         data_[i / cols_][i % cols_] = data[i];
 
     return *this;
 }
 
 template <typename DataT>
-uint Matrix<DataT>::cols( ) const
+size_t Matrix<DataT>::cols( ) const
 {
     return cols_;
 }
 
 template <typename DataT>
-uint Matrix<DataT>::rows( ) const
+size_t Matrix<DataT>::rows( ) const
 {
     return rows_;
 }
 
 template <typename DataT>
-typename Matrix<DataT>::RowT Matrix<DataT>::operator [] ( uint row ) const
+typename Matrix<DataT>::RowT Matrix<DataT>::operator [] ( size_t row ) const
 {
     assert(row < rows_);
     return RowT{data_[row], cols_};
@@ -147,8 +172,8 @@ Matrix<DataT> Matrix<DataT>::operator - ( ) const
 {
     vector<DataT> data{};
 
-    for (uint i = 0; i < rows_; ++i)
-        for (uint j = 0; j < cols_; ++j)
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
             data.push_back(-data_[i][j]);
 
     return Matrix<DataT>{rows_, cols_, data};
@@ -175,14 +200,14 @@ Matrix<DataT> & Matrix<DataT>::operator = ( const Matrix<DataT> & orig )
     if (&orig == this)
         return *this;
 
-    uint rows = orig.rows_,
+    size_t rows = orig.rows_,
          cols = orig.cols_;
 
     if (rows_ != rows || cols_ != cols)
         resize(rows, cols);
 
-    for (uint i = 0; i < rows_; ++i)
-        for (uint j = 0; j < cols_; ++j)
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
             data_[i][j] = orig.data_[i][j];
 
     return *this;
@@ -193,8 +218,8 @@ Matrix<DataT> & Matrix<DataT>::operator += ( const Matrix<DataT> & matr )
 {
     assert(sum_suitable(matr));
 
-    for (uint i = 0; i < rows_; ++i)
-        for (uint j = 0; j < cols_; ++j)
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
             data_[i][j] += matr.data_[i][j];
 
     return *this;
@@ -205,8 +230,8 @@ Matrix<DataT> & Matrix<DataT>::operator -= ( const Matrix<DataT> & matr )
 {
     assert(sum_suitable(matr));
 
-    for (uint i = 0; i < rows_; ++i)
-        for (uint j = 0; j < cols_; ++j)
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
             data_[i][j] -= matr.data_[i][j];
 
     return *this;
@@ -221,9 +246,9 @@ Matrix<DataT> & Matrix<DataT>::operator *= ( const Matrix<DataT> & matr )
     Matrix<DataT> tmp2{matr};
     tmp2.transpose();
 
-    for (uint i = 0; i < tmp1.rows_; ++i)
-        for (uint j = 0; j < tmp1.cols_; ++j)
-            for (uint k = 0; k < cols_; ++k)
+    for (size_t i = 0; i < tmp1.rows_; ++i)
+        for (size_t j = 0; j < tmp1.cols_; ++j)
+            for (size_t k = 0; k < cols_; ++k)
                 tmp1[i][j] += data_[i][k] * tmp2.data_[j][k];
 
     *this = std::move(tmp1);
@@ -233,8 +258,8 @@ Matrix<DataT> & Matrix<DataT>::operator *= ( const Matrix<DataT> & matr )
 template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::operator *= ( DataT mul )
 {
-    for (uint i = 0; i < rows_; ++i)
-        for (uint j = 0; j < cols_; ++j)
+    for (size_t i = 0; i < rows_; ++i)
+        for (size_t j = 0; j < cols_; ++j)
             data_[i][j] *= mul;
 
     return *this;
@@ -262,7 +287,7 @@ bool Matrix<DataT>::operator != ( const Matrix<DataT> & matr )
 }
 
 template <typename DataT>
-bool Matrix<DataT>::swap_lines( uint l1, uint l2 )
+bool Matrix<DataT>::swap_lines( size_t l1, size_t l2 )
 {
     assert(l1 < cols_);
     assert(l2 < cols_);
@@ -273,23 +298,23 @@ bool Matrix<DataT>::swap_lines( uint l1, uint l2 )
 }
 
 template <typename DataT>
-bool Matrix<DataT>::add_line( uint to, uint from, DataT mul )
+bool Matrix<DataT>::add_line( size_t to, size_t from, DataT mul )
 {
     if ((to > cols_) || (from > cols_))
         return false;
 
-    for (uint i = 0; i < cols_; ++i)
+    for (size_t i = 0; i < cols_; ++i)
         data_[to][i] += mul * data_[from][i];
 
     return true;
 }
 
 template <typename DataT>
-bool Matrix<DataT>::mul_line( uint l, DataT mul )
+bool Matrix<DataT>::mul_line( size_t l, DataT mul )
 {
     assert(l < cols_);
 
-    for (uint i = 0; i < cols_; ++i)
+    for (size_t i = 0; i < cols_; ++i)
         data_[l][i] *= mul;
 
     return true;
@@ -303,7 +328,7 @@ bool Matrix<DataT>::sum_suitable( const Matrix<DataT> & matr ) const
 
 
 template <typename DataT>
-void Matrix<DataT>::memory_allocation( uint rows, uint cols )
+void Matrix<DataT>::memory_allocation( size_t rows, size_t cols )
 {
     rows_ = rows;
     cols_ = cols;
@@ -313,8 +338,16 @@ void Matrix<DataT>::memory_allocation( uint rows, uint cols )
 
     data_ = new DataT * [rows_]{};
 
-    for (uint i = 0; i < rows_; ++i)
+    for (size_t i = 0; i < rows_; ++i)
         data_[i] = new DataT [cols_]{};
+}
+
+template <typename DataT>
+void Matrix<DataT>::resize( size_t rows, size_t cols )
+{
+    assert( rows * cols != 0 );
+    kill();
+    memory_allocation(rows, cols);
 }
 
 template <typename DataT>
@@ -323,7 +356,7 @@ void Matrix<DataT>::kill( )
     if (rows_ * cols_ == 0)
         return;
 
-    for (uint i = 0; i < rows_; ++i)
+    for (size_t i = 0; i < rows_; ++i)
         delete [] data_[i];
 
     delete [] data_;
@@ -332,25 +365,17 @@ void Matrix<DataT>::kill( )
     cols_ = rows_ = 0;
 }
 
-template <typename DataT>
-void Matrix<DataT>::resize( uint rows, uint cols )
-{
-    assert( rows * cols != 0 );
-    kill();
-    memory_allocation(rows, cols);
-}
-
 
 template <typename DataT>
 std::ostream & operator << ( std::ostream & ost, const Matrix<DataT> & matr )
 {
-    uint cols = matr.cols(),
+    size_t cols = matr.cols(),
          rows = matr.rows();
 
-    for (uint i = 0; i < rows; ++i)
+    for (size_t i = 0; i < rows; ++i)
     {
         ost << "|";
-        for (uint j = 0; j < cols; ++j)
+        for (size_t j = 0; j < cols; ++j)
             ost << " " << matr[i][j] << " ";
         ost << "|\n";
     }

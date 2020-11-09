@@ -15,68 +15,67 @@ namespace F
     {
     private:
         DataT **data_;
-        uint rows_;
-        uint cols_;
+        size_t rows_;
+        size_t cols_;
 
         class RowT;
 
+        using func = DataT(*)(size_t, size_t);
+
     public:
 
-        Matrix( uint rows, uint cols );
-
-        Matrix( uint rows, uint cols, const vector<DataT> &dat );
-
-        Matrix( const Matrix &orig );
+        Matrix( size_t rows, size_t cols );
 
         Matrix( Matrix &&orig );
 
+        Matrix( const Matrix &orig );
+
+        Matrix( size_t rows, size_t cols, func action );
+
+        Matrix( size_t rows, size_t cols, const vector<DataT> &dat );
+
+        template <typename Iter>
+        Matrix( size_t rows, size_t cols, const Iter & begin, const Iter & end );
+
         ~Matrix();
 
-        static Matrix eye( uint n );
+        static Matrix eye( size_t n );
 
         long double det() const;
 
         Matrix &transpose();
 
-        uint cols() const;
+        size_t cols() const;
+        size_t rows() const;
 
-        uint rows() const;
-
-        RowT operator[]( uint row ) const;
+        RowT operator[]( size_t row ) const;
 
         Matrix operator-() const;
 
         Matrix &operator=( Matrix &&orig );
-
         Matrix &operator=( const Matrix &orig );
 
         Matrix &operator+=( const Matrix &matr );
-
         Matrix &operator-=( const Matrix &matr );
-
         Matrix &operator*=( const Matrix &matr );
-
         Matrix &operator*=( DataT mul );
 
         bool operator==( const Matrix &matr );
-
         bool operator!=( const Matrix &matr );
 
-        bool swap_lines( uint l1, uint l2 );
-
-        bool add_line( uint to, uint from, DataT mul );
-
-        bool mul_line( uint l, DataT mul );
+        bool swap_lines( size_t l1, size_t l2 );
+        bool add_line( size_t to, size_t from, DataT mul );
+        bool mul_line( size_t l, DataT mul );
 
         bool sum_suitable( const Matrix<DataT> &matr ) const;
 
     private:
 
-        void memory_allocation( uint rows, uint cols );
+        void memory_allocation( size_t rows, size_t cols );
+
+        void resize( size_t rows, size_t cols );
 
         void kill();
-
-        void resize( uint rows, uint cols );
     };
 
     template<typename DataT>
@@ -84,21 +83,21 @@ namespace F
     {
     private:
         DataT *row_;
-        uint len_;
+        size_t len_;
 
-        RowT( DataT *row, uint len ) : row_{row}, len_{len}
+        RowT( DataT *row, size_t len ) : row_{row}, len_{len}
         {}
 
         friend class Matrix<DataT>;
 
     public:
-        DataT &operator[]( uint col )
+        DataT &operator[]( size_t col )
         {
             assert(col < len_);
             return row_[col];
         }
 
-        const DataT &operator[]( uint col ) const
+        const DataT &operator[]( size_t col ) const
         {
             assert(col < len_);
             return row_[col];
