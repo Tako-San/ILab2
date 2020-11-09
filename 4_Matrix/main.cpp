@@ -8,6 +8,7 @@ using std::cin;
 using std::endl;
 
 using std::vector;
+using namespace F;
 
 int main( )
 {

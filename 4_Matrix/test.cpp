@@ -8,6 +8,8 @@ using std::cin;
 using std::endl;
 using std::string;
 
+using namespace F;
+
 TEST(ctor, init_lst)
 {
     Matrix<int> m{2, 3, {1, 2, 3, 4, 5, 6}};
