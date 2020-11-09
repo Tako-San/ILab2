@@ -34,6 +34,13 @@ Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{o
 }
 
 template <typename DataT>
+Matrix<DataT>::Matrix( Matrix<DataT> && orig ) : rows_{orig.rows_}, cols_{orig.cols_}, data_{orig.data_}
+{
+    orig.data_ = nullptr;
+    orig.cols_ = orig.rows_ = 0;
+}
+
+template <typename DataT>
 Matrix<DataT>::~Matrix( )
 {
     kill();
@@ -47,7 +54,7 @@ Matrix<DataT> Matrix<DataT>::eye( uint n )
         for (uint j = 0; j < n; ++j)
             data.push_back(j == i ? 1 : 0);
 
-    return Matrix<DataT> {n, n, data};
+    return std::move(Matrix<DataT> {n, n, data});
 }
 
 template <typename DataT>
@@ -145,6 +152,21 @@ Matrix<DataT> Matrix<DataT>::operator - ( ) const
             data.push_back(-data_[i][j]);
 
     return Matrix<DataT>{rows_, cols_, data};
+}
+
+template <typename DataT>
+Matrix<DataT> & Matrix<DataT>::operator = ( Matrix<DataT> && orig )
+{
+    kill();
+
+    rows_ = orig.rows_;
+    cols_ = orig.cols_;
+    data_ = orig.data_;
+
+    orig.data_ = nullptr;
+    orig.cols_ = orig.rows_ = 0;
+
+    return *this;
 }
 
 template <typename DataT>
@@ -338,36 +360,36 @@ std::ostream & operator << ( std::ostream & ost, const Matrix<DataT> & matr )
 template <typename DataT>
 Matrix<DataT> operator + ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
-    return (Matrix<DataT>{lhs} += rhs);
+    return std::move(Matrix<DataT>{lhs} += rhs);
 }
 
 template <typename DataT>
 Matrix<DataT> operator - ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
-    return (Matrix<DataT>{lhs} -= rhs);
+    return std::move(Matrix<DataT>{lhs} -= rhs);
 }
 
 template <typename DataT>
 Matrix<DataT> operator * ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
-    return (Matrix<DataT>{lhs} *= rhs);
+    return std::move(Matrix<DataT>{lhs} *= rhs);
 }
 
 template <typename DataT>
 Matrix<DataT> operator * ( const Matrix<DataT> & matr, DataT mul )
 {
-    return (Matrix<DataT>{matr} *= mul);
+    return std::move(Matrix<DataT>{matr} *= mul);
 }
 
 template <typename DataT>
 Matrix<DataT> operator * ( DataT mul, const Matrix<DataT> & matr )
 {
-    return (Matrix<DataT>{matr} *= mul);
+    return std::move(Matrix<DataT>{matr} *= mul);
 }
 
 template <typename DataT>
 Matrix<DataT> transpose( const Matrix<DataT> & matr )
 {
-    return (Matrix<DataT>{matr}.transpose());
+    return std::move(Matrix<DataT>{matr}.transpose());
 }
 

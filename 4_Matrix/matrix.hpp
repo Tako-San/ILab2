@@ -13,23 +13,24 @@ class Matrix final
 {
 private:
     DataT ** data_;
-    uint rows_, cols_;
+    uint rows_;
+    uint cols_;
 
     class RowT;
 public:
 
     Matrix( uint rows, uint cols );
     Matrix( uint rows, uint cols, const vector<DataT> & dat );
-    Matrix( const Matrix<DataT> & orig );
+    Matrix( const Matrix & orig );
+    Matrix( Matrix && orig );
 
-    // TODO: move semantics, move in outer operators
     ~Matrix( );
 
     static Matrix eye( uint n );
 
     long double det( ) const;
 
-    Matrix<DataT> & transpose( );
+    Matrix & transpose( );
 
     uint cols( ) const;
     uint rows( ) const;
@@ -37,11 +38,13 @@ public:
     RowT operator [] ( uint row ) const;
     Matrix operator - ( ) const;
 
+    Matrix & operator = ( Matrix && orig );
     Matrix & operator = ( const Matrix & orig );
     Matrix & operator += ( const Matrix & matr );
     Matrix & operator -= ( const Matrix & matr );
     Matrix & operator *= ( const Matrix & matr );
     Matrix & operator *= ( DataT mul );
+
     bool operator == ( const Matrix & matr );
     bool operator != ( const Matrix & matr );
 
@@ -82,6 +85,20 @@ public:
         return row_[col];
     }
 };
+
+template <typename DataT>
+Matrix<DataT> operator + ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs );
+template <typename DataT>
+Matrix<DataT> operator - ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs );
+template <typename DataT>
+Matrix<DataT> operator * ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs );
+template <typename DataT>
+Matrix<DataT> operator * ( const Matrix<DataT> & matr, DataT mul );
+template <typename DataT>
+Matrix<DataT> operator * ( DataT mul, const Matrix<DataT> & matr );
+template <typename DataT>
+Matrix<DataT> transpose( const Matrix<DataT> & matr );
+
 
 #include "matrix.inl"
 

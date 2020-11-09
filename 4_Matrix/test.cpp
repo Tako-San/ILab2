@@ -167,6 +167,16 @@ TEST(types, string)
 
 }
 
+TEST(ctor, move)
+{
+    Matrix<int> m1{1, 4, {0, 1, 2, 3}};
+    Matrix<int> m2{1, 4, {0, 0, 0, 0}};
+
+    m2 = m1 + m2;
+
+    for (int i = 0; i < 4; ++i)
+        EXPECT_EQ(m2[0][i], i);
+}
 
 int main( int argc, char ** argv )
 {
