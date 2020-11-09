@@ -1,11 +1,11 @@
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT>::Matrix( uint rows, uint cols ) : rows_{rows}, cols_{cols}
 {
     memory_allocation(rows, cols);
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT>::Matrix( uint rows, uint cols, const vector<DataT> & dat ) : rows_{rows}, cols_{cols}
 {
     memory_allocation(rows, cols);
@@ -23,7 +23,7 @@ Matrix<DataT>::Matrix( uint rows, uint cols, const vector<DataT> & dat ) : rows_
     }
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{orig.cols_}
 {
     memory_allocation(orig.rows_, orig.cols_);
@@ -33,13 +33,13 @@ Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_}, cols_{o
             data_[i][j] = orig.data_[i][j];
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT>::~Matrix( )
 {
     kill();
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> Matrix<DataT>::eye( uint n )
 {
     vector<DataT> data{};
@@ -50,7 +50,7 @@ Matrix<DataT> Matrix<DataT>::eye( uint n )
     return Matrix<DataT> {n, n, data};
 }
 
-template<typename DataT>
+template <typename DataT>
 long double Matrix<DataT>::det( ) const
 {
     if ((cols_ != rows_))
@@ -84,7 +84,7 @@ long double Matrix<DataT>::det( ) const
                 continue;
 
             long double mul = static_cast<long double>(tmp.data_[k][i])
-                              / static_cast<long double>(tmp.data_[i][i]);
+                            / static_cast<long double>(tmp.data_[i][i]);
             tmp.add_line(k, i, -mul);
         }
     }
@@ -96,7 +96,7 @@ long double Matrix<DataT>::det( ) const
     return res;
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::transpose( )
 {
     vector<DataT> data{};
@@ -116,26 +116,26 @@ Matrix<DataT> & Matrix<DataT>::transpose( )
     return *this;
 }
 
-template<typename DataT>
+template <typename DataT>
 uint Matrix<DataT>::cols( ) const
 {
     return cols_;
 }
 
-template<typename DataT>
+template <typename DataT>
 uint Matrix<DataT>::rows( ) const
 {
     return rows_;
 }
 
-template<typename DataT>
+template <typename DataT>
 typename Matrix<DataT>::RowT Matrix<DataT>::operator [] ( uint row ) const
 {
     assert(row < rows_);
     return RowT{data_[row], cols_};
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> Matrix<DataT>::operator - ( ) const
 {
     vector<DataT> data{};
@@ -147,7 +147,7 @@ Matrix<DataT> Matrix<DataT>::operator - ( ) const
     return Matrix<DataT>{rows_, cols_, data};
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::operator = ( const Matrix<DataT> & orig )
 {
     if (&orig == this)
@@ -166,7 +166,7 @@ Matrix<DataT> & Matrix<DataT>::operator = ( const Matrix<DataT> & orig )
     return *this;
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::operator += ( const Matrix<DataT> & matr )
 {
     assert(sum_suitable(matr));
@@ -178,7 +178,7 @@ Matrix<DataT> & Matrix<DataT>::operator += ( const Matrix<DataT> & matr )
     return *this;
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::operator -= ( const Matrix<DataT> & matr )
 {
     assert(sum_suitable(matr));
@@ -190,7 +190,7 @@ Matrix<DataT> & Matrix<DataT>::operator -= ( const Matrix<DataT> & matr )
     return *this;
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::operator *= ( const Matrix<DataT> & matr )
 {
     assert(cols_ == matr.rows_);
@@ -206,7 +206,7 @@ Matrix<DataT> & Matrix<DataT>::operator *= ( const Matrix<DataT> & matr )
     return *this;
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> & Matrix<DataT>::operator *= ( DataT mul )
 {
     for (uint i = 0; i < rows_; ++i)
@@ -216,8 +216,27 @@ Matrix<DataT> & Matrix<DataT>::operator *= ( DataT mul )
     return *this;
 }
 
+template <typename DataT>
+bool Matrix<DataT>::operator == ( const Matrix<DataT> & matr )
+{
+    if (rows_ != matr.rows_ || cols_ != matr.cols_)
+        return false;
 
-template<typename DataT>
+    for (int i = 0; i < rows_; ++i)
+        for (int j = 0; j < cols_; ++j)
+            if (data_[i][j] != matr.data_[i][j])
+                return false;
+
+    return true;
+}
+
+template <typename DataT>
+bool Matrix<DataT>::operator != ( const Matrix<DataT> & matr )
+{
+    return !operator==(matr);
+}
+
+template <typename DataT>
 bool Matrix<DataT>::swap_lines( uint l1, uint l2 )
 {
     assert(l1 < cols_);
@@ -230,7 +249,7 @@ bool Matrix<DataT>::swap_lines( uint l1, uint l2 )
     return true;
 }
 
-template<typename DataT>
+template <typename DataT>
 bool Matrix<DataT>::add_line( uint to, uint from, DataT mul )
 {
     if ((to > cols_) || (from > cols_))
@@ -242,7 +261,7 @@ bool Matrix<DataT>::add_line( uint to, uint from, DataT mul )
     return true;
 }
 
-template<typename DataT>
+template <typename DataT>
 bool Matrix<DataT>::mul_line( uint l, DataT mul )
 {
     assert(l < cols_);
@@ -253,14 +272,14 @@ bool Matrix<DataT>::mul_line( uint l, DataT mul )
     return true;
 }
 
-template<typename DataT>
+template <typename DataT>
 bool Matrix<DataT>::sum_suitable( const Matrix<DataT> & matr ) const
 {
     return (cols_ == matr.cols_) && (rows_ == matr.rows_);
 }
 
 
-template<typename DataT>
+template <typename DataT>
 void Matrix<DataT>::memory_allocation( uint rows, uint cols )
 {
     rows_ = rows;
@@ -275,7 +294,7 @@ void Matrix<DataT>::memory_allocation( uint rows, uint cols )
         data_[i] = new DataT [cols_]{};
 }
 
-template<typename DataT>
+template <typename DataT>
 void Matrix<DataT>::kill( )
 {
     if (rows_ * cols_ == 0)
@@ -290,7 +309,7 @@ void Matrix<DataT>::kill( )
     cols_ = rows_ = 0;
 }
 
-template<typename DataT>
+template <typename DataT>
 void Matrix<DataT>::resize( uint rows, uint cols )
 {
     assert( rows * cols != 0 );
@@ -309,44 +328,44 @@ std::ostream & operator << ( std::ostream & ost, const Matrix<DataT> & matr )
     {
         ost << "|";
         for (uint j = 0; j < cols; ++j)
-            ost << " " << std::setw(6) << matr[i][j] << " ";
+            ost << " " << matr[i][j] << " ";
         ost << "|\n";
     }
 
     return ost;
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> operator + ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
     return (Matrix<DataT>{lhs} += rhs);
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> operator - ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
     return (Matrix<DataT>{lhs} -= rhs);
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> operator * ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
 {
     return (Matrix<DataT>{lhs} *= rhs);
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> operator * ( const Matrix<DataT> & matr, DataT mul )
 {
     return (Matrix<DataT>{matr} *= mul);
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> operator * ( DataT mul, const Matrix<DataT> & matr )
 {
     return (Matrix<DataT>{matr} *= mul);
 }
 
-template<typename DataT>
+template <typename DataT>
 Matrix<DataT> transpose( const Matrix<DataT> & matr )
 {
     return (Matrix<DataT>{matr}.transpose());

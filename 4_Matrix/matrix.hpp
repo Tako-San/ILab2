@@ -22,6 +22,7 @@ public:
     Matrix( uint rows, uint cols, const vector<DataT> & dat );
     Matrix( const Matrix<DataT> & orig );
 
+    // TODO: move semantics, move in outer operators
     ~Matrix( );
 
     static Matrix eye( uint n );
@@ -36,11 +37,13 @@ public:
     RowT operator [] ( uint row ) const;
     Matrix operator - ( ) const;
 
-    Matrix & operator = ( const Matrix<DataT> & orig );
-    Matrix & operator += ( const Matrix<DataT> & matr );
-    Matrix & operator -= ( const Matrix<DataT> & matr );
-    Matrix & operator *= ( const Matrix<DataT> & matr );
+    Matrix & operator = ( const Matrix & orig );
+    Matrix & operator += ( const Matrix & matr );
+    Matrix & operator -= ( const Matrix & matr );
+    Matrix & operator *= ( const Matrix & matr );
     Matrix & operator *= ( DataT mul );
+    bool operator == ( const Matrix & matr );
+    bool operator != ( const Matrix & matr );
 
     bool swap_lines( uint l1, uint l2 );
     bool add_line( uint to, uint from, DataT mul );
@@ -52,31 +55,32 @@ private:
     void memory_allocation( uint rows, uint cols );
     void kill( );
     void resize( uint rows, uint cols );
+};
 
-    class RowT final
+template <typename DataT>
+class Matrix<DataT>::RowT final
+{
+private:
+    DataT * row_;
+    uint len_;
+
+    RowT( DataT * row, uint len ) : row_{row}, len_{len}
+    {}
+
+    friend class Matrix<DataT>;
+
+public:
+    DataT & operator [] ( uint col )
     {
-    private:
-        DataT * row_;
-        uint len_;
+        assert(col < len_);
+        return row_[col];
+    }
 
-        RowT( DataT * row, uint len ) : row_{row}, len_{len}
-        {}
-
-        friend class Matrix<DataT>;
-
-    public:
-        DataT & operator [] ( uint col )
-        {
-            assert(col < len_);
-            return row_[col];
-        }
-
-        const DataT & operator [] ( uint col ) const
-        {
-            assert(col < len_);
-            return row_[col];
-        }
-    };
+    const DataT & operator [] ( uint col ) const
+    {
+        assert(col < len_);
+        return row_[col];
+    }
 };
 
 #include "matrix.inl"
