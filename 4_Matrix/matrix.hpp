@@ -99,7 +99,6 @@ Matrix<DataT> operator * ( DataT mul, const Matrix<DataT> & matr );
 template <typename DataT>
 Matrix<DataT> transpose( const Matrix<DataT> & matr );
 
-
 #include "matrix.inl"
 
 #endif //MATRIX_H

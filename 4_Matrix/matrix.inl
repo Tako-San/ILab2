@@ -176,7 +176,7 @@ Matrix<DataT> & Matrix<DataT>::operator = ( const Matrix<DataT> & orig )
         return *this;
 
     uint rows = orig.rows_,
-            cols = orig.cols_;
+         cols = orig.cols_;
 
     if (rows_ != rows || cols_ != cols)
         resize(rows, cols);
@@ -217,14 +217,16 @@ Matrix<DataT> & Matrix<DataT>::operator *= ( const Matrix<DataT> & matr )
 {
     assert(cols_ == matr.rows_);
 
-    Matrix<DataT> tmp{rows_, matr.cols_};
+    Matrix<DataT> tmp1{rows_, matr.cols_};
+    Matrix<DataT> tmp2{matr};
+    tmp2.transpose();
 
-    for (uint i = 0; i < tmp.rows_; ++i)
-        for (uint j = 0; j < tmp.cols_; ++j)
+    for (uint i = 0; i < tmp1.rows_; ++i)
+        for (uint j = 0; j < tmp1.cols_; ++j)
             for (uint k = 0; k < cols_; ++k)
-                tmp[i][j] += data_[i][k] * matr.data_[k][j];
+                tmp1[i][j] += data_[i][k] * tmp2.data_[j][k];
 
-    *this = tmp;
+    *this = std::move(tmp1);
     return *this;
 }
 
@@ -237,6 +239,7 @@ Matrix<DataT> & Matrix<DataT>::operator *= ( DataT mul )
 
     return *this;
 }
+
 
 template <typename DataT>
 bool Matrix<DataT>::operator == ( const Matrix<DataT> & matr )
@@ -264,9 +267,7 @@ bool Matrix<DataT>::swap_lines( uint l1, uint l2 )
     assert(l1 < cols_);
     assert(l2 < cols_);
 
-    DataT * tmp = data_[l1];
-    data_[l1] = data_[l2];
-    data_[l2] = tmp;
+    std::swap(data_[l1], data_[l2]);
 
     return true;
 }
@@ -344,7 +345,7 @@ template <typename DataT>
 std::ostream & operator << ( std::ostream & ost, const Matrix<DataT> & matr )
 {
     uint cols = matr.cols(),
-            rows = matr.rows();
+         rows = matr.rows();
 
     for (uint i = 0; i < rows; ++i)
     {
