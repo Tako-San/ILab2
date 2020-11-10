@@ -29,7 +29,7 @@ TEST(ctor, copy)
 
 TEST(ctor, iter)
 {
-    vector<int> v{0, 1, 2, 3, 4, 5};
+    std::vector<int> v{0, 1, 2, 3, 4, 5};
 
     Matrix<int> m1{2, 3, v.begin(), v.end()};
 
@@ -172,8 +172,9 @@ TEST(oper, transpose)
 
 TEST(types, string)
 {
-    vector<string> str_v = {"hello", "world", "i am", "matrix"};
-    Matrix<string> m1{1, 4, str_v};
+    std::vector<string> str_v = {"hello", "world", "i am", "matrix"};
+    std::initializer_list<string> init_lst = {"hello", "world", "i am", "matrix"};
+    Matrix<string> m1{1, 4, init_lst};
 
     for (int i = 0; i < 4; ++i)
         EXPECT_EQ(m1[0][i % 4], str_v[i]);

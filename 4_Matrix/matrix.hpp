@@ -1,13 +1,14 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <vector>
+#include <initializer_list>
 #include <cstdint>
 #include <cassert>
 #include <cmath>
 
 namespace F
 {
+    using std::initializer_list;
     using std::vector;
 
     template<typename DataT>
@@ -32,7 +33,7 @@ namespace F
 
         Matrix( size_t rows, size_t cols, func action );
 
-        Matrix( size_t rows, size_t cols, const vector<DataT> &dat );
+        Matrix( size_t rows, size_t cols, const initializer_list<DataT> &dat );
 
         template <typename Iter>
         Matrix( size_t rows, size_t cols, const Iter & begin, const Iter & end );
@@ -82,7 +83,7 @@ namespace F
     class Matrix<DataT>::RowT final
     {
     private:
-        DataT *row_;
+        DataT * row_;
         size_t len_;
 
         RowT( DataT *row, size_t len ) : row_{row}, len_{len}
@@ -124,4 +125,5 @@ namespace F
 
     #include "matrix.inl"
 }
+
 #endif //MATRIX_H

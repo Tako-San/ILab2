@@ -7,18 +7,17 @@ Matrix<DataT>::Matrix( size_t rows, size_t cols ) : rows_{rows},
 }
 
 template <typename DataT>
-Matrix<DataT>::Matrix( size_t rows, size_t cols, const vector<DataT> & dat ) : rows_{rows},
-                                                                               cols_{cols}
+Matrix<DataT>::Matrix( size_t rows, size_t cols, const initializer_list<DataT> & data ) : rows_{rows},
+                                                                                          cols_{cols}
 {
     memory_allocation(rows, cols);
 
     size_t max_num = rows_ * cols_;
-    size_t vec_len = dat.size();
+    auto cur = data.begin(),
+         end = data.end();
 
-    size_t end = vec_len < max_num ? vec_len : max_num;
-
-    for(size_t i = 0; i < end; ++i)
-        data_[i / cols_][i % cols_] = dat[i];
+    for(size_t i = 0; i < max_num && cur != end; ++i, ++cur)
+        data_[i / cols_][i % cols_] = *cur;
 }
 
 
@@ -42,8 +41,6 @@ Matrix<DataT>::Matrix( size_t rows, size_t cols, func action ) : rows_{rows},
                                                                  cols_{cols}
 {
     memory_allocation(rows, cols);
-
-    size_t end = rows_ * cols_;
 
     for (size_t i = 0; i < rows_; ++i)
         for (size_t j = 0; j < cols_; ++j)
@@ -170,13 +167,13 @@ typename Matrix<DataT>::RowT Matrix<DataT>::operator [] ( size_t row ) const
 template <typename DataT>
 Matrix<DataT> Matrix<DataT>::operator - ( ) const
 {
-    vector<DataT> data{};
+    Matrix<DataT> matr{*this};
 
     for (size_t i = 0; i < rows_; ++i)
         for (size_t j = 0; j < cols_; ++j)
-            data.push_back(-data_[i][j]);
+            matr.data_[i][j] = -data_[i][j];
 
-    return Matrix<DataT>{rows_, cols_, data};
+    return std::move(matr);
 }
 
 template <typename DataT>
