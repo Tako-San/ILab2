@@ -1,7 +1,7 @@
 #include <iostream>
 #include "gtest/gtest.h"
 
-#include "matrix.hpp"
+#include "matrix.hh"
 
 using std::cout;
 using std::cin;

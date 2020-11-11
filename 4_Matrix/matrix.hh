@@ -123,7 +123,7 @@ namespace F
     template<typename DataT>
     Matrix<DataT> transpose( const Matrix<DataT> &matr );
 
-    #include "matrix.inl"
+    #include "matrix.ii"
 }
 
 #endif //MATRIX_H

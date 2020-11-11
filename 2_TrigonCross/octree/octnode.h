@@ -61,6 +61,6 @@ private:
     friend bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::iterator pair_it );
 };
 
-#include "octnode.inl"
+#include "octnode.i"
 
 #endif //ILAB2_OCTNODE_H
