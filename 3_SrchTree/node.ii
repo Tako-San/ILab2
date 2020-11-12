@@ -1,0 +1,288 @@
+
+template <typename DataT>
+Node<DataT>::Node() : data_()
+{}
+
+template <typename DataT>
+Node<DataT>::Node( DataT & data ) : data_{data}
+{}
+
+template <typename DataT>
+const DataT & Node<DataT>::get_data( ) const
+{
+    return data_;
+}
+
+template <typename DataT>
+void Node<DataT>::set( const DataT & n_data, Node<DataT> * prnt )
+{
+    data_ = n_data;
+    prnt_ = prnt;
+}
+
+template <typename DataT>
+Node<DataT> * Node<DataT>::add( const DataT & data )
+{
+#define DIRTY_JOB(side)                        \
+    if(side != nullptr)                        \
+        return side->add(data);                \
+    else                                       \
+    {                                          \
+        side = new Node;                       \
+        side->set(data, this);                 \
+        return side;                           \
+    }                                          \
+
+    if(data < data_)
+    {
+        DIRTY_JOB(left_)
+    }
+    else if(data > data_)
+    {
+        DIRTY_JOB(rght_)
+    }
+    else
+        std::cout << "\nWARNING: idk what should i do, my king\n";
+
+    return nullptr;
+#undef DIRTY_JOB
+}
+
+template <typename DataT>
+template <typename FindT>
+NodeIt<DataT> Node<DataT>::find( FindT & n_data )
+{
+    NodeIt<DataT> cur{this};
+    // NodeIt<DataT> end{nullptr};
+
+    while (cur.ptr_ != nullptr)
+    {
+        if (n_data == *cur)
+            return cur;
+
+        if (n_data > *cur)
+            cur.ptr_ = cur->rght_;
+        else if (n_data < *cur)
+            cur.ptr_ = cur->left_;
+        else
+            cur.ptr_ = nullptr;
+    }
+
+    return cur;
+}
+
+template <typename DataT>
+Node<DataT> * Node<DataT>::next( )
+{
+    if (prnt_ == nullptr)
+        std::cerr << "no parent" << endl;
+
+}
+
+template <typename DataT>
+Node<DataT> * Node<DataT>::prev( )
+{
+
+}
+
+template <typename DataT>
+int Node<DataT>::depth( )
+{
+    if(this == nullptr)
+        return 0;
+
+    int depth = 1;
+
+    int depth_l = left_->depth();
+    int depth_r = rght_->depth();
+
+    int subtr_max = (depth_l > depth_r)? depth_l : depth_r;
+
+    depth += subtr_max;
+
+    return depth;
+}
+
+template <typename DataT>
+bool Node<DataT>::is_balanced( )
+{
+    int res = abs(left_->depth() - rght_->depth()) <= 1 ? 1 : 0;
+    return res;
+}
+
+template <typename DataT>
+void Node<DataT>::del( DataT to_del )
+{
+    if (this == nullptr)
+        return;
+    if (to_del < data_)
+        left_->del(to_del);
+    else if (to_del > data_)
+        rght_->del(to_del);
+    else if (left_ != nullptr && rght_ != nullptr)
+    {
+        Node *tmp;
+        for(tmp = rght_; tmp->left_!= nullptr; tmp = tmp->left);
+        data_ = tmp->data_;
+        rght_->del(data_.key);
+    }
+    else if (left_ != nullptr)
+    {
+        Node * tmp = left_;
+
+        if (left_->left_ != nullptr)
+            left_->left_->prnt_ = this;
+        if (left_->rght_ != nullptr)
+            left_->rght_->prnt_ = this;
+
+        data_ = left_->data;
+
+        rght_ = left_->rght_;
+        left_= left_->left_;
+
+        delete tmp;
+    }
+    else if (rght_ != nullptr)
+    {
+        Node * tmp = rght_;
+
+        if (rght_->rght_ != nullptr)
+            rght_->rght_->prnt_ = this;
+        if (rght_->left_!= nullptr)
+            rght_->left_->prnt_ = this;
+
+        data_ = rght_->data_;
+
+        left_= rght_->left_;
+        rght_ = rght_->rght_;
+
+        delete tmp;
+    }
+    else
+    {
+        if(prnt_->left_== this)
+            prnt_->left_= nullptr;
+        else
+            prnt_->rght_ = nullptr;
+        delete this;
+    }
+}
+
+template <typename DataT>
+void Node<DataT>::clear( )
+{
+    if(this == nullptr)
+        return;
+
+    if(left_!= nullptr)
+        left_->clear();
+    if(rght_ != nullptr)
+        rght_->clear();
+
+    delete this;
+}
+
+template <typename DataT>
+void Node<DataT>::print( )
+{
+    if(left_!= nullptr)
+        left_->print();
+
+    if(prnt_ == nullptr)
+        cout << *this << " - ROOT" << endl;
+    else if(left_== nullptr && rght_ == nullptr)
+        cout << *this << " - leaf" << endl;
+    else
+        cout << *this << endl;
+
+    if(rght_ != nullptr)
+        rght_->print();
+}
+
+template <typename DataT>
+void Node<DataT>::print_leafs( )
+{
+    if(this == nullptr)
+        return;
+
+    if(left_== nullptr && rght_ == nullptr)
+        std::cout << data_ <<"\n";
+    else
+    {
+        left_->print_leafs();
+        rght_->print_leafs();
+    }
+}
+
+
+template <typename DataT>
+void Node<DataT>::print_lvl( int lvl )
+{
+    if(this == nullptr)
+        return;
+    else if(lvl == 0)
+        std::cout << *this;
+    else if(lvl > 0)
+    {
+        left_->print_lvl(lvl - 1);
+        rght_->print_lvl(lvl - 1);
+    }
+}
+
+template <typename DataT>
+Node<DataT> * NodeIt<DataT>::operator -> ( )
+{
+    return ptr_;
+}
+
+template <typename DataT>
+NodeIt<DataT>::NodeIt( Node<DataT> * ptr ) : ptr_{ptr}
+{}
+
+template <typename DataT>
+NodeIt<DataT>::NodeIt( const NodeIt<DataT> & it ) : ptr_{it.ptr_}
+{}
+
+template <typename DataT>
+bool NodeIt<DataT>::operator == ( const NodeIt<DataT> & it ) const
+{
+    return ptr_ == it.ptr_;
+}
+
+template <typename DataT>
+bool NodeIt<DataT>::operator != ( const NodeIt<DataT> & it ) const
+{
+    return  ptr_ != it.ptr_;
+}
+
+template <typename DataT>
+DataT & NodeIt<DataT>::operator * ( )
+{
+    return ptr_->data_;
+}
+
+
+template <typename DataT>
+const DataT & NodeIt<DataT>::operator * ( ) const
+{
+    return ptr_->data_;
+}
+
+template <typename DataT>
+NodeIt<DataT> & NodeIt<DataT>::operator ++ ()
+{
+    ptr_ = ptr_->next();
+}
+
+template <typename DataT>
+NodeIt<DataT> & NodeIt<DataT>::operator -- ()
+{
+    ptr_ = ptr_->prev();
+}
+
+
+template <typename DataT>
+std::ostream & operator << ( std::ostream & ost, const Node<DataT> & node )
+{
+    return ost << node.get_data();
+}
