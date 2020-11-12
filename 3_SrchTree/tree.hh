@@ -28,14 +28,14 @@ public:
     ~Tree( );
 
     Tree & operator = ( const Tree & ) = delete;
-    Tree  operator = ( Tree && ) = delete;
+    Tree operator = ( Tree && ) = delete;
 
     template <typename FindT>
     NodeIt<DataT> find( const FindT & data );
 
     void add( const DataT & data );
 
-    int depth( );
+    uint depth( );
     bool is_balanced( );
 
     void del( DataT & to_del );
@@ -46,6 +46,9 @@ public:
     void print_lvl( int lvl );
 
 };
+
+
+
 
 
 template <typename DataT>
@@ -85,7 +88,7 @@ void Tree<DataT>::add( const DataT & data )
 }
 
 template <typename DataT>
-int Tree<DataT>::depth( )
+uint Tree<DataT>::depth( )
 {
     return root_->depth();
 }

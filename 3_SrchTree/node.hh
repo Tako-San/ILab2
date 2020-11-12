@@ -15,6 +15,9 @@ class Tree;
 template <typename DataT>
 class NodeIt;
 
+
+
+
 template <typename DataT>
 class Node
 {
@@ -37,12 +40,12 @@ public:
 
 private:
 
-    void set( const DataT &n_data, Node * prnt = nullptr );
+    void set( const DataT & data, Node * prnt = nullptr );
 
-    Node * add( const DataT & data );
+    NodeIt<DataT> add( const DataT & data );
 
     template <typename FindT>
-    NodeIt<DataT> find( FindT & n_data );
+    NodeIt<DataT> find( FindT & data );
     Node * next( );
     Node * prev( );
 
@@ -58,6 +61,8 @@ private:
 };
 
 
+
+
 template <typename DataT>
 class NodeIt
 {
@@ -66,7 +71,7 @@ class NodeIt
 private:
     Node<DataT> * ptr_;
 
-    Node<DataT> * operator -> ( );
+    Node<DataT> * operator -> ( ); // for author's comfort
 
     explicit NodeIt( Node<DataT> * ptr );
 
@@ -85,6 +90,9 @@ public:
 
 
 };
+
+
+
 
 template <typename DataT>
 std::ostream & operator << ( std::ostream & ost, const Node<DataT> & node );

@@ -14,55 +14,56 @@ const DataT & Node<DataT>::get_data( ) const
 }
 
 template <typename DataT>
-void Node<DataT>::set( const DataT & n_data, Node<DataT> * prnt )
+void Node<DataT>::set( const DataT & data, Node<DataT> * prnt )
 {
-    data_ = n_data;
+    data_ = data;
     prnt_ = prnt;
 }
 
+
+#define IF_THEN( cond, side_)                \
+    if (cond)                                \
+    {                                        \
+        if (cur->side_ != nullptr)           \
+            cur.ptr_ = cur->side_;           \
+        else                                 \
+        {                                    \
+            cur->side_ = new Node;           \
+            cur->side_->set(data, cur.ptr_); \
+        }                                    \
+    }                                        \
+
 template <typename DataT>
-Node<DataT> * Node<DataT>::add( const DataT & data )
+NodeIt<DataT> Node<DataT>::add( const DataT & data )
 {
-#define DIRTY_JOB(side)                        \
-    if(side != nullptr)                        \
-        return side->add(data);                \
-    else                                       \
-    {                                          \
-        side = new Node;                       \
-        side->set(data, this);                 \
-        return side;                           \
-    }                                          \
-
-    if(data < data_)
+    NodeIt<DataT> cur{this};
+    
+    while (data != *cur)
     {
-        DIRTY_JOB(left_)
+        IF_THEN(data > *cur, rght_)
+        else
+        IF_THEN(data < *cur, left_)
     }
-    else if(data > data_)
-    {
-        DIRTY_JOB(rght_)
-    }
-    else
-        std::cout << "\nWARNING: idk what should i do, my king\n";
 
-    return nullptr;
-#undef DIRTY_JOB
+    return cur;
 }
+
+#undef IF_THEN
 
 template <typename DataT>
 template <typename FindT>
-NodeIt<DataT> Node<DataT>::find( FindT & n_data )
+NodeIt<DataT> Node<DataT>::find( FindT & data )
 {
     NodeIt<DataT> cur{this};
-    // NodeIt<DataT> end{nullptr};
 
     while (cur.ptr_ != nullptr)
     {
-        if (n_data == *cur)
+        if (data == *cur)
             return cur;
 
-        if (n_data > *cur)
+        if (data > *cur)
             cur.ptr_ = cur->rght_;
-        else if (n_data < *cur)
+        else if (data < *cur)
             cur.ptr_ = cur->left_;
         else
             cur.ptr_ = nullptr;
@@ -74,8 +75,7 @@ NodeIt<DataT> Node<DataT>::find( FindT & n_data )
 template <typename DataT>
 Node<DataT> * Node<DataT>::next( )
 {
-    if (prnt_ == nullptr)
-        std::cerr << "no parent" << endl;
+
 
 }
 
@@ -228,6 +228,9 @@ void Node<DataT>::print_lvl( int lvl )
         rght_->print_lvl(lvl - 1);
     }
 }
+
+
+
 
 template <typename DataT>
 Node<DataT> * NodeIt<DataT>::operator -> ( )
