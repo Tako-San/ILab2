@@ -8,6 +8,9 @@ namespace F
 {
     template <typename DataT>
     class Node;
+
+    template <typename DataT>
+    class NodeIt;
     
     template <typename DataT>
     class Tree final
@@ -33,7 +36,10 @@ namespace F
         Tree operator = ( Tree && ) = delete;
 
         template <typename FindT>
-        NodeT * find( const FindT & data );
+        NodeIt<DataT> find( const FindT & data );
+
+        NodeIt<DataT> begin( );
+        NodeIt<DataT> end( );
 
         void insert( const DataT & data );
 
@@ -45,9 +51,7 @@ namespace F
         void print( );
         void print_leafs( );
         void print_lvl( int lvl );
-
     };
-
 
 
 
@@ -70,9 +74,21 @@ namespace F
 
     template <typename DataT>
     template <typename FindT>
-    Node<DataT> * Tree<DataT>::find( const FindT & data )
+    NodeIt<DataT> Tree<DataT>::find( const FindT & data )
     {
-        return root_->find(data);
+        return NodeIt<DataT> {root_->find(data)};
+    }
+
+    template <typename DataT>
+    NodeIt<DataT> Tree<DataT>::begin( )
+    {
+        return NodeIt<DataT> {root_->findmin()};
+    }
+
+    template <typename DataT>
+    NodeIt<DataT> Tree<DataT>::end( )
+    {
+        return NodeIt<DataT> {nullptr};
     }
 
     template <typename DataT>
@@ -126,8 +142,6 @@ namespace F
             return;
         root_->print_lvl(lvl);
     }
-
-
 }
 
 #endif //TREE_HH

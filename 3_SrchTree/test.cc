@@ -14,7 +14,7 @@ int main( )
 {
     Tree<int> tree{};
 
-    for (int i = 0; i < 32; ++i)
+    for (int i = 0; i < 31; ++i)
         tree.insert(i);
 
     for (int i = 0; i < 6; ++i)
@@ -24,5 +24,16 @@ int main( )
         cout << endl;
     }
 
+    auto triter = tree.begin(),
+         end = tree.end();
+
+    while (triter != end)
+    {
+        cout << *triter << " ";
+        ++triter;
+    }
+
+    cout << endl;
+
     return 0;
-};
+}

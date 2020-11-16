@@ -10,11 +10,14 @@ namespace F
     template <typename DataT>
     class Tree;
 
+    template <typename DataT>
+    class NodeIt;
 
     template <typename DataT>
     class Node final
     {
         friend class Tree<DataT>;
+        friend class NodeIt<DataT>;
 
     private:
 
@@ -31,7 +34,6 @@ namespace F
         explicit Node( const DataT & data, Node * prnt = nullptr );
 
         int depth( );
-        int cdepth( );
         int diff( );
 
         void set_depth( );
@@ -46,7 +48,10 @@ namespace F
 
         bool is_balanced( );
 
+        Node * next( );
+        Node * prev( );
         Node * findmin( );
+        Node * findmax( );
         Node * removemin( );
         Node * remove( const DataT & data );
 
@@ -59,6 +64,32 @@ namespace F
         void print( );
         void print_leafs( );
         void print_lvl( int lvl );
+    };
+
+    template <typename DataT>
+    class NodeIt final
+    {
+        friend class Tree<DataT>;
+
+    private:
+
+        Node<DataT> * ptr_;
+
+    public:
+
+        NodeIt( const NodeIt & it );
+        explicit NodeIt( Node<DataT> * ptr );
+
+        NodeIt & operator = ( const NodeIt & iter );
+
+        bool operator == ( const NodeIt & it ) const;
+        bool operator != ( const NodeIt & it ) const;
+
+        DataT & operator * ( );
+        const DataT & operator * ( ) const;
+
+        NodeIt & operator ++ ();
+        NodeIt & operator -- ();
     };
 
     #include "node.ii"
