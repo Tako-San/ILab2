@@ -1,18 +1,22 @@
 #include <iostream>
+#include <vector>
 #include <cstdio>
 #include <ctime>
 
-#include "../matrix.hpp"
+#include "../matrix.hh"
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::vector;
 
 void usage( )
 {
     std::cerr << "USAGE: ./PROGNAME [ALGNUM]" << endl;
     std::cerr << "1 for transpose, 0 for no transpose" << endl;
 }
+
+using namespace F;
 
 template <typename DataT>
 Matrix<DataT> mul( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
@@ -92,8 +96,8 @@ int main( int ac, char ** av )
         raw2.push_back(tmp);
     }
 
-    Matrix<long double> m1{rows1, cols1, raw1};
-    Matrix<long double> m2{rows1, cols1, raw1};
+    Matrix<long double> m1{rows1, cols1, raw1.begin(), raw1.end()};
+    Matrix<long double> m2{rows2, cols2, raw2.begin(), raw2.end()};
 
     assert(cols1 == rows2);
 
