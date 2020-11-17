@@ -111,6 +111,15 @@ TEST(det, little)
     EXPECT_DOUBLE_EQ(m5.det(), 18);
 }
 
+TEST(det, cast)
+{
+    Matrix<int> m{2, 2, {45, 56, 29, 32}};
+    cout << m.det() << endl;
+
+    Matrix<double> m1{2, 2, {45, 56, 29, 32}};
+    cout << m.det() << endl;
+}
+
 TEST(op, matr_mul)
 {
     Matrix<double> m1{1, 4, {1, 1, 1, 1}};
