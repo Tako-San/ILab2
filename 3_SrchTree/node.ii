@@ -178,19 +178,17 @@ Node<DataT> * Node<DataT>::prev( )
 template <typename DataT>
 Node<DataT> * Node<DataT>::findmin( )
 {
-    if (left_ == nullptr)
-        return this;
-    else
-        return left_->findmin();
+    Node<DataT> * cur{};
+    for (cur = this; cur->left_ != nullptr; cur = cur->left_);
+    return cur;
 }
 
 template <typename DataT>
 Node<DataT> * Node<DataT>::findmax( )
 {
-    if (rght_ == nullptr)
-        return this;
-    else
-        return rght_->findmin();
+    Node<DataT> * cur{};
+    for (cur = this; cur->rght_ != nullptr; cur = cur->rght_);
+    return cur;
 }
 
 template <typename DataT>
@@ -253,18 +251,6 @@ Node<DataT> * Node<DataT>::find( const FindT & data )
     }
 
     return cur;
-}
-
-template <typename DataT>
-template <typename FindT>
-Node<DataT> * Node<DataT>::lower_bound( const FindT & data )
-{
-    NodeIt<DataT> cur{findmin()};
-
-    while (*cur < data)
-        ++cur;
-
-    return cur.ptr_;
 }
 
 template <typename DataT>

@@ -14,10 +14,10 @@ int main( )
 {
     Tree<int> tree{};
 
-    for (int i = 0; i < 31; ++i)
+    for (int i = 0; i < 511; ++i)
         tree.insert(i);
 
-    for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < 9; ++i)
     {
         cout << "#" << i << ": ";
         tree.print_lvl(i);

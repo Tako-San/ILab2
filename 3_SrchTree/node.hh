@@ -57,8 +57,6 @@ namespace F
 
         template <typename FindT>
         Node * find( const FindT & data );
-        template <typename FindT>
-        Node * lower_bound( const FindT & data );
 
         Node * insert( const DataT & data );
 
@@ -78,11 +76,11 @@ namespace F
     private:
 
         Node<DataT> * ptr_;
+        explicit NodeIt( Node<DataT> * ptr );
 
     public:
 
         NodeIt( const NodeIt & it );
-        explicit NodeIt( Node<DataT> * ptr );
 
         NodeIt & operator = ( const NodeIt & it );
 

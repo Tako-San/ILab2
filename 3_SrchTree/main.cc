@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <chrono>
 #include <vector>
@@ -6,12 +7,13 @@
 #include "tree.hh"
 
 using std::set;
+
 using std::cin;
 using std::cout;
 using std::endl;
+
+using std::chrono::microseconds;
 using std::chrono::high_resolution_clock;
-// using std::chrono::duration_cast;
-using std::chrono::nanoseconds;
 
 
 int main( )
@@ -73,10 +75,10 @@ int main( )
 
     auto end = high_resolution_clock::now();
 
-    cout << "std::set " << duration_cast<nanoseconds>(end - begin).count() << "\n";
+    cout << "std::set " << duration_cast<microseconds>(end - begin).count() << " ms\n";
+
 
     // my tree
-
 
     auto begin2 = high_resolution_clock::now();
 
@@ -103,7 +105,7 @@ int main( )
 
     auto end2 = high_resolution_clock::now();
 
-    cout << "my tree  " << duration_cast<nanoseconds>(end2 - begin2).count() << "\n";
+    cout << "F::Tree  " << duration_cast<microseconds>(end2 - begin2).count() << " ms\n";
 
     return 0;
 }
