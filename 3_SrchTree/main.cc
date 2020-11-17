@@ -78,7 +78,7 @@ int main( )
     // my tree
 
 
-    begin = high_resolution_clock::now();
+    auto begin2 = high_resolution_clock::now();
 
     for (int i = 0; i < req_num * 2; i += 2)
     {
@@ -101,9 +101,9 @@ int main( )
         cout << counter << " ";
     }
 
-    end = high_resolution_clock::now();
+    auto end2 = high_resolution_clock::now();
 
-    cout << "my tree  " << duration_cast<nanoseconds>(end - begin).count() << "\n";
+    cout << "my tree  " << duration_cast<nanoseconds>(end2 - begin2).count() << "\n";
 
     return 0;
 }

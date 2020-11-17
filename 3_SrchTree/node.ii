@@ -259,21 +259,12 @@ template <typename DataT>
 template <typename FindT>
 Node<DataT> * Node<DataT>::lower_bound( const FindT & data )
 {
-    auto * cur = this;
+    NodeIt<DataT> cur{findmin()};
 
-    while (true)
-    {
-        if (data == cur->data_)
-            return cur;
+    while (*cur < data)
+        ++cur;
 
-        if (cur == nullptr)
-            return nullptr;
-
-        if (data > cur->data_)
-            cur = cur->rght_;
-        else
-            return cur->findmin();
-    }
+    return cur.ptr_;
 }
 
 template <typename DataT>
@@ -376,9 +367,9 @@ NodeIt<DataT>::NodeIt( Node<DataT> * ptr ) : ptr_{ptr}
 {}
 
 template <typename DataT>
-NodeIt<DataT> & NodeIt<DataT>::operator = ( const NodeIt<DataT> & iter )
+NodeIt<DataT> & NodeIt<DataT>::operator = ( const NodeIt<DataT> & it )
 {
-    ptr_ = iter.ptr_;
+    ptr_ = it.ptr_;
     return *this;
 }
 

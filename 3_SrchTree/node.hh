@@ -72,6 +72,7 @@ namespace F
     template <typename DataT>
     class NodeIt final
     {
+        friend class Node<DataT>;
         friend class Tree<DataT>;
 
     private:
@@ -83,7 +84,7 @@ namespace F
         NodeIt( const NodeIt & it );
         explicit NodeIt( Node<DataT> * ptr );
 
-        NodeIt & operator = ( const NodeIt & iter );
+        NodeIt & operator = ( const NodeIt & it );
 
         bool operator == ( const NodeIt & it ) const;
         bool operator != ( const NodeIt & it ) const;
