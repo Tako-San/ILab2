@@ -2,11 +2,13 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "../matrix.h"
+#include "../matrix.hh"
 
 using std::cout;
 using std::cin;
 using std::endl;
+
+using namespace F;
 
 template <typename DataT>
 void print_raw ( Matrix<DataT> & matr )

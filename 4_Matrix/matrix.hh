@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <cstdint>
 #include <cassert>
+#include <vector>
 #include <cmath>
 
 namespace F
@@ -26,13 +27,9 @@ namespace F
     public:
 
         Matrix( size_t rows, size_t cols );
-
         Matrix( Matrix &&orig );
-
         Matrix( const Matrix &orig );
-
         Matrix( size_t rows, size_t cols, func action );
-
         Matrix( size_t rows, size_t cols, const initializer_list<DataT> &dat );
 
         template <typename Iter>
@@ -65,7 +62,7 @@ namespace F
         bool operator!=( const Matrix &matr );
 
         bool swap_lines( size_t l1, size_t l2 );
-        bool add_line( size_t to, size_t from, DataT mul );
+        bool add_line( size_t to, size_t from, long double mul );
         bool mul_line( size_t l, DataT mul );
 
         bool sum_suitable( const Matrix<DataT> &matr ) const;
@@ -73,9 +70,7 @@ namespace F
     private:
 
         void memory_allocation( size_t rows, size_t cols );
-
         void resize( size_t rows, size_t cols );
-
         void kill();
     };
 
@@ -107,19 +102,14 @@ namespace F
 
     template<typename DataT>
     Matrix<DataT> operator+( const Matrix<DataT> &lhs, const Matrix<DataT> &rhs );
-
     template<typename DataT>
     Matrix<DataT> operator-( const Matrix<DataT> &lhs, const Matrix<DataT> &rhs );
-
     template<typename DataT>
     Matrix<DataT> operator*( const Matrix<DataT> &lhs, const Matrix<DataT> &rhs );
-
     template<typename DataT>
     Matrix<DataT> operator*( const Matrix<DataT> &matr, DataT mul );
-
     template<typename DataT>
     Matrix<DataT> operator*( DataT mul, const Matrix<DataT> &matr );
-
     template<typename DataT>
     Matrix<DataT> transpose( const Matrix<DataT> &matr );
 

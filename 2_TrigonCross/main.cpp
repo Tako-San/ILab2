@@ -62,7 +62,12 @@ int main( )
 
     for (unsigned i = 0; i < N; ++i)
         if (is_intr[i] > 0)
+        {
+            ++count;
             cout << i << endl;
+        }
+
+    cout << "count: " << count << endl;
 
     return 0;
 }

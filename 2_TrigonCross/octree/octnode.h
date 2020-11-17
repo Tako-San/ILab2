@@ -47,7 +47,7 @@ public:
     bool is_in( const DataT * d ) const;
     bool need_children( ) const;
 
-    OctNode<DataT> * insert( PairIt data, bool hate_children = false );
+    OctNode * insert( PairIt data, bool hate_children = false );
 
     bool intersect_subtree( DataT obj );
 

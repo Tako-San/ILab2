@@ -51,7 +51,7 @@ std::istream & operator >> ( std::istream & ist, Triangle & tr )
 std::ostream & operator << ( std::ostream & ost, const Triangle & tr )
 {
     for (int i = 0; i < 3; ++i)
-        ost << "v[" << i << "] = " << tr[0] << " ";
+        ost << "v[" << i << "] = " << tr[i] << " ";
     ost << ";";
     return ost;
 }

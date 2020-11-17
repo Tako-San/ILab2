@@ -24,8 +24,17 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
 
 
     if ((pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC) &&
-        (abs(abs(pl1.get_dst()) - abs(pl2.get_dst())) < ACCURACY))
-        return is_intersect2D(tr1, tr2);
+        (abs((pl1.get_dst()) - (pl2.get_dst())) < ACCURACY))
+    {
+        if (is_intersect2D(tr1, tr2))
+        {
+            cout << "INTERSECTION IN 2D:" << endl;
+            cout << tr1 << endl;
+            cout << tr2 << endl;
+            return true;
+        }
+        return false;
+    }
 
     double sd2[3] = {};
     double sd1[3] = {};
@@ -51,7 +60,14 @@ bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
     find_cross(tr1, sd1, int_line, t1);
     find_cross(tr2, sd2, int_line, t2);
 
-    return cmp_seg(t1, t2);
+    if (cmp_seg(t1, t2))
+    {
+        cout << "INTERSECTION IN 3D:" << endl;
+        cout << tr1 << endl;
+        cout << tr2 << endl;
+        return true;
+    }
+    return false;
 }
 
 

@@ -295,7 +295,7 @@ bool Matrix<DataT>::swap_lines( size_t l1, size_t l2 )
 }
 
 template <typename DataT>
-bool Matrix<DataT>::add_line( size_t to, size_t from, DataT mul )
+bool Matrix<DataT>::add_line( size_t to, size_t from, long double mul )
 {
     if ((to > cols_) || (from > cols_))
         return false;

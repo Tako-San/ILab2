@@ -216,6 +216,21 @@ TEST(octree, constructors)
     EXPECT_EQ(octree.insert(Vec{10, -10, -10}), true);
 }
 
+TEST(intersect, tr_2D)
+{
+    Triangle tr1{Vec{1, 1, -1}, Vec{1, 1, -2}, Vec{2, 2, -1}};
+    Triangle tr2{Vec{-1, -1, 1}, Vec{-1, -1, 2}, Vec{-2, -2, 1}};
+
+    bool ans{is_intersect3D(tr1, tr2)};
+
+    EXPECT_EQ(ans, false);
+
+    Triangle tr3{Vec{-1, -1, 1}, Vec{-1, -1, 2}, Vec{-2, -2, 1}};
+    Triangle tr4{Vec{1, 1, -1}, Vec{1, 1, -2}, Vec{2, 2, -1}};
+
+    EXPECT_EQ(is_intersect3D(tr3, tr4), false);
+}
+
 int main( int argc, char ** argv )
 {
     testing::InitGoogleTest(&argc, argv);
