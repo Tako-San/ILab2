@@ -38,19 +38,16 @@ int main( )
     for (int i = 0; i < req_num * 2; i += 2)
         cin >> requests[i] >> requests[i + 1];
 
-    // filling trees
-    F::Tree<int> my_tree{};
+    // std::set
+
+    cout << "std::set\nANS: ";
+
+    auto begin = high_resolution_clock::now();
+
     set<int> std_tree{};
 
     for(auto key : keys)
-    {
-        my_tree.insert(key);
         std_tree.insert(key);
-    }
-
-    // std::set
-
-    auto begin = high_resolution_clock::now();
 
     for (int i = 0; i < req_num * 2; i += 2)
     {
@@ -75,12 +72,19 @@ int main( )
 
     auto end = high_resolution_clock::now();
 
-    cout << "std::set " << duration_cast<microseconds>(end - begin).count() << " ms\n";
+    cout << "\nTIME: " << duration_cast<microseconds>(end - begin).count() << " ms\n";
 
 
     // my tree
 
+    cout << "\nF::Tree\nANS: ";
+
     auto begin2 = high_resolution_clock::now();
+
+    F::Tree<int> my_tree{};
+
+    for(auto key : keys)
+        my_tree.insert(key);
 
     for (int i = 0; i < req_num * 2; i += 2)
     {
@@ -105,7 +109,7 @@ int main( )
 
     auto end2 = high_resolution_clock::now();
 
-    cout << "F::Tree  " << duration_cast<microseconds>(end2 - begin2).count() << " ms\n";
+    cout << "\nTIME: " << duration_cast<microseconds>(end2 - begin2).count() << " ms\n";
 
     return 0;
 }
