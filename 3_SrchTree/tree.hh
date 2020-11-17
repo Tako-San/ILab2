@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <iostream>
 
+#include "node.hh"
+
 namespace F
 {
     template <typename DataT>
@@ -37,6 +39,9 @@ namespace F
 
         template <typename FindT>
         NodeIt<DataT> find( const FindT & data );
+
+        template <typename FindT>
+        NodeIt<DataT> lower_bound( const FindT & data );
 
         NodeIt<DataT> begin( );
         NodeIt<DataT> end( );
@@ -77,6 +82,13 @@ namespace F
     NodeIt<DataT> Tree<DataT>::find( const FindT & data )
     {
         return NodeIt<DataT> {root_->find(data)};
+    }
+
+    template <typename DataT>
+    template <typename FindT>
+    NodeIt<DataT> Tree<DataT>::lower_bound( const FindT & data )
+    {
+        return NodeIt<DataT> {root_->lower_bound(data)};
     }
 
     template <typename DataT>

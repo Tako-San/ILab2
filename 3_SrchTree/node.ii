@@ -235,7 +235,7 @@ Node<DataT> * Node<DataT>::remove( const DataT & data ) // удаление кл
 
 template <typename DataT>
 template <typename FindT>
-Node<DataT> * Node<DataT>::find( const DataT & data )
+Node<DataT> * Node<DataT>::find( const FindT & data )
 {
     auto * cur = this;
 
@@ -246,13 +246,34 @@ Node<DataT> * Node<DataT>::find( const DataT & data )
 
         if (data > cur->data_)
             cur = cur->rght_;
-        else if (data < *cur)
+        else if (data < cur->data_)
             cur = cur->left_;
         else
             cur = nullptr;
     }
 
     return cur;
+}
+
+template <typename DataT>
+template <typename FindT>
+Node<DataT> * Node<DataT>::lower_bound( const FindT & data )
+{
+    auto * cur = this;
+
+    while (true)
+    {
+        if (data == cur->data_)
+            return cur;
+
+        if (cur == nullptr)
+            return nullptr;
+
+        if (data > cur->data_)
+            cur = cur->rght_;
+        else
+            return cur->findmin();
+    }
 }
 
 template <typename DataT>
@@ -358,6 +379,7 @@ template <typename DataT>
 NodeIt<DataT> & NodeIt<DataT>::operator = ( const NodeIt<DataT> & iter )
 {
     ptr_ = iter.ptr_;
+    return *this;
 }
 
 template <typename DataT>
@@ -388,10 +410,12 @@ template <typename DataT>
 NodeIt<DataT> & NodeIt<DataT>::operator ++ ()
 {
     ptr_ = ptr_->next();
+    return *this;
 }
 
 template <typename DataT>
 NodeIt<DataT> & NodeIt<DataT>::operator -- ()
 {
     ptr_ = ptr_->prev();
+    return *this;
 }

@@ -56,7 +56,10 @@ namespace F
         Node * remove( const DataT & data );
 
         template <typename FindT>
-        Node * find( const DataT & data );
+        Node * find( const FindT & data );
+        template <typename FindT>
+        Node * lower_bound( const FindT & data );
+
         Node * insert( const DataT & data );
 
         void clear_subtree( );
