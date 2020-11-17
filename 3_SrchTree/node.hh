@@ -1,102 +1,101 @@
-#ifndef MAP_NODE2_H
-#define MAP_NODE2_H
+#ifndef NODE_HH
+#define NODE_HH
 
 #include <cstdio>
 #include <iostream>
-#include "my_pair/pair.h"
-
-using std::cout;
-using std::endl;
-using std::abs;
-
-template <typename DataT>
-class Tree;
-
-template <typename DataT>
-class NodeIt;
 
 
-
-
-template <typename DataT>
-class Node
+namespace F
 {
-    friend class Tree<DataT>;
-    friend class NodeIt<DataT>;
+    template <typename DataT>
+    class Tree;
 
-private:
-    DataT data_;
+    template <typename DataT>
+    class NodeIt;
 
-    Node * prnt_{nullptr};
-    Node * left_{nullptr};
-    Node * rght_{nullptr};
+    template <typename DataT>
+    class Node final
+    {
+        friend class Tree<DataT>;
+        friend class NodeIt<DataT>;
 
-public:
-    
-    Node();
-    explicit Node( DataT & data );
-    
-    const DataT & get_data( ) const;
+    private:
 
-private:
+        DataT  data_;
+        int    dpth_{1};
 
-    void set( const DataT & data, Node * prnt = nullptr );
+        Node * prnt_{nullptr};
+        Node * left_{nullptr};
+        Node * rght_{nullptr};
 
-    NodeIt<DataT> add( const DataT & data );
+    private:
 
-    template <typename FindT>
-    NodeIt<DataT> find( FindT & data );
-    Node * next( );
-    Node * prev( );
+        Node( );
+        explicit Node( const DataT & data, Node * prnt = nullptr );
 
-    int depth( );
-    bool is_balanced( );
-    
-    void del( DataT to_del );
-    void clear( );
+        int depth( );
+        int diff( );
 
-    void print( );
-    void print_leafs( );
-    void print_lvl( int lvl );
-};
+        void set_depth( );
 
+        void set_parent( Node * prnt );
+        void set_right( Node * rght );
+        void set_left( Node * left );
 
+        Node * rot_rt( );
+        Node * rot_lt( );
+        Node * balance( );
 
+        bool is_balanced( );
 
-template <typename DataT>
-class NodeIt
-{
-    friend class Node<DataT>;
+        Node * next( );
+        Node * prev( );
+        Node * findmin( );
+        Node * findmax( );
+        Node * removemin( );
+        Node * remove( const DataT & data );
 
-private:
-    Node<DataT> * ptr_;
+        template <typename FindT>
+        Node * find( const FindT & data );
+        template <typename FindT>
+        Node * lower_bound( const FindT & data );
 
-    Node<DataT> * operator -> ( ); // for author's comfort
+        Node * insert( const DataT & data );
 
-    explicit NodeIt( Node<DataT> * ptr );
+        void clear_subtree( );
 
-public:
+        void print( );
+        void print_leafs( );
+        void print_lvl( int lvl );
+    };
 
-    NodeIt( const NodeIt & it );
+    template <typename DataT>
+    class NodeIt final
+    {
+        friend class Tree<DataT>;
 
-    bool operator == ( const NodeIt & it ) const;
-    bool operator != ( const NodeIt & it ) const;
+    private:
 
-    DataT & operator * ( );
-    const DataT & operator * ( ) const;
+        Node<DataT> * ptr_;
 
-    NodeIt & operator ++ ();
-    NodeIt & operator -- ();
+    public:
 
+        NodeIt( const NodeIt & it );
+        explicit NodeIt( Node<DataT> * ptr );
 
-};
+        NodeIt & operator = ( const NodeIt & iter );
 
+        bool operator == ( const NodeIt & it ) const;
+        bool operator != ( const NodeIt & it ) const;
 
+        DataT & operator * ( );
+        const DataT & operator * ( ) const;
 
+        NodeIt & operator ++ ();
+        NodeIt & operator -- ();
+    };
 
-template <typename DataT>
-std::ostream & operator << ( std::ostream & ost, const Node<DataT> & node );
+    #include "node.ii"
 
-#include "node.ii"
-
-#endif //MAP_NODE2_H
+}
+#endif //NODE_HH
