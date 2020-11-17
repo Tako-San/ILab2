@@ -7,5 +7,4 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
-
-add_executable(tree main.cc tree.hh node.hh node.ii)
+add_executable(tree main.cc)
