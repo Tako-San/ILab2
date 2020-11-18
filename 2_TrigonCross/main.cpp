@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "geom/geom.h"
-#include "octree/octree.h"
+#include "octree.hh"
 
 using std::cout;
 using std::cin;

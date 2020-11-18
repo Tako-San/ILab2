@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 
-#include "g_obj/triangle.h"
-
 #include "geom/geom.h"
 
 using std::cout;
