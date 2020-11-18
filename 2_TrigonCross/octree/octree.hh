@@ -3,7 +3,7 @@
 
 #include <map>
 #include <list>
-#include "octnode.h"
+#include "octnode.hh"
 
 using std::map;
 using std::list;
@@ -27,6 +27,8 @@ public:
     ~OctTree( );
 
     bool insert( const DataT & data );
+
+    void print( );
 };
 
 template <typename DataT>
@@ -84,5 +86,10 @@ bool OctTree<DataT>::insert( const DataT & data )
     return true;
 }
 
+template <typename DataT>
+void OctTree<DataT>::print( )
+{
+    root_->print();
+}
 
 #endif //ILAB2_OCTREE_H

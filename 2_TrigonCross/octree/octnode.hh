@@ -31,11 +31,13 @@ private:
 
     Box zone_;
     vector<PairIt> data_;
+    int lvl_;
 
 public:
 
     OctNode( );
     explicit OctNode( Box zone, OctNode * parent = nullptr );
+
     OctNode( const OctNode & ) = default;
     OctNode & operator = ( const OctNode & ) = default;
 
@@ -50,6 +52,7 @@ public:
     OctNode * insert( PairIt data, bool hate_children = false );
 
     bool intersect_subtree( DataT obj );
+    void print( );
 
 private:
 
@@ -61,6 +64,6 @@ private:
     friend bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::iterator pair_it );
 };
 
-#include "octnode.i"
+#include "octnode.ii"
 
 #endif //ILAB2_OCTNODE_H

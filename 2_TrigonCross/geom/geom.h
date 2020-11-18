@@ -6,7 +6,7 @@
 #include "g_obj/plane.h"
 
 #include "g_obj/triangle.h"
-#include "../octree/octree.h"
+#include "../octree/octree.hh"
 
 using std::pair;
 using std::list;
