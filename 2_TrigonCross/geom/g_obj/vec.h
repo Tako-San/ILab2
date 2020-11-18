@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cmath>
 
-#define ACCURACY 0.0001
+#define ACCURACY 1e-10
 
 enum Coords
 {
@@ -23,17 +23,15 @@ private:
     double & get( unsigned idx );
 
 public:
-    Vec( double x, double y, double z ) : x(x), y(y), z(z)
-    {}
 
-    explicit Vec( double r ) : x(r), y(r), z(r)
-    {}
-
-    Vec( ) : Vec{0}
-    {}
+    Vec( double x, double y, double z );
+    explicit Vec( double r = 0 );
 
     Vec( const Vec & v ) = default;
+    Vec( Vec && v ) = default;
 
+    Vec & operator = ( const Vec & v ) = default;
+    Vec & operator = ( Vec && v ) = default;
 
     bool operator == ( const Vec & v ) const;
     bool operator != ( const Vec & v ) const;
@@ -47,7 +45,6 @@ public:
     Vec & operator *= ( double num );
     Vec & operator /= ( double num );
 
-    Vec & operator = ( const Vec & v );
     Vec operator - ( ) const;
 
     double len ( ) const;

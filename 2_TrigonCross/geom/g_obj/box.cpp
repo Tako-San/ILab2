@@ -6,18 +6,11 @@ Box::Box( ) : min_{}, max_{}
 Box::Box( const Vec & min, const Vec & max ) : min_{min}, max_{max}
 {}
 
-/*Box::Box( double min_x, double min_y, double min_z,
-          double max_x, double max_y, double max_z ) : 
+#define LS_MAX(idx)      \
+    v[idx] < max_[idx]   \
 
-          min_{min_x, min_y, min_z},
-          max_{max_x, max_y, max_z}
-{}*/
-
-#define LS_MAX(idx)       \
-    v[idx] <= max_[idx]   \
-
-#define GR_MIN(idx)       \
-    v[idx] >= min_[idx]   \
+#define GR_MIN(idx)      \
+    v[idx] > min_[idx]   \
 
 bool Box::is_in( const Vec & v ) const
 {
@@ -27,6 +20,7 @@ bool Box::is_in( const Vec & v ) const
 
 #undef LS_MAX
 #undef GR_MIN
+
 
 bool Box::is_in( const Triangle & tr ) const
 {

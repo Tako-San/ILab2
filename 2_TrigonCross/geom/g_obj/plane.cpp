@@ -1,5 +1,17 @@
 #include "plane.h"
 
+Plane::Plane( const Vec & norm, double dst ) : nrm{normalise(norm)},
+                                               dst{dst}
+{}
+
+Plane::Plane( const Vec & v1, const Vec & v2, const Vec & v3 ) : nrm{normalise((v2 - v1) % (v3 - v1))},
+                                                                 dst{v1 & nrm}
+{}
+
+Plane::Plane( const Vec & norm, const Vec & p ) : nrm{normalise(norm)},
+                                                  dst{p & nrm}
+{}
+
 double Plane::sdst( const Vec & pt ) const
 {
     return ((pt & nrm) - dst);

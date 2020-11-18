@@ -5,6 +5,14 @@ double & Vec::get(unsigned idx)
     return *(&x + idx % 3);
 }
 
+Vec::Vec( double x, double y, double z ) : x{x}, y{y}, z{z}
+{}
+
+Vec::Vec( double r ) : x{r}, y{r}, z{r}
+{}
+
+
+
 bool Vec::operator == ( const Vec & v ) const
 {
 #define cmp( x ) std::abs(x - v.x) < ACCURACY
@@ -76,15 +84,6 @@ Vec & Vec::operator /= ( double num )
 
 
 
-Vec & Vec::operator = ( const Vec & v )
-{
-    x = v.x;
-    y = v.y;
-    z = v.z;
-
-    return *this;
-}
-
 Vec Vec::operator - ( ) const
 {
     return Vec(-x, -y, -z);
@@ -108,7 +107,6 @@ double Vec::len( ) const
 double operator & ( const  Vec & v1, const Vec & v2 )
 {
     double res = v1[X] * v2[X] + v1[Y] * v2[Y] + v1[Z] * v2[Z];
-    // std::cout << "\n" << v1 << " & " << v2 << " = " << res << "\n";
     return res;
 }
 
@@ -131,21 +129,16 @@ std::istream & operator >> ( std::istream & ist, Vec & v)
 
 Vec operator + ( const Vec & v1, const Vec & v2 )
 {
-    // return Vec(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
     return Vec(v1) += v2;
 }
 
 Vec operator - ( const Vec & v1, const Vec & v2 )
 {
-    return Vec(v1[X] - v2[X], v1[Y] - v2[Y], v1[Z] - v2[Z]);
-    // return Vec(v1) -= v2;
+    return Vec(v1) -= v2;
 }
 
 Vec operator * ( const Vec & v, double n )
 {
-    /*Vec newborn(v);
-    newborn *= n;
-    return newborn;*/
     return Vec(v) *= n;
 }
 

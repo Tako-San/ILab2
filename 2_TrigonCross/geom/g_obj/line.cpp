@@ -1,5 +1,11 @@
 #include "line.h"
 
+Line::Line( const Vec & orig, const Vec & dir ) : orig{orig}, dir{normalise(dir)}
+{}
+
+Line::Line( ) : orig{}, dir{}
+{}
+
 const Vec & Line::get_orig( ) const
 {
     return orig;

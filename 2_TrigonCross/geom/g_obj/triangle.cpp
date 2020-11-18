@@ -1,6 +1,13 @@
 #include "triangle.h"
 
 
+Triangle::Triangle( const Vec & v1, const Vec & v2, const Vec & v3 ) : v1{v1}, v2{v2}, v3{v3}
+{}
+
+Triangle::Triangle( ) : v1{}, v2{}, v3{}
+{}
+
+
 Plane Triangle::plane( ) const
 {
     return Plane(v1, v2, v3);

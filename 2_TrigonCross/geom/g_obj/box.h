@@ -14,12 +14,13 @@ private:
 public:
 
     Box( );
-    Box( const Box & ) = default;
     Box( const Vec & min, const Vec & max );
-    /*Box( double min_x, double min_y, double min_z,
-         double max_x, double max_y, double max_z );*/
 
-    Box & operator = ( const  Box & ) = default;
+    Box( const Box & ) = default;
+    Box( Box && ) = default;
+
+    Box & operator = ( const Box & ) = default;
+    Box & operator = (  Box && ) = default;
 
     bool is_in( const Vec & v ) const;
     bool is_in( const Triangle & tr ) const;

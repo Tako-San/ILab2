@@ -11,18 +11,15 @@ private:
     double dst;
 
 public:
-    Plane( const Vec & norm, double dst ) : nrm(normalise(norm)), dst(dst)
-    {}
-
-    Plane( const Vec & v1, const Vec & v2, const Vec & v3 ) : nrm(normalise((v2 - v1) % (v3 - v1))),
-                                                              dst(v1 & nrm)
-    {}
-
-    Plane( const Vec & norm, const Vec & p ) : nrm(normalise(norm)),
-                                               dst(p & nrm)
-    {}
+    Plane( const Vec & norm, double dst );
+    Plane( const Vec & v1, const Vec & v2, const Vec & v3 );
+    Plane( const Vec & norm, const Vec & p );
 
     Plane( const Plane & pl ) = default;
+    Plane( Plane && pl ) = default;
+
+    Plane & operator = ( const Plane & pl ) = default;
+    Plane & operator = ( Plane && pl ) = default;
 
     double sdst( const Vec & pt ) const;
 
