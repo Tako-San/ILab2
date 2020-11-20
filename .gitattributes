@@ -1,3 +1,5 @@
 *.ii linguist-detectable=false
 *.inl linguist-detectable=false
+*.dat linguist-detectable=false
+*.ans linguist-detectable=false
 
