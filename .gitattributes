@@ -1,6 +1,3 @@
 
 *.ii           linguist-language=c++
 *.ii           linguist-detectable=true
-
-CMakeLists.txt linguist-detectable=false
-*.cmake        linguist-detectable=false
