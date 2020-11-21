@@ -1,5 +1,6 @@
 
-*.ii    text diff=c++
+*.ii           linguist-language=c++
+*.ii           linguist-detectable=true
 
-CMakeLists.txt linguist-vendored=false
-*.cmake        linguist-vendored=false
+CMakeLists.txt linguist-detectable=false
+*.cmake        linguist-detectable=false
