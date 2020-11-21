@@ -1,0 +1,5 @@
+
+*.ii    text diff=c++
+
+CMakeLists.txt linguist-vendored=false
+*.cmake        linguist-vendored=false
