@@ -13,18 +13,22 @@ int main( )
     //cout << "Input number of triangles: ";
     cin >> N;
 
-    std::vector<Triangle> tr{};
-    std::vector<unsigned> is_intr = {0};
+    std::vector<Triangle> tr;
+    std::vector<unsigned> is_intr;
 
-    tr.resize(N);
+    tr.reserve(N);
+
+    is_intr.reserve(N);
+    for (uint i = 0; i < N; ++i)
+        is_intr.push_back(0);
 
     for (unsigned i = 0; i < N; ++i)
     {
+        Triangle tmp;
         //cout << "Input triangle\n";
-        cin >> tr[i];
+        cin >> tmp;
+        tr.emplace_back(tmp);
     }
-
-    cout << "tr num: " << tr.size() << endl;
 
     for (unsigned i = 0; i < N; ++i)
         for (unsigned j = i + 1; j < N; ++j)
@@ -34,9 +38,16 @@ int main( )
                 ++is_intr[j];
             }
 
+    int count = 0;
+
     for (unsigned i = 0; i < N; ++i)
         if (is_intr[i] > 0)
+        {
+            ++count;
             cout << i << endl;
+        }
+
+    //cout << count << endl;
 
     return 0;
 }

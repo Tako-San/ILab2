@@ -5,7 +5,7 @@
 #include "g_obj/plane.h"
 #include "g_obj/triangle.h"
 
-#include "octree/octree.h"
+#include "octree/octree.hh"
 
 
 #include "geom/geom.h"
@@ -194,6 +194,14 @@ TEST(triangles, intersection)
 {
     Triangle tr1{Vec{1, 0, 0}, Vec{0, 1,  0}, Vec{0, 0, 1}};
     Triangle tr2{Vec{2, 0, 0}, Vec{0, 2, 0}, Vec{0, 0, 0.5}};
+
+    EXPECT_EQ(is_intersect3D(tr1, tr2), true);
+}
+
+TEST(triangles, intersection1)
+{
+    Triangle tr1{Vec{4, 5, 0}, Vec{4, -5,  0}, Vec{-4, 0, 25}};
+    Triangle tr2{Vec{-2.5, 7.86, 2}, Vec{-2.5, -9.55, 2}, Vec{3.5, 0, 3}};
 
     EXPECT_EQ(is_intersect3D(tr1, tr2), true);
 }

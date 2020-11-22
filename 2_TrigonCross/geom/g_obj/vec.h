@@ -25,7 +25,7 @@ private:
 public:
 
     Vec( double x, double y, double z );
-    explicit Vec( double r = 0 );
+    Vec( double r = 0 );
 
     Vec( const Vec & v ) = default;
     Vec( Vec && v ) = default;

@@ -67,7 +67,7 @@ int main( )
             cout << i << endl;
         }
 
-    cout << "count: " << count << endl;
+    //cout << "count: " << count << endl;
 
     return 0;
 }
