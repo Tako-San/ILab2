@@ -1,8 +1,8 @@
 # ILab2
 
-ILab2 HW
+ILab2 homework
 
-## Cache
+## [Cache](https://github.com/Tako-San/ILab2/tree/master/1_Cache)
 
 Мой LFU кэш, на ```std::unordered_map``` и ```std::list```.
 
@@ -10,14 +10,14 @@ ILab2 HW
 Расширение файла с входными данными - ``` *.dat ```, выходными - ``` *.ans ``` .
 
 
-## Triangle intersect
+## [Triangle intersect](https://github.com/Tako-San/ILab2/tree/master/2_TrigonCross)
 
 Ищем пересекающиеся в пространстве треугольники.
 Для оптимизации поиска пересечений используется **октодерево**.
 
 **Входные данные**: число треугольников, затем координаты их вершин.
 
-## Search Tree
+## [Search Tree](https://github.com/Tako-San/ILab2/tree/master/3_SrchTree)
 
 Поисковое дерево с сохранением **AVL**-инварианта.
 В ```main.cc``` сравнение скорости с ```std::set```.
@@ -29,7 +29,7 @@ ILab2 HW
 **Выходные данные**: элементы дерева, лежащие в интервалах и время исполнения.
 
 
-## Matrix
+## [Matrix](https://github.com/Tako-San/ILab2/tree/master/4_Matrix)
 
 Шаблонный класс матрицы различными операциями. 
 
