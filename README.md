@@ -4,44 +4,42 @@ ILab second year homework
 
 ## [Cache](https://github.com/Tako-San/ILab2/tree/master/1_Cache)
 
-Мой **LFU** кэш, на ```std::unordered_map``` и ```std::list```.
+**LFU** cache which using ```std::unordered_map``` and ```std::list```.
 
-Имя файла с тестовыми данными передается в агрументах командной строки (Но можно вводить и в консоли). 
-Расширение файла с входными данными - ``` *.dat ```, выходными - ``` *.ans ``` .
+Name of file with test data passing through commad line arguments.
 
 
 ## [Triangle intersect](https://github.com/Tako-San/ILab2/tree/master/2_TrigonCross)
 
-Ищем пересекающиеся в пространстве треугольники.
-Для оптимизации поиска пересечений используется **октодерево**.
+Finds crossing in space triangles.
+**Octree** used for intersection finding optimisation.
 
-**Входные данные**: число треугольников, затем координаты их вершин.
+**Input**: triangles amount and coordinates of their vertics.
 
-**Выходные данные**: номера пересекающихся треугольников.
+**Output**: indicies of intersected triangles.
 
 ## [Search Tree](https://github.com/Tako-San/ILab2/tree/master/3_SrchTree)
 
-Поисковое дерево с сохранением **AVL** инварианта.
-В ```main.cc``` сравнение скорости с ```std::set```.
+Self balancing binary search tree. Using **AVL** invariant.
+Speed comparison with ```std::set``` in ```main.cc```.
 
-**Входные данные**: количество сортируемых элементов, сами элементы, 
-затем количество интервалов, в которых будем искать элементы,
-и сами интервалы (конец и начало).
+**Input**: number of elements to sort, elements to sort, 
+amount of intervals, intervals itself (begin and end).
 
-**Выходные данные**: элементы дерева, лежащие в интервалах и время исполнения.
+**Output**: elements which belongs to entered elements.
 
 
 ## [Matrix](https://github.com/Tako-San/ILab2/tree/master/4_Matrix)
 
-Шаблонный класс матрицы различными операциями. 
+Template matrix class with various operations.
 
-Некоторые операции:
-* Транспонирование.
-* Поиск детерминанта (методом Гаусса).
-* Перемножение матриц.
+Some implemented operations:
+* Transposition.
+* Finding determinant (using Gaussian elimination).
+* Matrix multiplication.
 
-В ```main.cc``` вычисление детерминанта для квадратной матрицы.
+Calculation determinant for square matrix in ```main.cc```.
 
-**Входные данные**: размер матрицы, всё её элменты слева направа, сверху вниз.
+**Input**: matrix size, all matrix elements left to right top down.
 
-**Выходные данные**: определитель матрицы.
+**Output**: determinant of entered matrix.
