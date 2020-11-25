@@ -43,3 +43,8 @@ Calculation determinant for square matrix in ```main.cc```.
 **Input**: matrix size, all matrix elements left to right top down.
 
 **Output**: determinant of entered matrix.
+
+
+## [ParaCL](https://github.com/derzhavin3016/ParaCL)
+
+Interpreter of C-like language. Parsing by flex & bison.
