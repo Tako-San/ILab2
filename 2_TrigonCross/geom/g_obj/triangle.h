@@ -4,30 +4,34 @@
 #include "vec.h"
 #include "plane.h"
 
-class Triangle final
+namespace Geom
 {
-private:
-    Vec v1, v2, v3;
+    class Triangle final
+    {
+    private:
+        Vec v1, v2, v3;
 
-public:
+    public:
 
-    Triangle( );
-    Triangle( const Vec & v1, const Vec & v2, const Vec & v3 );
+        Triangle( );
+        Triangle( const Vec & v1, const Vec & v2, const Vec & v3 );
 
-    Plane plane( ) const;
+        Plane plane( ) const;
 
-    const Vec & operator [] ( unsigned idx ) const;
+        const Vec & operator []( unsigned idx ) const;
 
-    void print( ) const;
+        void print( ) const;
 
-    double min_coord( unsigned idx ) const;
-    double max_coord( unsigned idx ) const;
+        double min_coord( unsigned idx ) const;
+        double max_coord( unsigned idx ) const;
 
-    friend std::istream & operator >> ( std::istream & ist, Triangle & tr );
-};
+        friend std::istream & operator >>( std::istream & ist, Triangle & tr );
+    };
 
-std::ostream & operator << ( std::ostream & ost, const Triangle & tr );
-bool operator == ( const Triangle & lhs, const Triangle & rhs);
-bool operator != ( const Triangle & lhs, const Triangle & rhs);
+    std::ostream & operator <<( std::ostream & ost, const Triangle & tr );
 
+    bool operator ==( const Triangle & lhs, const Triangle & rhs );
+
+    bool operator !=( const Triangle & lhs, const Triangle & rhs );
+}
 #endif //ILAB2_TRIANGLE_H

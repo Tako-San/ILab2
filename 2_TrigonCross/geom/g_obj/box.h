@@ -4,30 +4,32 @@
 #include "vec.h"
 #include "triangle.h"
 
-class Box final
+namespace Geom
 {
-private:
+    class Box final
+    {
+    private:
 
-    Vec min_; // all coords min
-    Vec max_; // all coords max
+        Vec min_; // all coords min
+        Vec max_; // all coords max
 
-public:
+    public:
 
-    Box( );
-    Box( const Vec & min, const Vec & max );
+        Box( );
+        Box( const Vec & min, const Vec & max );
 
-    bool is_in( const Vec & v ) const;
-    bool is_in( const Triangle & tr ) const;
+        bool is_in( const Vec & v ) const;
+        bool is_in( const Triangle & tr ) const;
 
-    bool is_invalid( ) const;
+        bool is_invalid( ) const;
 
-    const Vec & get_min( ) const;
-    const Vec & get_max( ) const;
+        const Vec & get_min( ) const;
+        const Vec & get_max( ) const;
 
-    double diag( ) const;
-};
+        double diag( ) const;
+    };
 
-std::ostream & operator << ( std::ostream & ost, const Box & box );
-
+    std::ostream & operator <<( std::ostream & ost, const Box & box );
+}
 
 #endif //TRIANGLES_BOX_H

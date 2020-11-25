@@ -3,6 +3,9 @@
 
 #include "geom/geom.h"
 
+using namespace Geom;
+using namespace Octree;
+
 using std::cout;
 using std::cin;
 using std::endl;

@@ -1,36 +1,39 @@
 #include "line.h"
 
-Line::Line( const Vec & orig, const Vec & dir ) : orig{orig}, dir{normalise(dir)}
-{}
-
-Line::Line( ) : orig{}, dir{}
-{}
-
-const Vec & Line::get_orig( ) const
+namespace Geom
 {
-    return orig;
-}
+    Line::Line( const Vec & orig, const Vec & dir ) : orig{orig}, dir{normalise(dir)}
+    {}
 
-const Vec & Line::get_dir( ) const
-{
-    return dir;
-}
+    Line::Line( ) : orig{}, dir{}
+    {}
 
-bool Line::is_invalid()
-{
-    return dir == Vec{0};
-}
+    const Vec & Line::get_orig( ) const
+    {
+        return orig;
+    }
 
-void Line::print( )
-{
-    orig.print();
-    std::cout << " + ";
-    dir.print();
-    std::cout << " * t";
-}
+    const Vec & Line::get_dir( ) const
+    {
+        return dir;
+    }
 
-std::ostream & operator << ( std::ostream & ost, const Line & ln )
-{
-    ost << ln.get_orig() << " + " << ln.get_dir() << " * t";
-    return ost;
+    bool Line::is_invalid( )
+    {
+        return dir == Vec{0};
+    }
+
+    void Line::print( )
+    {
+        orig.print();
+        std::cout << " + ";
+        dir.print();
+        std::cout << " * t";
+    }
+
+    std::ostream & operator <<( std::ostream & ost, const Line & ln )
+    {
+        ost << ln.get_orig() << " + " << ln.get_dir() << " * t";
+        return ost;
+    }
 }

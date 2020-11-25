@@ -1,5 +1,3 @@
-
-
 template <typename DataT>
 OctNode<DataT>::OctNode( ) : parent_{nullptr}, child_{}, zone_{}, data_{}
 {}
@@ -18,12 +16,6 @@ template <typename DataT>
 const vector<typename OctNode<DataT>::PairIt> & OctNode<DataT>::get_data( ) const
 {
     return data_;
-}
-
-template <typename DataT>
-const OctNode<DataT> ** OctNode<DataT>::get_children( ) const
-{
-    return child_;
 }
 
 template <typename DataT>
@@ -73,7 +65,7 @@ OctNode<DataT> * OctNode<DataT>::insert( PairIt data, bool hate_children )
 }
 
 template <typename DataT>
-bool OctNode<DataT>::intersect_subtree( DataT obj )
+bool OctNode<DataT>::intersect_subtree( DataT obj ) const
 {
     if (typeid(DataT) != typeid(Triangle))
     {
@@ -91,6 +83,13 @@ bool OctNode<DataT>::intersect_subtree( DataT obj )
                 return true;
 
     return false;
+}
+
+template <typename DataT>
+bool OctNode<DataT>::intersect_subtree( DataT obj, uint idx ) const
+{
+    idx /= 8;
+    return child_[idx]->intersect_subtree(obj);
 }
 
 template <typename DataT>

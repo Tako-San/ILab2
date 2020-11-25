@@ -3,24 +3,26 @@
 
 #include "vec.h"
 
-
-class Line final
+namespace Geom
 {
-private:
-    Vec orig, dir;
+    class Line final
+    {
+    private:
+        Vec orig, dir;
 
-public:
+    public:
 
-    Line( );
-    Line( const Vec & orig, const Vec & dir );
+        Line( );
+        Line( const Vec & orig, const Vec & dir );
 
-    const Vec & get_orig( ) const;
-    const Vec & get_dir( ) const;
+        const Vec & get_orig( ) const;
+        const Vec & get_dir( ) const;
 
-    bool is_invalid();
-    void print( );
-};
+        bool is_invalid( );
 
-std::ostream & operator << ( std::ostream &, const Line & );
+        void print( );
+    };
 
+    std::ostream & operator <<( std::ostream &, const Line & );
+}
 #endif //ILAB2_LINE_H

@@ -4,60 +4,64 @@
 #include <iostream>
 #include <cmath>
 
-#define ACCURACY 1e-10
-
-enum Coords
+namespace Geom
 {
-    X = 0,
-    Y = 1,
-    Z = 2
-};
+    #define ACCURACY 1e-10
 
-class Triangle;
+    enum Coords
+    {
+        X = 0,
+        Y = 1,
+        Z = 2
+    };
 
-class Vec final
-{
-private:
-    double x, y, z;
+    class Triangle;
 
-    double & get( unsigned idx );
+    class Vec final
+    {
+    private:
+        double x, y, z;
 
-public:
+        double & get( unsigned idx );
 
-    Vec( double x, double y, double z );
-    Vec( double r = 0 );
+    public:
 
-    bool operator == ( const Vec & v ) const;
-    bool operator != ( const Vec & v ) const;
+        Vec( double x, double y, double z );
+        Vec( double r = 0 );
 
-    Vec & normalise( );
-    Vec perp2D( ) const;
-    void print() const;
+        bool operator ==( const Vec & v ) const;
+        bool operator !=( const Vec & v ) const;
 
-    Vec & operator += ( const Vec & v );
-    Vec & operator -= ( const Vec & v );
-    Vec & operator *= ( double num );
-    Vec & operator /= ( double num );
+        Vec & normalise( );
 
-    Vec operator - ( ) const;
+        Vec perp2D( ) const;
 
-    double len ( ) const;
-    double operator [] ( unsigned ) const; // get vector coorinate by number
+        void print( ) const;
 
-    friend std::istream & operator >> ( std::istream & ist, Vec & v );
-    friend bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );
-};
+        Vec & operator +=( const Vec & v );
+        Vec & operator -=( const Vec & v );
+        Vec & operator *=( double num );
+        Vec & operator /=( double num );
+        Vec operator -( ) const;
 
-Vec operator + ( const Vec & v1, const Vec & v2 );
-Vec operator - ( const Vec & v1, const Vec & v2 );
-Vec operator * ( const Vec & v, double num );
-Vec operator * ( double num, const Vec & v );
+        double len( ) const;
+        double operator []( unsigned ) const; // get vector coorinate by number
 
-double operator & ( const Vec & v1, const Vec & v2 ); // dot product
-Vec operator % ( const Vec & v1, const Vec & v2 );    // cross product
+        friend std::istream & operator >>( std::istream & ist, Vec & v );
 
-Vec normalise( const Vec & v );
+        friend bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );
+    };
 
-std::ostream & operator << ( std::ostream & ost, const Vec & v );
+    Vec operator +( const Vec & v1, const Vec & v2 );
+    Vec operator -( const Vec & v1, const Vec & v2 );
+    Vec operator *( const Vec & v, double num );
+    Vec operator *( double num, const Vec & v );
 
+    double operator &( const Vec & v1, const Vec & v2 ); // dot product
+    Vec operator %( const Vec & v1, const Vec & v2 );    // cross product
+
+    Vec normalise( const Vec & v );
+
+    std::ostream & operator <<( std::ostream & ost, const Vec & v );
+}
 #endif //ILAB2_VEC
