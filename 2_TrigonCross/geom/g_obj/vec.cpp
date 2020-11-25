@@ -2,22 +2,24 @@
 
 namespace Geom
 {
+    extern const Vec ZERO_VEC{0};
+
     double & Vec::get( unsigned idx )
     {
-        return *(&x + idx % 3);
+        return *(&x_ + idx % 3);
     }
 
-    Vec::Vec( double x, double y, double z ) : x{x}, y{y}, z{z}
+    Vec::Vec( double x, double y, double z ) : x_{x}, y_{y}, z_{z}
     {}
 
-    Vec::Vec( double r ) : x{r}, y{r}, z{r}
+    Vec::Vec( double r ) : x_{r}, y_{r}, z_{r}
     {}
 
 
     #define cmp( x ) std::abs(x - v.x) < ACCURACY
     bool Vec::operator ==( const Vec & v ) const
     {
-        return cmp(x) && cmp(y) && cmp(z);
+        return cmp(x_) && cmp(y_) && cmp(z_);
     }
     #undef cmp
 
@@ -33,63 +35,63 @@ namespace Geom
 
     Vec Vec::perp2D( ) const
     {
-        return Vec{y, -x, 0};
+        return Vec{y_, -x_, 0};
     }
 
     void Vec::print( ) const
     {
-        std::cout << "(" << x << ", " << y << ", " << z << ")^T";
+        std::cout << "(" << x_ << ", " << y_ << ", " << z_ << ")^T";
     }
 
     Vec & Vec::operator +=( const Vec & v )
     {
-        x += v.x;
-        y += v.y;
-        z += v.z;
+        x_ += v.x_;
+        y_ += v.y_;
+        z_ += v.z_;
 
         return *this;
     }
 
     Vec & Vec::operator -=( const Vec & v )
     {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
+        x_ -= v.x_;
+        y_ -= v.y_;
+        z_ -= v.z_;
 
         return *this;
     }
 
     Vec & Vec::operator *=( double num )
     {
-        x *= num;
-        y *= num;
-        z *= num;
+        x_ *= num;
+        y_ *= num;
+        z_ *= num;
 
         return *this;
     }
 
     Vec & Vec::operator /=( double num )
     {
-        x /= num;
-        y /= num;
-        z /= num;
+        x_ /= num;
+        y_ /= num;
+        z_ /= num;
 
         return *this;
     }
 
     Vec Vec::operator -( ) const
     {
-        return Vec(-x, -y, -z);
+        return Vec(-x_, -y_, -z_);
     }
 
     double Vec::operator []( unsigned idx ) const
     {
-        return *(&x + idx % 3);
+        return *(&x_ + idx % 3);
     }
 
     double Vec::len( ) const
     {
-        return sqrt(x * x + y * y + z * z);
+        return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
     }
 
     /* dot product */
@@ -109,7 +111,7 @@ namespace Geom
 
     std::istream & operator >>( std::istream & ist, Vec & v )
     {
-        ist >> v.x >> v.y >> v.z;
+        ist >> v.x_ >> v.y_ >> v.z_;
         return ist;
     }
 

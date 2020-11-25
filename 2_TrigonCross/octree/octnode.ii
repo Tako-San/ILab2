@@ -88,7 +88,7 @@ bool OctNode<DataT>::intersect_subtree( DataT obj ) const
 template <typename DataT>
 bool OctNode<DataT>::intersect_subtree( DataT obj, uint idx ) const
 {
-    idx /= 8;
+    idx %= 8;
     return child_[idx]->intersect_subtree(obj);
 }
 

@@ -20,7 +20,7 @@ namespace Geom
     class Vec final
     {
     private:
-        double x, y, z;
+        double x_, y_, z_;
 
         double & get( unsigned idx );
 
@@ -51,6 +51,8 @@ namespace Geom
 
         friend bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );
     };
+
+    extern const Vec ZERO_VEC;
 
     Vec operator +( const Vec & v1, const Vec & v2 );
     Vec operator -( const Vec & v1, const Vec & v2 );

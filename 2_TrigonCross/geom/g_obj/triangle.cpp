@@ -2,20 +2,55 @@
 
 namespace Geom
 {
-    Triangle::Triangle( const Vec & v1, const Vec & v2, const Vec & v3 ) : v1{v1}, v2{v2}, v3{v3}
+    LineMap LINE_PT =
+            {
+                    {LINE12, {0, 1}},
+                    {LINE13, {0, 2}}
+            };
+
+
+    Triangle::Triangle( const Vec & v1,
+                        const Vec & v2,
+                        const Vec & v3 ) : v1_{v1}, v2_{v2}, v3_{v3},
+                                           inv_{is_invalid()},
+                                           shape_{find_shape()}
     {}
 
-    Triangle::Triangle( ) : v1{}, v2{}, v3{}
+    Triangle::Triangle( ) : v1_{}, v2_{}, v3_{},
+                            inv_{is_invalid()},
+                            shape_{find_shape()}
     {}
+
+    uint8_t Triangle::find_shape( ) const
+    {
+        if (!inv_)
+            return TRIANGLE;
+
+        uint8_t res = 0u;
+
+        if (v1_ != v2_)
+        {
+            if (v1_ == v3_ || v2_ == v3_)
+                res |= LINE12;
+        }
+        else if (v1_ == v3_)
+            return POINT;
+        else
+            res |= LINE13;
+
+        return res;
+    }
 
     Plane Triangle::plane( ) const
     {
-        return Plane(v1, v2, v3);
+        if (inv_)
+            return POISON_PLANE;
+        return Plane(v1_, v2_, v3_);
     }
 
     const Vec & Triangle::operator []( unsigned idx ) const
     {
-        return *(&v1 + idx % 3);
+        return *(&v1_ + idx % 3);
     }
 
     void Triangle::print( ) const
@@ -27,6 +62,11 @@ namespace Geom
             std::cout << " ";
         }
         std::cout << ";";
+    }
+
+    uint8_t Triangle::shape( ) const
+    {
+        return shape_;
     }
 
     double Triangle::min_coord( unsigned idx ) const
@@ -47,10 +87,31 @@ namespace Geom
         return res;
     }
 
+    bool Triangle::is_invalid( ) const
+    {
+        return (v1_ - v2_) % (v1_ - v3_) == ZERO_VEC;
+    }
+
+    bool Triangle::is_point( ) const
+    {
+        return shape_ | POINT;
+    }
+
+    bool Triangle::is_line( ) const
+    {
+        return shape_ | LINE;
+    }
+
+    bool Triangle::is_inv( ) const
+    {
+        return inv_;
+    }
 
     std::istream & operator >>( std::istream & ist, Triangle & tr )
     {
-        ist >> tr.v1 >> tr.v2 >> tr.v3;
+        ist >> tr.v1_ >> tr.v2_ >> tr.v3_;
+        tr.inv_ = tr.is_invalid();
+        tr.shape_ = tr.find_shape();
         return ist;
     }
 }

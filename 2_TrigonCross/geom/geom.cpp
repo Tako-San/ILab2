@@ -7,9 +7,6 @@ namespace Geom
     using std::cout;
     using std::endl;
 
-    const Vec ZERO_VEC{0};
-    const Line INVALID_LINE{ZERO_VEC, ZERO_VEC};
-
     inline bool is_one_sign( double n0, double n1, double n2 )
     {
         if (n0 * n1 <= 0)
@@ -19,21 +16,79 @@ namespace Geom
         return n0 * n2 > 0;
     }
 
+
+#define LITR(i11, i12, i21, i22)                        \
+    line_intr(Line{tr1[i11], tr1[i12] - tr1[i11]},      \
+              Line{tr2[i21], tr2[i22] - tr2[i21]})      \
+
+#define ONLINE(tr1, tr2, i1, i2)                          \
+    is_on_line(Line{tr2[i1], tr2[i2] - tr2[i1]}, tr1[0])  \
+
+    bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 )
+    {
+        uint8_t sh1 = tr1.shape(),
+                sh2 = tr2.shape();
+
+        uint8_t sh_or = sh1 | sh2;
+
+        if (sh1 & sh2 & POINT)
+            return tr1[0] == tr2[0];
+
+        if (tr1.is_line() && tr2.is_line())
+        {
+            auto It1 = LINE_PT.find(static_cast<const DegenT>(sh1 & LINE)),
+                 It2 = LINE_PT.find(static_cast<const DegenT>(sh2 & LINE));
+
+            auto i11 = It1->second.first,
+                 i12 = It1->second.second,
+                 i21 = It2->second.first,
+                 i22 = It2->second.second;
+
+            return LITR(i11, i12, i21, i22);
+        }
+
+        if (sh_or & (LINE | POINT))
+        {
+            Line l;
+            Vec p;
+
+            auto cur_sh = tr1.is_line() ? sh1 : sh2;
+
+            auto It = LINE_PT.find(static_cast<const DegenT>(cur_sh | LINE));
+
+            auto i1 = It->second.first,
+                 i2 = It->second.second;
+
+            if (tr1.is_line())
+            {
+                l = Line{tr1[i1], tr1[i2] - tr1[i1]};
+                p = tr2[0];
+            }
+            else
+            {
+                l = Line{tr2[i1], tr2[i2] - tr2[i1]};
+                p = tr1[0];
+            }
+
+            return ((p - l.get_orig()) % l.get_dir() == ZERO_VEC);
+        }
+
+        return false;
+    }
+#undef LITR
+#undef ONLINE
+
     bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
     {
+        if (tr1.is_inv() || tr2.is_inv())
+            return is_intersect_inv(tr1, tr2);
+
         Plane pl1 = tr1.plane();
         Plane pl2 = tr2.plane();
 
-
         if ((pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC) &&
             (abs((pl1.get_dst()) - (pl2.get_dst())) < ACCURACY))
-        {
-
-            if (is_intersect2D(tr1, tr2))
-                return true;
-
-            return false;
-        }
+            return is_intersect2D(tr1, tr2);
 
         double sd2[3] = {};
         double sd1[3] = {};
@@ -59,10 +114,7 @@ namespace Geom
         find_cross(tr1, sd1, int_line, t1);
         find_cross(tr2, sd2, int_line, t2);
 
-        if (cmp_seg(t1, t2))
-            return true;
-
-        return false;
+        return cmp_seg(t1, t2);
     }
 
 
@@ -180,7 +232,7 @@ namespace Geom
         Vec n1n2_cross = n1 % n2;
 
         if (n1n2_cross == ZERO_VEC)
-            return INVALID_LINE;
+            return POISON_LINE;
 
         double s1 = pl1.get_dst(),
                 s2 = pl2.get_dst();
