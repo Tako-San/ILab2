@@ -22,7 +22,8 @@ namespace Geom
 
         void print( );
     };
-
-    std::ostream & operator <<( std::ostream &, const Line & );
 }
+
+std::ostream & operator <<( std::ostream &, const Geom::Line & );
+
 #endif //ILAB2_LINE_H

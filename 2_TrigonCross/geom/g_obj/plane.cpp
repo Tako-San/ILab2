@@ -35,11 +35,12 @@ namespace Geom
         nrm.print();
         std::cout << ", dst: " << dst;
     }
-
-    std::ostream & operator <<( std::ostream & ost, const Plane & pl )
-    {
-        ost << "nrm: " << pl.get_nrm() <<
-            ", dst: " << pl.get_dst();
-        return ost;
-    }
 }
+
+std::ostream & operator <<( std::ostream & ost, const Geom::Plane & pl )
+{
+    ost << "nrm: " << pl.get_nrm() <<
+        ", dst: " << pl.get_dst();
+    return ost;
+}
+

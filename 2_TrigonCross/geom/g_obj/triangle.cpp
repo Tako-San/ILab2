@@ -53,25 +53,25 @@ namespace Geom
         ist >> tr.v1 >> tr.v2 >> tr.v3;
         return ist;
     }
+}
 
-    std::ostream & operator <<( std::ostream & ost, const Triangle & tr )
-    {
-        for (int i = 0; i < 3; ++i)
-            ost << "v[" << i << "] = " << tr[i] << " ";
-        ost << ";";
-        return ost;
-    }
+std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr )
+{
+    for (int i = 0; i < 3; ++i)
+        ost << "v[" << i << "] = " << tr[i] << " ";
+    ost << ";";
+    return ost;
+}
 
-    bool operator ==( const Triangle & lhs, const Triangle & rhs )
-    {
-        for (int i = 0; i < 3; ++i)
-            if (lhs[i] != rhs[i])
-                return false;
-        return true;
-    }
+bool operator ==( const Geom::Triangle & lhs, const Geom::Triangle & rhs )
+{
+    for (int i = 0; i < 3; ++i)
+        if (lhs[i] != rhs[i])
+            return false;
+    return true;
+}
 
-    bool operator !=( const Triangle & lhs, const Triangle & rhs )
-    {
-        return !(lhs == rhs);
-    }
+bool operator !=( const Geom::Triangle & lhs, const Geom::Triangle & rhs )
+{
+    return !(lhs == rhs);
 }

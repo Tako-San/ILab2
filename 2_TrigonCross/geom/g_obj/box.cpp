@@ -14,6 +14,7 @@ namespace Geom
 #define GR_MIN( idx )    \
     v[idx] > min_[idx]   \
 
+
     bool Box::is_in( const Vec & v ) const
     {
         return LS_MAX(X) && LS_MAX(Y) && LS_MAX(Z) &&
@@ -30,6 +31,7 @@ namespace Geom
 
 #define MIN_VS_MAX( idx )      \
         min_[idx] <= max_[idx] \
+
 
     bool Box::is_invalid( ) const
     {
@@ -52,10 +54,10 @@ namespace Geom
     {
         return Vec{max_ - min_}.len();
     }
+}
 
-    std::ostream & operator <<( std::ostream & ost, const Box & box )
-    {
-        ost << "min = " << box.get_min() << ", max = " << box.get_max();
-        return ost;
-    }
+std::ostream & operator <<( std::ostream & ost, const Geom::Box & box )
+{
+    ost << "min = " << box.get_min() << ", max = " << box.get_max();
+    return ost;
 }

@@ -14,6 +14,7 @@ namespace Geom
     public:
 
         Triangle( );
+
         Triangle( const Vec & v1, const Vec & v2, const Vec & v3 );
 
         Plane plane( ) const;
@@ -23,15 +24,17 @@ namespace Geom
         void print( ) const;
 
         double min_coord( unsigned idx ) const;
+
         double max_coord( unsigned idx ) const;
 
         friend std::istream & operator >>( std::istream & ist, Triangle & tr );
     };
-
-    std::ostream & operator <<( std::ostream & ost, const Triangle & tr );
-
-    bool operator ==( const Triangle & lhs, const Triangle & rhs );
-
-    bool operator !=( const Triangle & lhs, const Triangle & rhs );
 }
+
+std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr );
+
+bool operator ==( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
+
+bool operator !=( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
+
 #endif //ILAB2_TRIANGLE_H

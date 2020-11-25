@@ -9,7 +9,6 @@
 
 #include "../octree/octree.hh"
 
-
 namespace Geom
 {
     using namespace Octree;

@@ -30,10 +30,10 @@ namespace Geom
         dir.print();
         std::cout << " * t";
     }
+}
 
-    std::ostream & operator <<( std::ostream & ost, const Line & ln )
-    {
-        ost << ln.get_orig() << " + " << ln.get_dir() << " * t";
-        return ost;
-    }
+std::ostream & operator <<( std::ostream & ost, const Geom::Line & ln )
+{
+    ost << ln.get_orig() << " + " << ln.get_dir() << " * t";
+    return ost;
 }
