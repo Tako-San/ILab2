@@ -16,12 +16,6 @@ public:
     Box( );
     Box( const Vec & min, const Vec & max );
 
-    Box( const Box & ) = default;
-    Box( Box && ) = default;
-
-    Box & operator = ( const Box & ) = default;
-    Box & operator = (  Box && ) = default;
-
     bool is_in( const Vec & v ) const;
     bool is_in( const Triangle & tr ) const;
 

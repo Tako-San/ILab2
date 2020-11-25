@@ -14,12 +14,6 @@ public:
     Line( );
     Line( const Vec & orig, const Vec & dir );
 
-    Line( const Line & l ) = default;
-    Line( Line && l ) = default;
-
-    Line & operator = ( const Line & l ) = default;
-    Line & operator = ( Line && l ) = default;
-
     const Vec & get_orig( ) const;
     const Vec & get_dir( ) const;
 

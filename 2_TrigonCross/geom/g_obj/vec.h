@@ -27,12 +27,6 @@ public:
     Vec( double x, double y, double z );
     Vec( double r = 0 );
 
-    Vec( const Vec & v ) = default;
-    Vec( Vec && v ) = default;
-
-    Vec & operator = ( const Vec & v ) = default;
-    Vec & operator = ( Vec && v ) = default;
-
     bool operator == ( const Vec & v ) const;
     bool operator != ( const Vec & v ) const;
 

@@ -14,12 +14,6 @@ public:
     Triangle( );
     Triangle( const Vec & v1, const Vec & v2, const Vec & v3 );
 
-    Triangle( const Triangle & tr ) = default;
-    Triangle( Triangle && tr ) = default;
-
-    Triangle & operator = ( const Triangle & tr ) = default;
-    Triangle & operator = ( Triangle && tr ) = default;
-
     Plane plane( ) const;
 
     const Vec & operator [] ( unsigned idx ) const;
