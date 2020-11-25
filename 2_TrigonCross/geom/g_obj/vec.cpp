@@ -30,7 +30,7 @@ namespace Geom
 
     Vec & Vec::normalise( )
     {
-        return (*this /= (*this).len());
+        return (*this /= len());
     }
 
     Vec Vec::perp2D( ) const

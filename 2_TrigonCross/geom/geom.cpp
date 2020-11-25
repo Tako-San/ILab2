@@ -16,14 +16,6 @@ namespace Geom
         return n0 * n2 > 0;
     }
 
-
-#define LITR(i11, i12, i21, i22)                        \
-    line_intr(Line{tr1[i11], tr1[i12] - tr1[i11]},      \
-              Line{tr2[i21], tr2[i22] - tr2[i21]})      \
-
-#define ONLINE(tr1, tr2, i1, i2)                          \
-    is_on_line(Line{tr2[i1], tr2[i2] - tr2[i1]}, tr1[0])  \
-
     bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 )
     {
         uint8_t sh1 = tr1.shape(),
@@ -44,39 +36,41 @@ namespace Geom
                  i21 = It2->second.first,
                  i22 = It2->second.second;
 
-            return LITR(i11, i12, i21, i22);
+            line_intr(Line{tr1[i11], tr1[i12] - tr1[i11]},
+                      Line{tr2[i21], tr2[i22] - tr2[i21]});
         }
 
-        if (sh_or & (LINE | POINT))
+        if ((sh_or & LINE) && (sh_or & POINT))
         {
-            Line l;
-            Vec p;
+            uint8_t cur_sh;
+            const Triangle * trp1,
+                           * trp2;
 
-            auto cur_sh = tr1.is_line() ? sh1 : sh2;
+            if (tr1.is_line())
+            {
+                cur_sh = sh1;
+                trp1 = &tr1;
+                trp2 = &tr2;
+            }
+            else
+            {
+                cur_sh = sh2;
+                trp1 = &tr2;
+                trp2 = &tr1;
+            }
 
-            auto It = LINE_PT.find(static_cast<const DegenT>(cur_sh | LINE));
+            auto It = LINE_PT.find(static_cast<const DegenT>(cur_sh & LINE));
 
             auto i1 = It->second.first,
                  i2 = It->second.second;
 
-            if (tr1.is_line())
-            {
-                l = Line{tr1[i1], tr1[i2] - tr1[i1]};
-                p = tr2[0];
-            }
-            else
-            {
-                l = Line{tr2[i1], tr2[i2] - tr2[i1]};
-                p = tr1[0];
-            }
+            Line l = Line{(*trp1)[i1], (*trp1)[i2] - (*trp1)[i1]};
 
-            return ((p - l.get_orig()) % l.get_dir() == ZERO_VEC);
+            return is_on_line(l, Vec {(*trp2)[0]});
         }
 
         return false;
     }
-#undef LITR
-#undef ONLINE
 
     bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
     {

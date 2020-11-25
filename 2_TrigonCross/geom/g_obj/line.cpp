@@ -41,7 +41,8 @@ namespace Geom
 
     bool Line::belongs( const Vec & v ) const
     {
-        return (v - orig_) % dir_ == ZERO_VEC;
+        /*((p - l.get_orig()) % l.get_dir() == ZERO_VEC)*/
+        return ((v - orig_) % dir_ == ZERO_VEC);
     }
 
     void Line::print( )

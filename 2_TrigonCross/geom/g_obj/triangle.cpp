@@ -94,12 +94,12 @@ namespace Geom
 
     bool Triangle::is_point( ) const
     {
-        return shape_ | POINT;
+        return shape_ & POINT;
     }
 
     bool Triangle::is_line( ) const
     {
-        return shape_ | LINE;
+        return shape_ & LINE;
     }
 
     bool Triangle::is_inv( ) const
