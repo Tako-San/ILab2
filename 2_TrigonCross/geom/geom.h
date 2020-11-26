@@ -15,6 +15,14 @@ namespace Geom
     using std::pair;
     using std::list;
 
+    inline bool is_one_sign( double n0, double n1, double n2 );
+
+    unsigned ind_of_max( double a, double b, double c );
+
+    bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 );
+
+    bool is_intersect3D( const Line & l, const Triangle & tr );
+
     bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 );
 
     bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 );

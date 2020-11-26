@@ -11,6 +11,9 @@
 #include "geom/geom.h"
 #include "gtest/gtest.h"
 
+using namespace Geom;
+using namespace Octree;
+
 using std::cout;
 using std::cin;
 using std::endl;

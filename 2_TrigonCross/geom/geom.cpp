@@ -9,9 +9,9 @@ namespace Geom
 
     inline bool is_one_sign( double n0, double n1, double n2 )
     {
-        if (n0 * n1 <= 0)
+        if (n0 * n1 < 0)
             return false;
-        if (n1 * n2 <= 0)
+        if (n1 * n2 < 0)
             return false;
         return n0 * n2 > 0;
     }
@@ -23,7 +23,7 @@ namespace Geom
 
         uint8_t sh_or = sh1 | sh2;
 
-        if (sh1 & sh2 & POINT)
+        if (tr1.is_point() && tr2.is_point())
             return tr1[0] == tr2[0];
 
         if (tr1.is_line() && tr2.is_line())
@@ -36,11 +36,11 @@ namespace Geom
                  i21 = It2->second.first,
                  i22 = It2->second.second;
 
-            line_intr(Line{tr1[i11], tr1[i12] - tr1[i11]},
-                      Line{tr2[i21], tr2[i22] - tr2[i21]});
+            return line_intr(Line{tr1[i11], tr1[i12] - tr1[i11]},
+                             Line{tr2[i21], tr2[i22] - tr2[i21]});
         }
 
-        if ((sh_or & LINE) && (sh_or & POINT))
+        if (tr1.is_line() ^ tr2.is_line())
         {
             uint8_t cur_sh;
             const Triangle * trp1,
@@ -66,10 +66,64 @@ namespace Geom
 
             Line l = Line{(*trp1)[i1], (*trp1)[i2] - (*trp1)[i1]};
 
-            return is_on_line(l, Vec {(*trp2)[0]});
+            if (trp2->is_point())
+                return is_on_line(l, Vec {(*trp2)[0]});
+            else
+                return is_intersect3D(l, *trp2);
+        }
+
+        if (tr1.is_point() || tr2.is_point())
+        {
+            uint8_t cur_sh;
+            const Triangle * trp1,
+                           * trp2;
+
+            if (tr1.is_point())
+            {
+                cur_sh = sh1;
+                trp1 = &tr1;
+                trp2 = &tr2;
+            }
+            else
+            {
+                cur_sh = sh2;
+                trp1 = &tr2;
+                trp2 = &tr1;
+            }
+
+            if (std::abs(trp2->plane().sdst((*trp1)[0])) < ACCURACY)
+                return false;
+
+            // TODO: write dot triangle intersection
+            /*return is_intersect2D(tr1, tr2);*/
         }
 
         return false;
+    }
+
+    bool is_intersect3D( const Line & l, const Triangle & tr )
+    {
+        Vec e1 = tr[1] - tr[0];
+        Vec e2 = tr[2] - tr[0];
+        Vec  p = l.get_dir() % e2;
+        double tmp = p & e1;
+
+        if (std::abs(tmp) < ACCURACY)
+            return false;
+
+        tmp = 1.0 / tmp;
+        Vec s = l.get_orig() - tr[0];
+        double u = tmp * (s & p);
+
+        if (u < 0.0 || u > 1.0)
+            return false;
+
+        Vec q = s % e1;
+        double v = tmp * (l.get_dir() & q);
+        if (v < 0.0 || v > 1.0)
+            return false;
+
+        return true;
     }
 
     bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
@@ -138,8 +192,8 @@ namespace Geom
         Vec norm{tr1.plane().get_nrm()};
 
         double OXY = abs(norm & Vec{0, 0, 1}),
-                OXZ = abs(norm & Vec{0, 1, 0}),
-                OYZ = abs(norm & Vec{1, 0, 0});
+               OXZ = abs(norm & Vec{0, 1, 0}),
+               OYZ = abs(norm & Vec{1, 0, 0});
 
         unsigned maxind = ind_of_max(OYZ, OXZ, OXY);
 
@@ -185,7 +239,8 @@ namespace Geom
                     i0 = mid;
                 else
                     return i1;
-            } else
+            }
+            else
             {
                 int prev = (mid + 3 - 1) % 3;
                 E = tr[mid] - tr[prev];
@@ -202,13 +257,13 @@ namespace Geom
         for (int i0 = 0, i1 = 2; i0 < 3; i1 = i0, ++i0)
         {
             Vec D1{(tr1[i0] - tr1[i1]).perp2D()},
-                    D2{(tr2[i0] - tr2[i1]).perp2D()};
+                D2{(tr2[i0] - tr2[i1]).perp2D()};
 
             int min1 = get_extreme_ind(tr2, -D1),
-                    min2 = get_extreme_ind(tr1, -D2);
+                min2 = get_extreme_ind(tr1, -D2);
 
             Vec diff1{tr2[min1] - tr1[i0]},
-                    diff2{tr1[min2] - tr2[i0]};
+                diff2{tr1[min2] - tr2[i0]};
 
             if ((D1 & diff1) > 0 || (D2 & diff2) > 0)
                 return false;
@@ -221,7 +276,7 @@ namespace Geom
     Line intersection( const Plane & pl1, const Plane & pl2 )
     {
         Vec n1 = pl1.get_nrm(),
-                n2 = pl2.get_nrm();
+            n2 = pl2.get_nrm();
 
         Vec n1n2_cross = n1 % n2;
 
@@ -229,7 +284,7 @@ namespace Geom
             return POISON_LINE;
 
         double s1 = pl1.get_dst(),
-                s2 = pl2.get_dst();
+               s2 = pl2.get_dst();
 
         double n1n2 = n1 & n2,
                 n1_2 = n1 & n1,
@@ -248,9 +303,9 @@ namespace Geom
         m0, /* mate0 */
         m1; /* mate1 */
 
-        if ((sd[0] * sd[1]) >= 0)
+        if ((sd[0] * sd[1]) > 0)
             rg = 2;
-        else if ((sd[1] * sd[2]) >= 0)
+        else if ((sd[1] * sd[2]) > 0)
             rg = 0;
         else
             rg = 1;
@@ -286,8 +341,11 @@ namespace Geom
         Triangle & obj = pair_it->first;
 
         for (auto mate : node.get_data())
-            if (&(*mate) != &(*pair_it) && is_intersect3D(obj, mate->first))
+        {
+            std::cout << "&(*mate) != &(*pair_it): " << (&(*mate) != &(*pair_it)) << std::endl;
+            if ((&(*mate) != &(*pair_it)) && is_intersect3D(obj, mate->first))
                 return true;
+        }
 
         if (node.is_parent())
             for (int i = 0; i < 8; ++i)

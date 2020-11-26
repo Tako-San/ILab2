@@ -6,7 +6,7 @@
 
 namespace Geom
 {
-    #define ACCURACY 1e-10
+    #define ACCURACY 1e-6
 
     enum Coords
     {

@@ -36,7 +36,8 @@ namespace Geom
 
     bool Line::is_intr( const Line & l ) const
     {
-        return (std::abs(Vec{l.orig_ - orig_} & (l.dir_ % dir_)) < ACCURACY);
+        auto res =  (std::abs((l.orig_ - orig_) & (l.dir_ % dir_)) < ACCURACY);
+        return res;
     }
 
     bool Line::belongs( const Vec & v ) const
@@ -53,7 +54,7 @@ namespace Geom
         std::cout << " * t";
     }
 
-    bool line_intr( const Line & l1, const Line & l2 )
+    bool    line_intr( const Line & l1, const Line & l2 )
     {
         return l1.is_intr(l2);
     }
