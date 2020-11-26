@@ -10,7 +10,7 @@ namespace Geom
     template <typename T>
     int sign( T value )
     {
-        return (T(0) <= value) - (T(0) > value);
+        return (T(0) < value) - (T(0) > value);
     }
 
     bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 )

@@ -9,13 +9,16 @@
 
 #include "../octree/octree.hh"
 
-// TODO: tst 33, 26, 25, 24, 21, 15, 9,
+// TODO: tst 33, 21
 
 namespace Geom
 {
     using namespace Octree;
     using std::pair;
     using std::list;
+
+    template <typename T>
+    int sign( T value );
 
     unsigned ind_of_max( double a, double b, double c );
 
