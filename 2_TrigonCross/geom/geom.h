@@ -9,13 +9,13 @@
 
 #include "../octree/octree.hh"
 
+// TODO: tst 33, 26, 25, 24, 21, 15, 9,
+
 namespace Geom
 {
     using namespace Octree;
     using std::pair;
     using std::list;
-
-    inline bool is_one_sign( double n0, double n1, double n2 );
 
     unsigned ind_of_max( double a, double b, double c );
 
@@ -29,7 +29,7 @@ namespace Geom
 
     Line intersection( const Plane & pl1, const Plane & pl2 );
 
-    void find_cross( const Triangle & tr, const double sd[], const Line & int_line, double t[] );
+    void find_cross( const Triangle & tr, double sd[], const Line & int_line, double t[] );
 
     bool cmp_seg( double t1[], double t2[] );
 

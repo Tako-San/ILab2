@@ -7,13 +7,10 @@ namespace Geom
     using std::cout;
     using std::endl;
 
-    inline bool is_one_sign( double n0, double n1, double n2 )
+    template <typename T>
+    int sign( T value )
     {
-        if (n0 * n1 < 0)
-            return false;
-        if (n1 * n2 < 0)
-            return false;
-        return n0 * n2 > 0;
+        return (T(0) <= value) - (T(0) > value);
     }
 
     bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 )
@@ -147,8 +144,8 @@ namespace Geom
             sd1[i] = pl2.sdst(tr1[i]);
         }
 
-        if (is_one_sign(sd1[0], sd1[1], sd1[2]) ||
-            is_one_sign(sd2[0], sd2[1], sd2[2]))
+        if ((sign(sd1[0]) == sign(sd1[1]) && sign(sd1[0]) == sign(sd1[2])) ||
+            (sign(sd2[0]) == sign(sd2[1]) && sign(sd2[0]) == sign(sd2[2])))
             return false;
 
         Line int_line = intersection(pl1, pl2);
@@ -175,7 +172,8 @@ namespace Geom
         {
             ind = 0;
             max = a;
-        } else
+        }
+        else
         {
             ind = 1;
             max = b;
@@ -287,8 +285,8 @@ namespace Geom
                s2 = pl2.get_dst();
 
         double n1n2 = n1 & n2,
-                n1_2 = n1 & n1,
-                n2_2 = n2 & n2;
+               n1_2 = n1 & n1,
+               n2_2 = n2 & n2;
 
         double a = (s2 * n1n2 - s1 * n2_2) / (n1n2 * n1n2 - n1_2 * n2_2);
         double b = (s1 * n1n2 - s2 * n1_2) / (n1n2 * n1n2 - n1_2 * n2_2);
@@ -297,29 +295,26 @@ namespace Geom
     }
 
 
-    void find_cross( const Triangle & tr, const double sd[], const Line & int_line, double t[] )
+    void find_cross( const Triangle & tr, double sd[], const Line & int_line, double t[] )
     {
-        int rg, /* rogue */
-        m0, /* mate0 */
-        m1; /* mate1 */
-
-        if ((sd[0] * sd[1]) > 0)
-            rg = 2;
-        else if ((sd[1] * sd[2]) > 0)
-            rg = 0;
-        else
-            rg = 1;
-
-        m0 = (rg + 1) % 3;
-        m1 = (rg + 2) % 3;
-
         double pr[3] = {};
 
         for (int i = 0; i < 3; ++i)
             pr[i] = int_line.get_dir() & (tr[i] - int_line.get_orig());
 
-        t[0] = pr[m0] + (pr[rg] - pr[m0]) * sd[m0] / (sd[m0] - sd[rg]);
-        t[1] = pr[m1] + (pr[rg] - pr[m1]) * sd[m1] / (sd[m1] - sd[rg]);
+        if (sign(sd[1]) == sign(sd[2]))
+        {
+            std::swap(sd[2], sd[0]);
+            std::swap(pr[2], pr[0]);
+        }
+        else if (sign(sd[0]) == sign(sd[2]))
+        {
+            std::swap(sd[2], sd[1]);
+            std::swap(pr[2], pr[1]);
+        }
+
+        t[0] = pr[0] + (pr[2] - pr[0]) * sd[0] / (sd[0] - sd[2]);
+        t[1] = pr[1] + (pr[2] - pr[1]) * sd[1] / (sd[1] - sd[2]);
     }
 
 
@@ -341,11 +336,8 @@ namespace Geom
         Triangle & obj = pair_it->first;
 
         for (auto mate : node.get_data())
-        {
-            std::cout << "&(*mate) != &(*pair_it): " << (&(*mate) != &(*pair_it)) << std::endl;
             if ((&(*mate) != &(*pair_it)) && is_intersect3D(obj, mate->first))
                 return true;
-        }
 
         if (node.is_parent())
             for (int i = 0; i < 8; ++i)
