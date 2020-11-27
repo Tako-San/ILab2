@@ -21,7 +21,7 @@ Finds crossing in space triangles.
 ## [Search Tree](https://github.com/Tako-San/ILab2/tree/master/3_SrchTree)
 
 Self balancing binary search tree. Using **AVL** invariant.
-Speed comparison with ```std::set``` in ```main.cc```.
+Speed comparison with ```std::set``` in ```main_time.cc```.
 
 **Input**: number of elements to sort, elements to sort, 
 amount of intervals, intervals itself (begin and end).
