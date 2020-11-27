@@ -1,19 +1,12 @@
-#include <algorithm>
 #include <iostream>
-#include <chrono>
 #include <vector>
-#include <set>
 
 #include "tree.hh"
 
-using std::set;
 
 using std::cin;
 using std::cout;
 using std::endl;
-
-using std::chrono::microseconds;
-using std::chrono::high_resolution_clock;
 
 
 int main( )
@@ -35,62 +28,19 @@ int main( )
     std::vector<int> requests;
     requests.resize(req_num * 2);
 
-    for (int i = 0; i < req_num * 2; i += 2)
-        cin >> requests[i] >> requests[i + 1];
-
-    // std::set
-
-    cout << "std::set\nANS: ";
-
-    auto begin = high_resolution_clock::now();
-
-    set<int> std_tree{};
-
-    for(auto key : keys)
-        std_tree.insert(key);
-
-    for (int i = 0; i < req_num * 2; i += 2)
-    {
-        auto tree_it = std_tree.lower_bound(requests[i]);
-
-        if (tree_it == std_tree.end())
-        {
-            cout << 0 << " ";
-            continue;
-        }
-
-        int counter = 0;
-
-        while (*tree_it <= requests[i + 1])
-        {
-            ++counter;
-            ++tree_it;
-        }
-
-        cout << counter << " ";
-    }
-
-    auto end = high_resolution_clock::now();
-
-    cout << "\nTIME: " << duration_cast<microseconds>(end - begin).count() << " ms\n";
-
-
-    // my tree
-
-    cout << "\nF::Tree\nANS: ";
-
-    auto begin2 = high_resolution_clock::now();
+    for (int i = 0; i < req_num; ++i)
+        cin >> requests[2 * i] >> requests[2 * i + 1];
 
     F::Tree<int> my_tree{};
 
     for(auto key : keys)
         my_tree.insert(key);
 
-    for (int i = 0; i < req_num * 2; i += 2)
+    for (int i = 0; i < req_num; ++i)
     {
-        auto tree_it = my_tree.lower_bound(requests[i]);
-
-        if (tree_it == my_tree.end())
+        auto tree_it = my_tree.lower_bound(requests[2 * i]);
+        auto end_it = my_tree.end();
+        if (tree_it == end_it)
         {
             cout << 0 << " ";
             continue;
@@ -98,7 +48,7 @@ int main( )
 
         int counter = 0;
 
-        while (*tree_it <= requests[i + 1])
+        while ( (tree_it != end_it) && (*tree_it <= requests[2 * i + 1]))
         {
             ++counter;
             ++tree_it;
@@ -106,10 +56,6 @@ int main( )
 
         cout << counter << " ";
     }
-
-    auto end2 = high_resolution_clock::now();
-
-    cout << "\nTIME: " << duration_cast<microseconds>(end2 - begin2).count() << " ms\n";
 
     return 0;
 }
