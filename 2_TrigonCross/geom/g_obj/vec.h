@@ -17,14 +17,11 @@ namespace Geom
 
     class Triangle;
 
-    class Vec final
+    struct Vec final
     {
-    private:
         double x_, y_, z_;
 
         double & get( unsigned idx );
-
-    public:
 
         Vec( double x, double y, double z );
         Vec( double r = 0 );
@@ -45,7 +42,8 @@ namespace Geom
         Vec operator -( ) const;
 
         double len( ) const;
-        double operator []( unsigned ) const; // get vector coorinate by number
+        double operator []( unsigned idx ) const; // get vector coorinate by number
+        double & operator []( unsigned idx );
 
         friend std::istream & operator >>( std::istream & ist, Vec & v );
 

@@ -8,11 +8,11 @@ namespace Geom
     Box::Box( const Vec & min, const Vec & max ) : min_{min}, max_{max}
     {}
 
-#define LS_MAX( idx )    \
-    v[idx] < max_[idx]   \
+#define LS_MAX( idx )      \
+    (v[idx] < max_[idx])   \
 
-#define GR_MIN( idx )    \
-    v[idx] > min_[idx]   \
+#define GR_MIN( idx )      \
+    (v[idx] > min_[idx])   \
 
 
     bool Box::is_in( const Vec & v ) const
@@ -29,9 +29,8 @@ namespace Geom
         return is_in(tr[0]) && is_in(tr[1]) && is_in(tr[2]);
     }
 
-#define MIN_VS_MAX( idx )      \
-        min_[idx] <= max_[idx] \
-
+#define MIN_VS_MAX( idx )        \
+        (min_[idx] <= max_[idx]) \
 
     bool Box::is_invalid( ) const
     {

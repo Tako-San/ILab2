@@ -72,19 +72,19 @@ namespace Geom
     double Triangle::min_coord( unsigned idx ) const
     {
         const Triangle & tr = *this;
-        double res = tr[0][idx];
+        double min = tr[0][idx];
         for (int i = 1; i < 3; ++i)
-            res = tr[i][idx] < res ? tr[i][idx] : res;
-        return res;
+            min = std::min(tr[i][idx], min);
+        return min;
     }
 
     double Triangle::max_coord( unsigned idx ) const
     {
         const Triangle & tr = *this;
-        double res = tr[0][idx];
+        double max = tr[0][idx];
         for (int i = 1; i < 3; ++i)
-            res = tr[i][idx] > res ? tr[i][idx] : res;
-        return res;
+            max = std::max(tr[i][idx], max);
+        return max;
     }
 
     bool Triangle::is_invalid( ) const

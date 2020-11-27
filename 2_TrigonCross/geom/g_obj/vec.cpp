@@ -89,6 +89,11 @@ namespace Geom
         return *(&x_ + idx % 3);
     }
 
+    double & Vec::operator []( unsigned idx )
+    {
+        return *(&x_ + idx % 3);
+    }
+
     double Vec::len( ) const
     {
         return sqrt(x_ * x_ + y_ * y_ + z_ * z_);
