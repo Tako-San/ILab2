@@ -21,79 +21,49 @@ template <typename DataT>
 template <typename FindT>
 NodeIt<DataT> Tree<DataT>::find( const FindT & data )
 {
-    return NodeIt<DataT> {root_->find(data)};
+    return std::move(NodeIt<DataT> {root_->find(data)});
 }
 
 template <typename DataT>
 template <typename FindT>
 NodeIt<DataT> Tree<DataT>::lower_bound( const FindT & data )
 {
-    auto beg_it = root_->findmin(),
-         cur_it = beg_it,
-         end_it = nullptr;
+    auto beg_p = root_->findmin(),
+         cur_p = beg_p;
 
-    int count, step;
-    count = el_num_;
+    int count = el_num_;
+    int step;
 
-    while (count > 0)
+    while (count > 0 && cur_p)
     {
-        cur_it = beg_it;
+        cur_p = beg_p;
         step = count / 2;
 
         for (int i = 0; i < step; ++i)
-            cur_it = cur_it->next();
+            cur_p = cur_p->next_;
 
-        if (cur_it->data_ < data)
+        if (cur_p->data_ < data)
         {
-            cur_it = cur_it->next();
-            beg_it = cur_it;
+            beg_p = cur_p = cur_p->next_;
             count -= step + 1;
         }
         else
             count = step;
     }
 
-    return NodeIt{cur_it};
-
-    /*
-    auto beg_it = begin(),
-         cur_it = begin(),
-         end_it = end();
-
-    int count, step;
-    count = el_num_;
-
-    while (count > 0)
-    {
-        cur_it = beg_it;
-        step = count / 2;
-
-        for (int i = 0; i < step; ++i)
-            ++cur_it;
-
-        if (*cur_it < data)
-        {
-            beg_it = ++cur_it;
-            count -= step + 1;
-        }
-        else
-            count = step;
-    }
-
-    return beg_it;
-    */
+    return std::move(NodeIt{cur_p});
 }
 
 template <typename DataT>
 NodeIt<DataT> Tree<DataT>::begin( )
 {
-    return NodeIt<DataT> {root_->findmin()};
+    return std::move(NodeIt<DataT> {root_->findmin()});
 }
 
 template <typename DataT>
 NodeIt<DataT> Tree<DataT>::end( )
 {
-    return NodeIt<DataT> {nullptr};
+    return std::move(NodeIt<DataT> {nullptr});
 }
 
 template <typename DataT>
@@ -102,7 +72,7 @@ void Tree<DataT>::insert( const DataT & data )
     ++el_num_;
     if (is_empty_)
     {
-        root_->data_ = data;
+        *root_ = Node<DataT> {data};
         is_empty_ = false;
     }
     else
@@ -112,13 +82,13 @@ void Tree<DataT>::insert( const DataT & data )
 template <typename DataT>
 int Tree<DataT>::depth( )
 {
-    return root_->depth();
+    return std::move(root_->depth());
 }
 
 template <typename DataT>
 bool Tree<DataT>::is_balanced( )
 {
-    return root_->is_balanced();
+    return std::move(root_->is_balanced());
 }
 
 template <typename DataT>
@@ -148,4 +118,27 @@ void Tree<DataT>::print_lvl( int lvl )
     if(root_ == nullptr)
         return;
     root_->print_lvl(lvl);
+}
+
+template <typename DataT>
+void Tree<DataT>::dump( const std::string &dotname /* = "dump.dot" */,
+                        const std::string &pngname /* = "dump.png" */ )
+{
+    std::ofstream fout;
+    fout.open(dotname, std::ios::out);
+
+    if (!fout.is_open())
+    {
+        std::cout << "Cannot open dump file: " << dotname << "\n";
+        return;
+    }
+    fout << "digraph D {\n";
+    if (root_ != nullptr)
+        root_->dump(fout);
+
+    fout << "}\n";
+    fout.close();
+
+    std::string promt = "dot " + dotname + " -Tpng > " + pngname;
+    system(promt.c_str());
 }

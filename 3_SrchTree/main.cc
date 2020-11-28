@@ -1,61 +1,56 @@
 #include <iostream>
 #include <vector>
+#include <set>
 
+#include "nec.hh"
 #include "tree.hh"
 
+using std::set;
 
-using std::cin;
-using std::cout;
-using std::endl;
+int key_num;
+int req_num;
+vector<int> keys;
+vector<int> requests;
 
 
-int main( )
+int main( int ac, char ** av )
 {
-    // reading keys
-    int key_num = 0;
-    cin >> key_num;
+    uint opts = read_opts(ac, av);
 
-    std::vector<int> keys;
+    bool comp = opts & C,
+         dump = opts & D;
+
+    cin >> key_num;
     keys.resize(key_num);
 
     for (int i = 0; i < key_num; ++i)
         cin >> keys[i];
 
     // readig requests
-    int req_num = 0;
     cin >> req_num;
-
-    std::vector<int> requests;
     requests.resize(req_num * 2);
 
     for (int i = 0; i < req_num; ++i)
         cin >> requests[2 * i] >> requests[2 * i + 1];
 
-    F::Tree<int> my_tree{};
-
-    for(auto key : keys)
-        my_tree.insert(key);
-
-    for (int i = 0; i < req_num; ++i)
+    // std::set
+    if (comp)
     {
-        auto tree_it = my_tree.lower_bound(requests[2 * i]);
-        auto end_it = my_tree.end();
-        if (tree_it == end_it)
-        {
-            cout << 0 << " ";
-            continue;
-        }
-
-        int counter = 0;
-
-        while ( (tree_it != end_it) && (*tree_it <= requests[2 * i + 1]))
-        {
-            ++counter;
-            ++tree_it;
-        }
-
-        cout << counter << " ";
+        set<int> std_tree{};
+        cout << "std::set\nANS: ";
+        testing_tree(std_tree, opts);
     }
+
+
+    // my tree
+    F::Tree<int> my_tree{};
+    if (comp)
+        cout << "\nF::Tree\nANS: ";
+    testing_tree(my_tree, opts);
+
+    // print my tree do png
+    if (dump)
+        my_tree.dump();
 
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <iostream>
+#include <fstream>
 
 #include "node.hh"
 
@@ -57,6 +58,8 @@ namespace F
         void print( );
         void print_leafs( );
         void print_lvl( int lvl );
+        void dump( const std::string &dotname = "../dump/dump.dot",
+                   const std::string &pngname = "../dump/dump.png" );
     };
 
     #include "tree.ii"

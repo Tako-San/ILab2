@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <iostream>
+#include <fstream>
 
 
 namespace F
@@ -27,11 +28,16 @@ namespace F
         Node * prnt_{nullptr};
         Node * left_{nullptr};
         Node * rght_{nullptr};
+        Node * next_{nullptr};
+        Node * prev_{nullptr};
 
     private:
 
         Node( );
-        explicit Node( const DataT & data, Node * prnt = nullptr );
+        explicit Node( const DataT & data,
+                       Node * prnt = nullptr,
+                       Node * next = nullptr,
+                       Node * prev = nullptr);
 
         int depth( );
         int diff( );
@@ -48,8 +54,6 @@ namespace F
 
         bool is_balanced( );
 
-        Node * next( );
-        Node * prev( );
         Node * findmin( );
         Node * findmax( );
         Node * removemin( );
@@ -65,10 +69,11 @@ namespace F
         void print( );
         void print_leafs( );
         void print_lvl( int lvl );
+        void dump( std::ofstream &oft );
     };
 
     template <typename DataT>
-    class NodeIt final
+    class NodeIt final // TODO: наследоваться от std::iterator?
     {
         friend class Node<DataT>;
         friend class Tree<DataT>;

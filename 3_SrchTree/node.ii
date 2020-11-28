@@ -4,9 +4,13 @@ Node<DataT>::Node( ) : data_{}
 {}
 
 template <typename DataT>
-Node<DataT>::Node( const DataT & data, Node<DataT> * prnt ) : data_{data},
-                                                              prnt_{prnt}
-
+Node<DataT>::Node( const DataT & data,
+                   Node<DataT> * prnt,
+                   Node<DataT> * next,
+                   Node<DataT> * prev) : data_{data},
+                                         prnt_{prnt},
+                                         next_{next},
+                                         prev_{prev}
 {}
 
 template <typename DataT>
@@ -18,8 +22,8 @@ int Node<DataT>::depth( )
 template <typename DataT>
 int Node<DataT>::diff( )
 {
-    int dl = left_ == nullptr ? 0 : left_->dpth_;
-    int dr = rght_ == nullptr ? 0 : rght_->dpth_;
+    int dl = (left_ == nullptr) ? 0 : left_->dpth_,
+        dr = (rght_ == nullptr) ? 0 : rght_->dpth_;
 
     return dr - dl;
 }
@@ -27,8 +31,8 @@ int Node<DataT>::diff( )
 template <typename DataT>
 void Node<DataT>::set_depth( )
 {
-    int dl = left_ == nullptr ? 0 : left_->dpth_;
-    int dr = rght_ == nullptr ? 0 : rght_->dpth_;
+    int dl = (left_ == nullptr) ? 0 : left_->dpth_,
+        dr = (rght_ == nullptr) ? 0 : rght_->dpth_;
 
     dpth_ = std::max(dl, dr) + 1;
 }
@@ -52,10 +56,8 @@ void Node<DataT>::set_right( Node<DataT> * rght )
 {
     rght_ = rght;
 
-    if (rght_ == nullptr)
-        return;
-
-    rght_->prnt_ = this;
+    if (rght_ != nullptr)
+        rght_->prnt_ = this;
 }
 
 template <typename DataT>
@@ -63,10 +65,8 @@ void Node<DataT>::set_left( Node<DataT> * left )
 {
     left_ = left;
 
-    if (left_ == nullptr)
-        return;
-
-    left_->prnt_ = this;
+    if (left_ != nullptr)
+        left_->prnt_ = this;
 }
 
 template <typename DataT>
@@ -128,54 +128,6 @@ bool Node<DataT>::is_balanced( )
 }
 
 template <typename DataT>
-Node<DataT> * Node<DataT>::next( )
-{
-    if (rght_ != nullptr)
-        return rght_->findmin();
-
-    if (prnt_ == nullptr)
-        return nullptr;
-
-    auto cur = this;
-    while (true)
-    {
-        if (cur->prnt_ == nullptr)
-            return nullptr;
-
-        if (cur->prnt_->left_ == cur)
-            return cur->prnt_;
-
-        cur = cur->prnt_;
-    }
-
-    return nullptr;
-}
-
-template <typename DataT>
-Node<DataT> * Node<DataT>::prev( )
-{
-    if (left_ != nullptr)
-        return left_->findmax();
-
-    if (prnt_ == nullptr)
-        return nullptr;
-
-    auto cur = this;
-    while (true)
-    {
-        if (cur->prnt_ == nullptr)
-            return nullptr;
-
-        if (cur->prnt_->rght_ == cur)
-            return cur->prnt_;
-
-        cur = cur->prnt_;
-    }
-
-    return nullptr;
-}
-
-template <typename DataT>
 Node<DataT> * Node<DataT>::findmin( )
 {
     Node<DataT> * cur{};
@@ -217,6 +169,11 @@ Node<DataT> * Node<DataT>::remove( const DataT & data ) // удаление кл
         auto * q = left_;
         auto * r = rght_;
 
+        if (prev_)
+            prev_->next_ = next_;
+        if (next_)
+            next_->prev_ = prev_;
+
         delete this;
 
         if( r == nullptr )
@@ -256,20 +213,46 @@ Node<DataT> * Node<DataT>::find( const FindT & data )
 template <typename DataT>
 Node<DataT> * Node<DataT>::insert( const DataT & data )
 {
+    auto cur = this;
 
-    if (data > data_)
-    {
-        if (rght_ != nullptr)
-            rght_ = rght_->insert(data);
+    while(data != cur->data_)
+        if (data > cur->data_)
+        {
+            if (cur->rght_ == nullptr)
+            {
+                auto & new_node = cur->rght_;
+                new_node = new Node<DataT>{data, cur, cur->next_, cur};
+
+                if (cur->next_)
+                    cur->next_->prev_ = new_node;
+
+                cur->next_ = new_node;
+                break;
+            }
+            else
+                cur = cur->rght_;
+        }
         else
-            rght_ = new Node<DataT>{data, this};
-    }
-    else if (data < data_)
+        {
+            if (cur->left_ == nullptr)
+            {
+                auto & new_node = cur->left_;
+                new_node = new Node<DataT>{data, cur, cur, cur->prev_};
+
+                if (cur->prev_)
+                    cur->prev_->next_ = new_node;
+
+                cur->prev_ = new_node;
+                break;
+            }
+            else
+                cur = cur->left_;
+        }
+
+    while (cur != this)
     {
-        if (left_ != nullptr)
-            left_ = left_->insert(data);
-        else
-            left_ = new Node<DataT>{data, this};
+        cur = cur->balance();
+        cur = cur->prnt_;
     }
 
     return balance();
@@ -284,6 +267,7 @@ void Node<DataT>::clear_subtree( )
 
     if(left_!= nullptr)
         left_->clear_subtree();
+
     if(rght_ != nullptr)
         rght_->clear_subtree();
 
@@ -340,7 +324,29 @@ void Node<DataT>::print_lvl( int lvl )
     }
 }
 
+template <typename DataT>
+void Node<DataT>::dump( std::ofstream &oft )
+{
+    if (left_ != nullptr)
+    {
+        oft << data_ << " -> " << left_->data_ << ";\n";
+        left_->dump(oft);
+    }
 
+    if (rght_ != nullptr)
+    {
+        oft << data_ << " -> " << rght_->data_ << " [style=dashed];\n";
+        rght_->dump(oft);
+    }
+
+    /*if (next_ != nullptr)
+        oft << data_ << " -> " << next_->data_ << " [color=red];\n";
+
+    if (prev_ != nullptr)
+        oft << data_ << " -> " << prev_->data_ << " [color=blue];\n";*/
+
+    oft << data_ << ";\n";
+}
 
 
 
@@ -362,13 +368,13 @@ NodeIt<DataT> & NodeIt<DataT>::operator = ( const NodeIt<DataT> & it )
 template <typename DataT>
 bool NodeIt<DataT>::operator == ( const NodeIt<DataT> & it ) const
 {
-    return ptr_ == it.ptr_;
+    return (ptr_ == it.ptr_);
 }
 
 template <typename DataT>
 bool NodeIt<DataT>::operator != ( const NodeIt<DataT> & it ) const
 {
-    return  ptr_ != it.ptr_;
+    return (ptr_ != it.ptr_);
 }
 
 template <typename DataT>
@@ -386,13 +392,13 @@ const DataT & NodeIt<DataT>::operator * ( ) const
 template <typename DataT>
 NodeIt<DataT> & NodeIt<DataT>::operator ++ ()
 {
-    ptr_ = ptr_->next();
+    ptr_ = ptr_->next_;
     return *this;
 }
 
 template <typename DataT>
 NodeIt<DataT> & NodeIt<DataT>::operator -- ()
 {
-    ptr_ = ptr_->prev();
+    ptr_ = ptr_->prev_;
     return *this;
 }
