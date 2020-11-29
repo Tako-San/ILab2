@@ -37,7 +37,7 @@ int main( int ac, char ** av )
     if (comp)
     {
         set<int> std_tree{};
-        cout << "std::set\nANS: ";
+        cout << "std::set\n";
         testing_tree(std_tree, opts);
     }
 
@@ -45,7 +45,7 @@ int main( int ac, char ** av )
     // my tree
     F::Tree<int> my_tree{};
     if (comp)
-        cout << "\nF::Tree\nANS: ";
+        cout << "\nF::Tree\n";
     testing_tree(my_tree, opts);
 
     // print my tree do png

@@ -22,8 +22,6 @@ extern vector<int> requests;
 
 #include <getopt.h>
 
-const char SHORT_OPTS[] = "icd";
-
 enum FLAGS
 {
     C = 1u,
@@ -37,11 +35,14 @@ enum OP_CODE
     UNKNOWN = -2
 };
 
+const char SHORT_OPTS[] = "icdh";
+
 struct option OPTS[] =
         {
                 {"compare", 0, nullptr, 'c'},
                 {"insert_uncount", 0, nullptr, 'i'},
                 {"dump", 0, nullptr, 'd'},
+                {"help", 0, nullptr, 'h'},
                 {nullptr, 0, nullptr, 0}
         };
 
@@ -68,6 +69,9 @@ uint read_opts(int ac, char ** av)
             case 'd':
                 opts |= D;
                 break;
+            case 'h':
+                std::cerr << "USAGE: ./tree [-c] [-d] [-i]\n";
+                exit(0);
             case END:
                 return opts;
             default:
@@ -109,7 +113,8 @@ void testing_tree( Tree & tree, uint opts )
             ++tree_it;
         }
 
-        cout << counter << " ";
+        if (!comp)
+            cout << counter << " ";
     }
 
     auto end = high_resolution_clock::now();
