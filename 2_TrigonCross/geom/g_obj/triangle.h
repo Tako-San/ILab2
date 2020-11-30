@@ -31,35 +31,38 @@ namespace Geom
         bool inv_;
         uint8_t shape_;
 
-        uint8_t find_shape( ) const;
+        [[nodiscard]] uint8_t find_shape( ) const;
+
     public:
 
         Triangle( );
         Triangle( const Vec & v1, const Vec & v2, const Vec & v3 );
 
-        Plane plane( ) const;
+        [[nodiscard]] Plane plane( ) const;
 
         const Vec & operator []( unsigned idx ) const;
 
         void print( ) const;
 
-        uint8_t shape( ) const;
+        [[nodiscard]] uint8_t shape( ) const;
 
-        double min_coord( unsigned idx ) const;
-        double max_coord( unsigned idx ) const;
+        [[nodiscard]] double min_coord( unsigned idx ) const;
+        [[nodiscard]] double max_coord( unsigned idx ) const;
 
-        bool is_invalid( ) const;
-        bool is_point( ) const;
-        bool is_line( ) const;
-        bool is_inv( ) const;
+        [[nodiscard]] bool is_invalid( ) const;
+        [[nodiscard]] bool is_point( ) const;
+        [[nodiscard]] bool is_line( ) const;
+        [[nodiscard]] bool is_inv( ) const;
 
-        friend std::istream & operator >>( std::istream & ist, Triangle & tr );
+        void counter_clockwise2D( );
+
+        friend std::istream & operator>>( std::istream & ist, Triangle & tr );
     };
+
+    std::ostream & operator<<( std::ostream & ost, const Geom::Triangle & tr );
+
+    bool operator==( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
+    bool operator!=( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
 }
-
-std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr );
-
-bool operator ==( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
-bool operator !=( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
 
 #endif //ILAB2_TRIANGLE_H

@@ -18,15 +18,15 @@ namespace Geom
         Box( );
         Box( const Vec & min, const Vec & max );
 
-        bool is_in( const Vec & v ) const;
-        bool is_in( const Triangle & tr ) const;
+        template <typename Obj>
+        bool is_in( const Obj & obj ) const;
 
-        bool is_invalid( ) const;
+        [[nodiscard]] bool is_invalid( ) const;
 
-        const Vec & get_min( ) const;
-        const Vec & get_max( ) const;
+        [[nodiscard]] const Vec & get_min( ) const;
+        [[nodiscard]] const Vec & get_max( ) const;
 
-        double diag( ) const;
+        [[nodiscard]] double diag( ) const;
     };
 }
 

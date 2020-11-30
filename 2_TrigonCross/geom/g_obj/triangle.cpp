@@ -32,8 +32,7 @@ namespace Geom
         {
             if (v1_ == v3_ || v2_ == v3_)
                 res |= LINE12;
-        }
-        else if (v1_ == v3_)
+        } else if (v1_ == v3_)
             return POINT;
         else
             res |= LINE13;
@@ -107,6 +106,16 @@ namespace Geom
         return inv_;
     }
 
+    void Triangle::counter_clockwise2D( )
+    {
+        double delta = (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_)
+                     - (v1_.x_ * v3_.y_) - (v3_.x_ * v1_.y_)
+                     + (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_);
+
+        if (delta < 0)
+            std::swap(v2_, v1_);
+    }
+
     std::istream & operator >>( std::istream & ist, Triangle & tr )
     {
         ist >> tr.v1_ >> tr.v2_ >> tr.v3_;
@@ -114,25 +123,26 @@ namespace Geom
         tr.shape_ = tr.find_shape();
         return ist;
     }
-}
 
-std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr )
-{
-    for (int i = 0; i < 3; ++i)
-        ost << "v[" << i << "] = " << tr[i] << " ";
-    ost << ";";
-    return ost;
-}
 
-bool operator ==( const Geom::Triangle & lhs, const Geom::Triangle & rhs )
-{
-    for (int i = 0; i < 3; ++i)
-        if (lhs[i] != rhs[i])
-            return false;
-    return true;
-}
+    std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr )
+    {
+        for (int i = 0; i < 3; ++i)
+            ost << "v[" << i << "] = " << tr[i] << " ";
+        ost << ";";
+        return ost;
+    }
 
-bool operator !=( const Geom::Triangle & lhs, const Geom::Triangle & rhs )
-{
-    return !(lhs == rhs);
+    bool operator ==( const Geom::Triangle & lhs, const Geom::Triangle & rhs )
+    {
+        for (int i = 0; i < 3; ++i)
+            if (lhs[i] != rhs[i])
+                return false;
+        return true;
+    }
+
+    bool operator !=( const Geom::Triangle & lhs, const Geom::Triangle & rhs )
+    {
+        return !(lhs == rhs);
+    }
 }

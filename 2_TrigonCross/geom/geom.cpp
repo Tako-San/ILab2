@@ -10,7 +10,7 @@ namespace Geom
     template <typename T>
     int sign( T value )
     {
-        return (T(0) < value) - (T(0) > value);
+        return (T{0} < value) - (T{0} > value);
     }
 
     bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 )
@@ -88,11 +88,45 @@ namespace Geom
                 trp2 = &tr1;
             }
 
-            if (std::abs(trp2->plane().sdst((*trp1)[0])) < ACCURACY)
+            if (std::abs(trp2->plane().sdst((*trp1)[0])) > ACCURACY)
                 return false;
 
-            // TODO: write dot triangle intersection
-            /*return is_intersect2D(tr1, tr2);*/
+            Vec norm{trp2->plane().get_nrm()};
+
+            double OXY = abs(norm & Vec{0, 0, 1}),
+                   OXZ = abs(norm & Vec{0, 1, 0}),
+                   OYZ = abs(norm & Vec{1, 0, 0});
+
+            unsigned maxind = ind_of_max(OYZ, OXZ, OXY);
+
+            Vec v[3] = {};
+
+            for (unsigned i = 0, j = 0; i < 3 && j < 2; ++i)
+            {
+                if (i == maxind)
+                    continue;
+
+                for (unsigned k = 0; k < 3; ++k)
+                    v[k].get(j) = (*trp1)[k][i];
+                ++j;
+            }
+
+            Triangle tr {v[0], v[1], v[2]};
+            tr.counter_clockwise2D();
+
+            double C = (tr[1] - tr[0]).perp2D().normalise() & (tr[2] - tr[0]);
+            const Vec & point{(*trp1)[0]};
+
+            for (int i = 0; i < 3; ++i)
+            {
+                Vec ni = (tr[(i + 1) % 3] - tr[i]).perp2D().normalise();
+                /*if (C * (ni & (point - tr[i])) <= 0)
+                    return false;*/
+                if ((ni & (point - tr[i])) > 0)
+                    return false;
+            }
+
+            return true;
         }
 
         return false;
@@ -144,8 +178,10 @@ namespace Geom
             sd1[i] = pl2.sdst(tr1[i]);
         }
 
-        if ((sign(sd1[0]) == sign(sd1[1]) && sign(sd1[0]) == sign(sd1[2])) ||
-            (sign(sd2[0]) == sign(sd2[1]) && sign(sd2[0]) == sign(sd2[2])))
+        if ((sign(sd1[0]) == sign(sd1[1]) &&
+             sign(sd1[0]) == sign(sd1[2])) ||
+            (sign(sd2[0]) == sign(sd2[1]) &&
+             sign(sd2[0]) == sign(sd2[2])))
             return false;
 
         Line int_line = intersection(pl1, pl2);
@@ -302,12 +338,12 @@ namespace Geom
         for (int i = 0; i < 3; ++i)
             pr[i] = int_line.get_dir() & (tr[i] - int_line.get_orig());
 
-        if (sign(sd[1]) == sign(sd[2]))
+        if (sign(sd[1]) * sign(sd[2]) >= 0)
         {
             std::swap(sd[2], sd[0]);
             std::swap(pr[2], pr[0]);
         }
-        else if (sign(sd[0]) == sign(sd[2]))
+        else if (sign(sd[0]) * sign(sd[2]) >= 0)
         {
             std::swap(sd[2], sd[1]);
             std::swap(pr[2], pr[1]);
@@ -329,21 +365,4 @@ namespace Geom
         return !((t1[1] < t2[0]) || (t1[0] > t2[1]));
     }
 
-
-    bool intersect_octree( typename list<pair<Triangle, OctNode<Triangle> *>>::iterator pair_it )
-    {
-        OctNode<Triangle> & node = *(pair_it->second);
-        Triangle & obj = pair_it->first;
-
-        for (auto mate : node.get_data())
-            if ((&(*mate) != &(*pair_it)) && is_intersect3D(obj, mate->first))
-                return true;
-
-        if (node.is_parent())
-            for (int i = 0; i < 8; ++i)
-                if (node.intersect_subtree(obj, i))
-                    return true;
-
-        return false;
-    }
 }

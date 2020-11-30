@@ -12,7 +12,6 @@
 #include "gtest/gtest.h"
 
 using namespace Geom;
-using namespace Octree;
 
 using std::cout;
 using std::cin;
@@ -209,6 +208,14 @@ TEST(triangles, intersection1)
     EXPECT_EQ(is_intersect3D(tr1, tr2), true);
 }
 
+TEST(triangles, intersection2)
+{
+    Triangle tr1{Vec{0, 0, 0}, Vec{1, 0,  0}, Vec{0, 1, 0}};
+    Triangle tr2{Vec{0, 0, 1}, Vec{0, 0, -1}, Vec{1, 1, 0}};
+
+    EXPECT_EQ(is_intersect3D(tr1, tr2), true);
+}
+
 TEST(octree, constructors)
 {
     Vec v1{-100};
@@ -219,7 +226,7 @@ TEST(octree, constructors)
     list<Vec> dots;
     dots.push_front(Vec{-10, -10, -10});
 
-    OctTree<Vec> octree{zone, dots};
+    OctTree<Vec> octree{zone, dots.begin(), dots.end()};
 
     EXPECT_EQ(octree.insert(Vec{10}), true);
 

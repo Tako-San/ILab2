@@ -1,9 +1,15 @@
+
 template <typename DataT>
-OctNode<DataT>::OctNode( ) : parent_{nullptr}, child_{}, zone_{}, data_{}
+OctNode<DataT>::OctNode( ) : parent_(nullptr),
+                             child_(),
+                             zone_(),
+                             lvl_(1)
 {}
 
 template <typename DataT>
-OctNode<DataT>::OctNode( Box zone, OctNode * parent) : parent_{parent}, child_{}, zone_{zone}
+OctNode<DataT>::OctNode( Box zone, OctNode * parent) : parent_(parent),
+                                                       child_(),
+                                                       zone_(zone)
 {
     if (parent == nullptr)
         lvl_ = 1;
@@ -11,61 +17,47 @@ OctNode<DataT>::OctNode( Box zone, OctNode * parent) : parent_{parent}, child_{}
         lvl_ = parent->lvl_ + 1;
 }
 
-
-template <typename DataT>
-const vector<typename OctNode<DataT>::PairIt> & OctNode<DataT>::get_data( ) const
-{
-    return data_;
-}
-
 template <typename DataT>
 bool OctNode<DataT>::is_parent( ) const
 {
-    return has_children;
+    return has_ch_;
 }
 
 template <typename DataT>
-bool OctNode<DataT>::is_in( const DataT & d ) const
+bool OctNode<DataT>::is_in( const DataT & obj ) const
 {
-    return zone_.is_in(d);
-}
-
-template <typename DataT>
-bool OctNode<DataT>::is_in( const DataT * d ) const
-{
-    return zone_.is_in(*d);
+    return zone_.is_in(obj);
 }
 
 template <typename DataT>
 bool OctNode<DataT>::need_children( ) const
 {
-    return !has_children && data_.size() >= CHILDREN_NUM && zone_.diag() > MIN_DIAG;
+    return (!has_ch_) && (data_.size() >= CHILDREN_NUM) && (zone_.diag() > MIN_DIAG);
 }
 
 template <typename DataT>
-OctNode<DataT> * OctNode<DataT>::insert( PairIt data, bool hate_children )
+OctNode<DataT> * OctNode<DataT>::insert( const DataT & obj, bool hate_children )
 {
-    if (!is_in(data->first))
+    if (!is_in(obj))
         return nullptr;
 
     if (!hate_children && need_children())
         divide();
 
-    if (has_children)
+    if (has_ch_)
         for (auto ch : child_)
         {
-            auto res = ch->insert(data);
+            auto res = ch->insert(obj);
             if (res != nullptr)
                 return res;
         }
 
-    data_.push_back(data);
-    data->second = this;
+    data_.push_front(obj);
     return this;
 }
 
 template <typename DataT>
-bool OctNode<DataT>::intersect_subtree( DataT obj ) const
+bool OctNode<DataT>::is_intersect( const DataT & obj, bool not_in_tree ) const
 {
     if (typeid(DataT) != typeid(Triangle))
     {
@@ -73,29 +65,41 @@ bool OctNode<DataT>::intersect_subtree( DataT obj ) const
         return false;
     }
 
-    for (auto mate : data_)
-        if (is_intersect3D(obj, mate->first))
-            return true;
+    int credit = not_in_tree ? 0 : 1;
 
-    if (has_children)
+    for (auto mate : data_)
+    {
+        if (mate == obj)
+        {
+            if (credit < 1)
+                return true;
+            --credit;
+            continue;
+        }
+
+        if (is_intersect3D(obj, mate))
+            return true;
+    }
+
+    if (has_ch_)
         for (auto ch : child_)
-            if (ch->intersect_subtree(obj))
+            if (ch->is_intersect(obj, not_in_tree))
                 return true;
 
     return false;
 }
 
 template <typename DataT>
-bool OctNode<DataT>::intersect_subtree( DataT obj, uint idx ) const
+bool OctNode<DataT>::is_intersect_child( const DataT & obj, uint idx, bool not_in_tree ) const
 {
     idx %= 8;
-    return child_[idx]->intersect_subtree(obj);
+    return child_[idx]->is_intersect(obj, not_in_tree);
 }
 
 template <typename DataT>
 void OctNode<DataT>::print( )
 {
-    if (has_children)
+    if (has_ch_)
         for (auto child : child_)
             child->print();
 
@@ -108,12 +112,14 @@ void OctNode<DataT>::print( )
     std::cout << indent << "BOX_MAX: " << zone_.get_max() << std::endl;
     std::cout << indent << "data: " << std::endl;
 
-    for (auto pair : data_)
-        std::cout << indent << pair->first << std::endl;
+    for (auto & obj : data_)
+    {
+        std::cout << indent;
+        std::cout << obj << std::endl;
+    }
 
     std::cout << std::endl;
 }
-
 
 #define mid(A)                    \
     ((min[A] + max[A]) / 2)       \
@@ -150,29 +156,21 @@ void OctNode<DataT>::divide( )
 {
     div_box();
 
-    has_children = true;
+    has_ch_ = true;
 
-    using VecIt = typename vector<PairIt>::iterator;
-    std::vector<PairIt> new_data{};
-
-    for (VecIt cur = data_.begin(), end = data_.end(); cur != end; ++cur)
+    for (auto cur = data_.begin(), end = data_.end(); cur != end; )
     {
-        bool in_ch{false};
-
         for (auto ch : child_)
-            if (ch->is_in((*cur)->first))
+            if (ch->is_in(*cur))
             {
-                (*cur)->second = ch->insert(*cur, true);
-                in_ch = true;
+                auto & lst = ch->data_;
+                auto tmp = cur;
+                ++cur;
+                lst.splice(lst.begin(), data_, tmp);
                 break;
             }
-
-        if (!in_ch)
-            new_data.push_back(*cur);
+        ++cur;
     }
-
-    data_.clear();
-    data_ = new_data;
 }
 
 template <typename DataT>

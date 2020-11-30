@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 include_directories(../include ${GTEST_INCLUDE_DIRS})
 
 include_directories(geom)
-include_directories(octree)
+include_directories(geom/octree)
 
 add_subdirectory(/usr/src/googletest gtest)
 add_subdirectory(geom)

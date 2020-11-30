@@ -8,14 +8,21 @@ namespace Geom
     Box::Box( const Vec & min, const Vec & max ) : min_{min}, max_{max}
     {}
 
+    template <typename Obj>
+    bool Box::is_in( const Obj & obj ) const
+    {
+        return false;
+    }
+
 #define LS_MAX( idx )      \
-    (v[idx] < max_[idx])   \
+    (obj[idx] < max_[idx])   \
 
 #define GR_MIN( idx )      \
-    (v[idx] > min_[idx])   \
+    (obj[idx] > min_[idx])   \
 
 
-    bool Box::is_in( const Vec & v ) const
+    template <>
+    bool Box::is_in( const Vec & obj ) const
     {
         return LS_MAX(X) && LS_MAX(Y) && LS_MAX(Z) &&
                GR_MIN(X) && GR_MIN(Y) && GR_MIN(Z);
@@ -24,9 +31,10 @@ namespace Geom
 #undef LS_MAX
 #undef GR_MIN
 
-    bool Box::is_in( const Triangle & tr ) const
+    template <>
+    bool Box::is_in( const Triangle & obj ) const
     {
-        return is_in(tr[0]) && is_in(tr[1]) && is_in(tr[2]);
+        return is_in(obj[0]) && is_in(obj[1]) && is_in(obj[2]);
     }
 
 #define MIN_VS_MAX( idx )        \
