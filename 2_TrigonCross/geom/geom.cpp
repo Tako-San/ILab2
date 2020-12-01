@@ -2,18 +2,13 @@
 
 namespace Geom
 {
-    using std::abs;
-    using std::swap;
-    using std::cout;
-    using std::endl;
-
     template <typename T>
     int sign( T value )
     {
         return (T{0} < value) - (T{0} > value);
     }
 
-    bool is_intersect_inv( const Triangle & tr1, const Triangle & tr2 )
+    bool inv_trian_intr( const Triangle & tr1, const Triangle & tr2 )
     {
         uint8_t sh1 = tr1.shape(),
                 sh2 = tr2.shape();
@@ -66,7 +61,7 @@ namespace Geom
             if (trp2->is_point())
                 return is_on_line(l, Vec {(*trp2)[0]});
             else
-                return is_intersect3D(l, *trp2);
+                return trian_line_intr3D(l, *trp2);
         }
 
         if (tr1.is_point() || tr2.is_point())
@@ -76,38 +71,30 @@ namespace Geom
                            * trp2;
 
             if (tr1.is_point())
-            {
-                cur_sh = sh1;
-                trp1 = &tr1;
-                trp2 = &tr2;
-            }
+                trp1 = &tr1, trp2 = &tr2;
             else
-            {
-                cur_sh = sh2;
-                trp1 = &tr2;
-                trp2 = &tr1;
-            }
+                trp1 = &tr2, trp2 = &tr1;
 
             if (std::abs(trp2->plane().sdst((*trp1)[0])) > ACCURACY)
                 return false;
 
             Vec norm{trp2->plane().get_nrm()};
 
-            double OXY = abs(norm & Vec{0, 0, 1}),
-                   OXZ = abs(norm & Vec{0, 1, 0}),
-                   OYZ = abs(norm & Vec{1, 0, 0});
+            double OXY = std::abs(norm & Vec{0, 0, 1}),
+                   OXZ = std::abs(norm & Vec{0, 1, 0}),
+                   OYZ = std::abs(norm & Vec{1, 0, 0});
 
-            unsigned maxind = ind_of_max(OYZ, OXZ, OXY);
+            uint maxind = ind_of_max(OYZ, OXZ, OXY);
 
             Vec v[3] = {};
 
-            for (unsigned i = 0, j = 0; i < 3 && j < 2; ++i)
+            for (uint i = 0, j = 0; i < 3 && j < 2; ++i)
             {
                 if (i == maxind)
                     continue;
 
-                for (unsigned k = 0; k < 3; ++k)
-                    v[k].get(j) = (*trp1)[k][i];
+                for (uint k = 0; k < 3; ++k)
+                    v[k][j] = (*trp1)[k][i];
                 ++j;
             }
 
@@ -120,8 +107,7 @@ namespace Geom
             for (int i = 0; i < 3; ++i)
             {
                 Vec ni = (tr[(i + 1) % 3] - tr[i]).perp2D().normalise();
-                /*if (C * (ni & (point - tr[i])) <= 0)
-                    return false;*/
+
                 if ((ni & (point - tr[i])) > 0)
                     return false;
             }
@@ -132,11 +118,12 @@ namespace Geom
         return false;
     }
 
-    bool is_intersect3D( const Line & l, const Triangle & tr )
+    bool trian_line_intr3D( const Line & l, const Triangle & tr )
     {
-        Vec e1 = tr[1] - tr[0];
-        Vec e2 = tr[2] - tr[0];
-        Vec  p = l.get_dir() % e2;
+        Vec e1 = tr[1] - tr[0],
+            e2 = tr[2] - tr[0],
+            p = l.get_dir() % e2;
+
         double tmp = p & e1;
 
         if (std::abs(tmp) < ACCURACY)
@@ -157,20 +144,19 @@ namespace Geom
         return true;
     }
 
-    bool is_intersect3D( const Triangle & tr1, const Triangle & tr2 )
+    bool trian_intr3D( const Triangle & tr1, const Triangle & tr2 )
     {
         if (tr1.is_inv() || tr2.is_inv())
-            return is_intersect_inv(tr1, tr2);
+            return inv_trian_intr(tr1, tr2);
 
-        Plane pl1 = tr1.plane();
-        Plane pl2 = tr2.plane();
+        Plane pl1 = tr1.plane(),
+              pl2 = tr2.plane();
 
-        if ((pl1.get_nrm() % pl2.get_nrm() == ZERO_VEC) &&
-            (abs((pl1.get_dst()) - (pl2.get_dst())) < ACCURACY))
-            return is_intersect2D(tr1, tr2);
+        if (pl1 == pl2)
+            return trian_intr2D(tr1, tr2);
 
-        double sd2[3] = {};
-        double sd1[3] = {};
+        double sd2[3] = {},
+               sd1[3] = {};
 
         for (int i = 0; i < 3; ++i)
         {
@@ -189,8 +175,8 @@ namespace Geom
         if (int_line.is_invalid())
             return false;
 
-        double t1[2] = {};
-        double t2[2] = {};
+        double t1[2] = {},
+               t2[2] = {};
 
         find_cross(tr1, sd1, int_line, t1);
         find_cross(tr2, sd2, int_line, t2);
@@ -199,9 +185,9 @@ namespace Geom
     }
 
 
-    unsigned ind_of_max( double a, double b, double c )
+    uint ind_of_max( double a, double b, double c )
     {
-        int ind = 0;
+        int ind;
         double max;
 
         if (a > b)
@@ -221,36 +207,36 @@ namespace Geom
         return ind;
     }
 
-    bool is_intersect2D( const Triangle & tr1, const Triangle & tr2 )
+    bool trian_intr2D( const Triangle & tr1, const Triangle & tr2 )
     {
         Vec norm{tr1.plane().get_nrm()};
 
-        double OXY = abs(norm & Vec{0, 0, 1}),
-               OXZ = abs(norm & Vec{0, 1, 0}),
-               OYZ = abs(norm & Vec{1, 0, 0});
+        double OXY = std::abs(norm & Vec{0, 0, 1}),
+               OXZ = std::abs(norm & Vec{0, 1, 0}),
+               OYZ = std::abs(norm & Vec{1, 0, 0});
 
-        unsigned maxind = ind_of_max(OYZ, OXZ, OXY);
+        uint maxind = ind_of_max(OYZ, OXZ, OXY);
 
-        Vec tr_v1[3] = {};
-        Vec tr_v2[3] = {};
+        Vec tr_v1[3] = {},
+            tr_v2[3] = {};
 
-        for (unsigned i = 0, j = 0; i < 3 && j < 2; ++i)
+        for (uint i = 0, j = 0; i < 3 && j < 2; ++i)
         {
             if (i == maxind)
                 continue;
 
-            for (unsigned k = 0; k < 3; ++k)
+            for (uint k = 0; k < 3; ++k)
             {
-                tr_v1[k].get(j) = tr1[k][i];
-                tr_v2[k].get(j) = tr2[k][i];
+                tr_v1[k][j] = tr1[k][i];
+                tr_v2[k][j] = tr2[k][i];
             }
             ++j;
         }
-        return tst_intr(Triangle(tr_v1[0], tr_v1[1], tr_v1[2]),
-                        Triangle(tr_v2[0], tr_v2[1], tr_v2[2]));
+        return tst_intr(Triangle{tr_v1[0], tr_v1[1], tr_v1[2]},
+                        Triangle{tr_v2[0], tr_v2[1], tr_v2[2]});
     }
 
-    int get_mid_ind( int i0, int i1, int N )
+    uint get_mid_ind( int i0, int i1, int N )
     {
         if (i0 < i1)
             return (i0 + i1) / 2;
@@ -258,7 +244,7 @@ namespace Geom
             return (i0 + i1 + N) / 2 % N;
     }
 
-    int get_extreme_ind( const Triangle & tr, const Vec & pt )
+    uint get_extreme_ind( const Triangle & tr, const Vec & pt )
     {
         int i0 = 0, i1 = 0;
         while (true)
@@ -357,12 +343,11 @@ namespace Geom
     bool cmp_seg( double t1[], double t2[] )
     {
         if (t1[0] > t1[1])
-            swap(t1[0], t1[1]);
+            std::swap(t1[0], t1[1]);
 
         if (t2[0] > t2[1])
-            swap(t2[0], t2[1]);
+            std::swap(t2[0], t2[1]);
 
         return !((t1[1] < t2[0]) || (t1[0] > t2[1]));
     }
-
 }

@@ -11,9 +11,9 @@ namespace Geom
     enum DegenT
     {
         TRIANGLE = 1u,
-        POINT    = 1u << 1u,
-        LINE12   = 1u << 2u,
-        LINE13   = 1u << 3u,
+        POINT = 1u << 1u,
+        LINE12 = 1u << 2u,
+        LINE13 = 1u << 3u,
         LINE = LINE12 | LINE13
     };
 
@@ -56,13 +56,12 @@ namespace Geom
 
         void counter_clockwise2D( );
 
-        friend std::istream & operator>>( std::istream & ist, Triangle & tr );
+        friend std::istream & operator >>( std::istream & ist, Triangle & tr );
     };
 
-    std::ostream & operator<<( std::ostream & ost, const Geom::Triangle & tr );
-
-    bool operator==( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
-    bool operator!=( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
+    std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr );
+    bool operator ==( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
+    bool operator !=( const Geom::Triangle & lhs, const Geom::Triangle & rhs );
 }
 
 #endif //ILAB2_TRIANGLE_H

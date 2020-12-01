@@ -4,14 +4,14 @@ namespace Geom
 {
     const Line POISON_LINE{0, 0};
 
-    Line::Line( ) : orig_{},
-                    dir_{},
-                    inv_{true}
+    Line::Line( ) : orig_(),
+                    dir_(),
+                    inv_(true)
     {}
 
-    Line::Line( const Vec & orig, const Vec & dir ) : orig_{orig},
-                                                      dir_{normalise(dir)},
-                                                      inv_{is_invalid()}
+    Line::Line( const Vec & orig, const Vec & dir ) : orig_(orig),
+                                                      dir_(normalise(dir)),
+                                                      inv_(is_invalid())
     {}
 
     const Vec & Line::get_orig( ) const
@@ -42,7 +42,6 @@ namespace Geom
 
     bool Line::belongs( const Vec & v ) const
     {
-        /*((p - l.get_orig()) % l.get_dir() == ZERO_VEC)*/
         return ((v - orig_) % dir_ == ZERO_VEC);
     }
 
@@ -54,7 +53,7 @@ namespace Geom
         std::cout << " * t";
     }
 
-    bool    line_intr( const Line & l1, const Line & l2 )
+    bool line_intr( const Line & l1, const Line & l2 )
     {
         return l1.is_intr(l2);
     }
@@ -63,10 +62,10 @@ namespace Geom
     {
         return l.belongs(v);
     }
-}
 
-std::ostream & operator <<( std::ostream & ost, const Geom::Line & ln )
-{
-    ost << ln.get_orig() << " + " << ln.get_dir() << " * t";
-    return ost;
+    std::ostream & operator <<( std::ostream & ost, const Geom::Line & ln )
+    {
+        ost << ln.get_orig() << " + " << ln.get_dir() << " * t";
+        return ost;
+    }
 }

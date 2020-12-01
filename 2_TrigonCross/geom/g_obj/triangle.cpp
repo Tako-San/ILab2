@@ -109,8 +109,8 @@ namespace Geom
     void Triangle::counter_clockwise2D( )
     {
         double delta = (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_)
-                     - (v1_.x_ * v3_.y_) - (v3_.x_ * v1_.y_)
-                     + (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_);
+                       - (v1_.x_ * v3_.y_) - (v3_.x_ * v1_.y_)
+                       + (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_);
 
         if (delta < 0)
             std::swap(v2_, v1_);
@@ -123,7 +123,6 @@ namespace Geom
         tr.shape_ = tr.find_shape();
         return ist;
     }
-
 
     std::ostream & operator <<( std::ostream & ost, const Geom::Triangle & tr )
     {

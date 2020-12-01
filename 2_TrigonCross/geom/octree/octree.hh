@@ -42,14 +42,14 @@ namespace Geom
     {}
 
     template <typename DataT>
-    OctTree<DataT>::OctTree( const Box & zone ) : root_(new OctNode<DataT>{zone})
+    OctTree<DataT>::OctTree( const Box & zone ) : root_(new OctNode<DataT>(zone))
     {}
 
     template <typename DataT>
     template <typename IterT>
-    OctTree<DataT>::OctTree( const Box & zone,
-                             const IterT & beg,
-                             const IterT & end ) : root_(new OctNode<DataT>{zone})
+    OctTree<DataT>::OctTree( const Box   & zone,
+                             const IterT &  beg,
+                             const IterT &  end ) : root_(new OctNode<DataT>(zone))
     {
         for (auto cur = beg; cur != end; ++cur)
             insert(*cur);
@@ -78,6 +78,5 @@ namespace Geom
     {
         root_->print();
     }
-
 }
 #endif //ILAB2_OCTREE_H

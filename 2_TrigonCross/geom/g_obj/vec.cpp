@@ -4,10 +4,10 @@ namespace Geom
 {
     extern const Vec ZERO_VEC{0};
 
-    double & Vec::get( unsigned idx )
+    /*double & Vec::get( unsigned idx )
     {
         return *(&x_ + idx % 3);
-    }
+    }*/
 
     Vec::Vec( double x, double y, double z ) : x_{x}, y_{y}, z_{z}
     {}

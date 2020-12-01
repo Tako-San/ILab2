@@ -2,10 +2,13 @@
 
 namespace Geom
 {
-    Box::Box( ) : min_{}, max_{}
+    Box::Box( ) : min_(),
+                  max_()
     {}
 
-    Box::Box( const Vec & min, const Vec & max ) : min_{min}, max_{max}
+    Box::Box( const Vec & min,
+              const Vec & max ) : min_(min),
+                                  max_(max)
     {}
 
     template <typename Obj>
@@ -14,10 +17,10 @@ namespace Geom
         return false;
     }
 
-#define LS_MAX( idx )      \
+#define LS_MAX( idx )        \
     (obj[idx] < max_[idx])   \
 
-#define GR_MIN( idx )      \
+#define GR_MIN( idx )        \
     (obj[idx] > min_[idx])   \
 
 
@@ -61,10 +64,10 @@ namespace Geom
     {
         return Vec{max_ - min_}.len();
     }
-}
 
-std::ostream & operator <<( std::ostream & ost, const Geom::Box & box )
-{
-    ost << "min = " << box.get_min() << ", max = " << box.get_max();
-    return ost;
+    std::ostream & operator <<( std::ostream & ost, const Geom::Box & box )
+    {
+        ost << "min = " << box.get_min() << ", max = " << box.get_max();
+        return ost;
+    }
 }

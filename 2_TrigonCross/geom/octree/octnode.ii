@@ -77,7 +77,7 @@ bool OctNode<DataT>::is_intersect( const DataT & obj, bool not_in_tree ) const
             continue;
         }
 
-        if (is_intersect3D(obj, mate))
+        if (trian_intr3D(obj, mate))
             return true;
     }
 
@@ -87,13 +87,6 @@ bool OctNode<DataT>::is_intersect( const DataT & obj, bool not_in_tree ) const
                 return true;
 
     return false;
-}
-
-template <typename DataT>
-bool OctNode<DataT>::is_intersect_child( const DataT & obj, uint idx, bool not_in_tree ) const
-{
-    idx %= 8;
-    return child_[idx]->is_intersect(obj, not_in_tree);
 }
 
 template <typename DataT>

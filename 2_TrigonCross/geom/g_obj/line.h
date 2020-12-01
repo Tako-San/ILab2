@@ -17,13 +17,13 @@ namespace Geom
         Line( );
         Line( const Vec & orig, const Vec & dir );
 
-        const Vec & get_orig( ) const;
-        const Vec & get_dir( ) const;
+        [[nodiscard]] const Vec & get_orig( ) const;
+        [[nodiscard]]const Vec & get_dir( ) const;
 
-        bool is_invalid( ) const;
-        bool is_inv( ) const;
-        bool is_intr( const Line & l ) const;
-        bool belongs( const Vec & v ) const;
+        [[nodiscard]] bool is_invalid( ) const;
+        [[nodiscard]] bool is_inv( ) const;
+        [[nodiscard]] bool is_intr( const Line & l ) const;
+        [[nodiscard]] bool belongs( const Vec & v ) const;
 
         void print( );
     };
@@ -32,8 +32,7 @@ namespace Geom
     bool is_on_line( const Line & l, const Vec & v);
 
     extern const Line POISON_LINE;
+
+    std::ostream & operator <<( std::ostream &, const Geom::Line & );
 }
-
-std::ostream & operator <<( std::ostream &, const Geom::Line & );
-
 #endif //ILAB2_LINE_H

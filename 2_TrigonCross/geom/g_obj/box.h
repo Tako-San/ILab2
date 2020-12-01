@@ -28,8 +28,7 @@ namespace Geom
 
         [[nodiscard]] double diag( ) const;
     };
+
+    std::ostream & operator <<( std::ostream & ost, const Geom::Box & box );
 }
-
-std::ostream & operator <<( std::ostream & ost, const Geom::Box & box );
-
 #endif //TRIANGLES_BOX_H

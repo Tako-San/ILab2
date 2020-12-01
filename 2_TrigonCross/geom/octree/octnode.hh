@@ -1,8 +1,6 @@
 #ifndef ILAB2_OCTNODE_H
 #define ILAB2_OCTNODE_H
 
-#include <vector>
-
 #include "../geom.h"
 
 namespace Geom
@@ -10,9 +8,7 @@ namespace Geom
     const unsigned CHILDREN_NUM = 3;
     const double MIN_DIAG = 0.3;
 
-    using std::vector;
     using std::list;
-    using std::pair;
 
     using namespace Geom;
 
@@ -48,7 +44,6 @@ namespace Geom
         OctNode * insert( const DataT & obj, bool hate_children = false );
 
         bool is_intersect( const DataT & obj, bool not_in_tree = false ) const;
-        bool is_intersect_child( const DataT & obj, uint idx, bool not_in_tree = false ) const;
 
         void print( );
 
