@@ -7,6 +7,9 @@
 
 using std::set;
 
+const char DOT[]  = "../dump/dump.dot";
+const char PLOT[] = "../dump/dump.png";
+
 int key_num;
 int req_num;
 vector<int> keys;
@@ -48,9 +51,9 @@ int main( int ac, char ** av )
         cout << "\nF::Tree\n";
     testing_tree(my_tree, opts);
 
-    // print my tree do png
+    // print my tree to png
     if (dump)
-        my_tree.dump();
+        my_tree.dump(DOT, PLOT);
 
     return 0;
 }

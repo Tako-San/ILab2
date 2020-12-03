@@ -14,12 +14,12 @@ int main( )
 {
     Tree<int> tree{};
 
-    for (int i = 0; i < 511; ++i)
+    for (int i = 0; i < 6; ++i)
         tree.insert(i);
 
-    for (int i = 0; i < 9; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        cout << "#" << i << ": ";
+        cout << "#" << i << ":\n";
         tree.print_lvl(i);
         cout << endl;
     }
@@ -32,8 +32,11 @@ int main( )
         cout << *triter << " ";
         ++triter;
     }
+    cout << "\n\n";
 
-    cout << endl;
+
+    tree.dump();
+    tree.print_leafs();
 
     return 0;
 }

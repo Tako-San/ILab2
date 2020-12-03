@@ -101,7 +101,8 @@ void testing_tree( Tree & tree, uint opts )
 
         if (tree_it == tree.end())
         {
-            cout << 0 << " ";
+            if (!comp)
+                cout << 0 << " ";
             continue;
         }
 
