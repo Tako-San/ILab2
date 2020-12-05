@@ -37,6 +37,18 @@ namespace Geom
         void print( );
     };
 
+
+    /*
+     *
+     *
+     *
+     * OctTree class methods realisations
+     *
+     *
+     *
+     */
+
+
     template <typename DataT>
     OctTree<DataT>::OctTree( ) : root_(new OctNode<DataT>)
     {}
