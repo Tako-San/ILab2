@@ -5,7 +5,8 @@ namespace Geom
     LineMap LINE_PT =
             {
                     {LINE12, {0, 1}},
-                    {LINE13, {0, 2}}
+                    {LINE13, {0, 2}},
+                    {LINE23, {1, 2}}
             };
 
 
@@ -28,14 +29,15 @@ namespace Geom
 
         uint8_t res = 0u;
 
-        if (v1_ != v2_)
-        {
-            if (v1_ == v3_ || v2_ == v3_)
-                res |= LINE12;
-        } else if (v1_ == v3_)
+        if (v1_ == v2_ && v1_ == v3_)
             return POINT;
-        else
+
+        if (v1_ != v2_)
+            res |= LINE12;
+        else if (v1_ != v3_)
             res |= LINE13;
+        else
+            res |= LINE23;
 
         return res;
     }
@@ -44,7 +46,7 @@ namespace Geom
     {
         if (inv_)
             return POISON_PLANE;
-        return Plane(v1_, v2_, v3_);
+        return Plane{v1_, v2_, v3_};
     }
 
     const Vec & Triangle::operator []( unsigned idx ) const
@@ -109,8 +111,8 @@ namespace Geom
     void Triangle::counter_clockwise2D( )
     {
         double delta = (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_)
-                       - (v1_.x_ * v3_.y_) - (v3_.x_ * v1_.y_)
-                       + (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_);
+                     - (v1_.x_ * v3_.y_) - (v3_.x_ * v1_.y_)
+                     + (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_);
 
         if (delta < 0)
             std::swap(v2_, v1_);

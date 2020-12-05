@@ -4,15 +4,10 @@ namespace Geom
 {
     extern const Vec ZERO_VEC{0};
 
-    /*double & Vec::get( unsigned idx )
-    {
-        return *(&x_ + idx % 3);
-    }*/
-
-    Vec::Vec( double x, double y, double z ) : x_{x}, y_{y}, z_{z}
+    Vec::Vec( double x, double y, double z ) : x_(x), y_(y), z_(z)
     {}
 
-    Vec::Vec( double r ) : x_{r}, y_{r}, z_{r}
+    Vec::Vec( double r ) : x_(r), y_(r), z_(r)
     {}
 
 
@@ -30,7 +25,7 @@ namespace Geom
 
     Vec & Vec::normalise( )
     {
-        return (*this /= len());
+        return *this /= len();
     }
 
     Vec Vec::perp2D( ) const
@@ -81,15 +76,15 @@ namespace Geom
 
     Vec Vec::operator -( ) const
     {
-        return Vec(-x_, -y_, -z_);
+        return Vec{-x_, -y_, -z_};
     }
 
-    double Vec::operator []( unsigned idx ) const
+    double Vec::operator[]( unsigned idx ) const
     {
         return *(&x_ + idx % 3);
     }
 
-    double & Vec::operator []( unsigned idx )
+    double & Vec::operator[]( unsigned idx )
     {
         return *(&x_ + idx % 3);
     }
@@ -110,7 +105,7 @@ namespace Geom
     Vec operator %( const Vec & v1, const Vec & v2 )
     {
         return Vec(v1[Y] * v2[Z] - v1[Z] * v2[Y],
-                   v1[Z] * v2[X] - v1[X] * v2[Z],
+                 - v1[X] * v2[Z] + v1[Z] * v2[X],
                    v1[X] * v2[Y] - v1[Y] * v2[X]);
     }
 
@@ -122,27 +117,27 @@ namespace Geom
 
     Vec operator +( const Vec & v1, const Vec & v2 )
     {
-        return Vec(v1) += v2;
+        return Vec{v1} += v2;
     }
 
     Vec operator -( const Vec & v1, const Vec & v2 )
     {
-        return Vec(v1) -= v2;
+        return Vec{v1} -= v2;
     }
 
     Vec operator *( const Vec & v, double n )
     {
-        return Vec(v) *= n;
+        return Vec{v} *= n;
     }
 
     Vec operator *( double n, const Vec & v )
     {
-        return Vec(v) *= n;
+        return Vec{v} *= n;
     }
 
     Vec normalise( const Vec & v )
     {
-        return Vec(v).normalise();
+        return Vec{v}.normalise();
     }
 
     std::ostream & operator <<( std::ostream & ost, const Vec & v )

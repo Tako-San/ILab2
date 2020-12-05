@@ -130,9 +130,9 @@ namespace Geom
 
         int credit = not_in_tree ? 0 : 1;
 
-        for (auto mate : data_)
+        for (auto cur = data_.begin(), end = data_.end(); cur != end; ++cur)
         {
-            if (mate == obj)
+            if (*cur == obj)
             {
                 if (credit < 1)
                     return true;
@@ -140,7 +140,7 @@ namespace Geom
                 continue;
             }
 
-            if (trian_intr3D(obj, mate))
+            if (trian_intr3D(obj, *cur))
                 return true;
         }
 

@@ -14,7 +14,8 @@ namespace Geom
         POINT = 1u << 1u,
         LINE12 = 1u << 2u,
         LINE13 = 1u << 3u,
-        LINE = LINE12 | LINE13
+        LINE23 = 1u << 4u,
+        LINE = LINE12 | LINE13 | LINE23
     };
 
     using std::map;
@@ -27,6 +28,7 @@ namespace Geom
     class Triangle final
     {
     private:
+
         Vec v1_, v2_, v3_;
         bool inv_;
         uint8_t shape_;

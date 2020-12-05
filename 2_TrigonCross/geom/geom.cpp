@@ -318,7 +318,7 @@ namespace Geom
 
     array<double, 2> find_t_param( const Triangle & tr, const Line & int_line, array<double, 3> sd)
     {
-        double pr[3] = {};
+        array<double, 3> pr{};
 
         for (int i = 0; i < 3; ++i)
             pr[i] = int_line.get_dir() & (tr[i] - int_line.get_orig());
@@ -329,6 +329,11 @@ namespace Geom
             std::swap(pr[2], pr[0]);
         }
         else if (sign(sd[0]) == sign(sd[2]))
+        {
+            std::swap(sd[2], sd[1]);
+            std::swap(pr[2], pr[1]);
+        }
+        else if (sign(sd[0]) == -sign(sd[1]))
         {
             std::swap(sd[2], sd[1]);
             std::swap(pr[2], pr[1]);

@@ -21,8 +21,6 @@ namespace Geom
     {
         double x_, y_, z_;
 
-        //double & get( unsigned idx );
-
         Vec( double x, double y, double z );
         Vec( double r = 0 );
 
@@ -44,8 +42,8 @@ namespace Geom
 
         [[nodiscard]] double len( ) const;
 
-        double operator []( unsigned idx ) const; // get vector coorinate by number
-        double & operator []( unsigned idx );
+        double operator[]( unsigned idx ) const; // get vector coorinate by number
+        double & operator[]( unsigned idx );
 
         friend std::istream & operator>>( std::istream & ist, Vec & v );
     };
