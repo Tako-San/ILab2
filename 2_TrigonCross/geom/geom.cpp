@@ -2,6 +2,8 @@
 
 namespace Geom
 {
+    using std::array;
+
     template <typename T>
     int sign( T value )
     {
@@ -155,8 +157,8 @@ namespace Geom
         if (pl1 == pl2)
             return trian_intr2D(tr1, tr2);
 
-        double sd2[3] = {},
-               sd1[3] = {};
+        array<double, 3> sd1{},
+                         sd2{};
 
         for (int i = 0; i < 3; ++i)
         {
@@ -175,11 +177,8 @@ namespace Geom
         if (int_line.is_invalid())
             return false;
 
-        double t1[2] = {},
-               t2[2] = {};
-
-        find_cross(tr1, sd1, int_line, t1);
-        find_cross(tr2, sd2, int_line, t2);
+        array<double, 2> t1 = find_t_param(tr1, int_line, sd1),
+                         t2 = find_t_param(tr2, int_line, sd2);
 
         return cmp_seg(t1, t2);
     }
@@ -317,30 +316,33 @@ namespace Geom
     }
 
 
-    void find_cross( const Triangle & tr, double sd[], const Line & int_line, double t[] )
+    array<double, 2> find_t_param( const Triangle & tr, const Line & int_line, array<double, 3> sd)
     {
         double pr[3] = {};
 
         for (int i = 0; i < 3; ++i)
             pr[i] = int_line.get_dir() & (tr[i] - int_line.get_orig());
 
-        if (sign(sd[1]) * sign(sd[2]) >= 0)
+        if (sign(sd[1]) == sign(sd[2]))
         {
             std::swap(sd[2], sd[0]);
             std::swap(pr[2], pr[0]);
         }
-        else if (sign(sd[0]) * sign(sd[2]) >= 0)
+        else if (sign(sd[0]) == sign(sd[2]))
         {
             std::swap(sd[2], sd[1]);
             std::swap(pr[2], pr[1]);
         }
 
+        array <double, 2> t{};
         t[0] = pr[0] + (pr[2] - pr[0]) * sd[0] / (sd[0] - sd[2]);
         t[1] = pr[1] + (pr[2] - pr[1]) * sd[1] / (sd[1] - sd[2]);
+
+        return t;
     }
 
 
-    bool cmp_seg( double t1[], double t2[] )
+    bool cmp_seg( array<double, 2> t1, array<double, 2> t2 )
     {
         if (t1[0] > t1[1])
             std::swap(t1[0], t1[1]);

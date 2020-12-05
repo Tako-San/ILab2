@@ -9,8 +9,6 @@
 
 namespace Geom
 {
-    using std::pair;
-
     template <typename T>
     int sign( T value );
 
@@ -21,8 +19,8 @@ namespace Geom
     Line intersection( const Plane & pl1, const Plane & pl2 );
     bool tst_intr( const Triangle & tr1, const Triangle & tr2 );
 
-    void find_cross( const Triangle & tr, double sd[], const Line & int_line, double t[] );
-    bool cmp_seg( double t1[], double t2[] );
+    std::array<double, 2> find_t_param( const Triangle & tr, const Line & int_line, std::array<double, 3> sd );
+    bool cmp_seg( std::array<double, 2> t1, std::array<double, 2> t2 );
 
     uint ind_of_max( double a, double b, double c );
     uint get_mid_ind( int i0, int i1, int N );
