@@ -43,7 +43,7 @@ namespace Geom
 
         bool is_intersect( const DataT & obj, bool not_in_tree = false ) const;
 
-        void print( );
+        void print( ) const;
 
         void clear_sub( );
         void div_box( );
@@ -153,7 +153,7 @@ namespace Geom
     }
 
     template <typename DataT>
-    void OctNode<DataT>::print( )
+    void OctNode<DataT>::print( ) const
     {
         if (has_ch_)
             for (auto child : child_)

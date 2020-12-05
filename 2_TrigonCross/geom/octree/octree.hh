@@ -32,9 +32,9 @@ namespace Geom
         ~OctTree( );
 
         bool insert( const DataT & obj );
-        bool is_intersect( const DataT & obj, bool not_in_tree = false );
+        bool is_intersect( const DataT & obj, bool not_in_tree = false ) const;
 
-        void print( );
+        void print( ) const;
     };
 
 
@@ -80,13 +80,13 @@ namespace Geom
     }
 
     template <typename DataT>
-    bool OctTree<DataT>::is_intersect( const DataT & obj, bool not_in_tree )
+    bool OctTree<DataT>::is_intersect( const DataT & obj, bool not_in_tree ) const
     {
         return root_->is_intersect(obj, not_in_tree);
     }
 
     template <typename DataT>
-    void OctTree<DataT>::print( )
+    void OctTree<DataT>::print( ) const
     {
         root_->print();
     }
