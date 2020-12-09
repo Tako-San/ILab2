@@ -15,7 +15,7 @@ namespace Geom
     bool inv_trian_intr( const Triangle & tr1, const Triangle & tr2 );
     bool trian_line_intr3D( const Line & l, const Triangle & tr );
     bool trian_intr3D( const Triangle & tr1, const Triangle & tr2 );
-    bool trian_intr2D( const Triangle & tr1, const Triangle & tr2 ); // TODO: TOUCHING TRIANGLES INTERSECTION
+    bool trian_intr2D( const Triangle & tr1, const Triangle & tr2 ); // TODO: РАБОТАЕТ НЕКОРРЕКТНО - ИСПРАВИТЬ
     Line intersection( const Plane & pl1, const Plane & pl2 );
     bool tst_intr( const Triangle & tr1, const Triangle & tr2 );
 

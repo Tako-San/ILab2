@@ -189,8 +189,8 @@ namespace Geom
         Vec max{zone_.get_max()};
 
         double minx = min[X], miny = min[Y], minz = min[Z],
-                maxx = max[X], maxy = max[Y], maxz = max[Z],
-                midx = mid(X), midy = mid(Y), midz = mid(Z);
+               maxx = max[X], maxy = max[Y], maxz = max[Z],
+               midx = mid(X), midy = mid(Y), midz = mid(Z);
 
         sub_box[0] = Box{{minx, miny, minz}, {midx, midy, midz}};
         sub_box[1] = Box{{minx, midy, minz}, {midx, maxy, midz}};

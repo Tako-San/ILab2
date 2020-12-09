@@ -10,6 +10,7 @@ namespace Geom
         return (T{0} < value) - (T{0} > value);
     }
 
+
     bool inv_trian_intr( const Triangle & tr1, const Triangle & tr2 )
     {
         uint8_t sh1 = tr1.shape(),
@@ -120,6 +121,7 @@ namespace Geom
         return false;
     }
 
+
     bool trian_line_intr3D( const Line & l, const Triangle & tr )
     {
         Vec e1 = tr[1] - tr[0],
@@ -145,6 +147,7 @@ namespace Geom
 
         return true;
     }
+
 
     bool trian_intr3D( const Triangle & tr1, const Triangle & tr2 )
     {
@@ -206,6 +209,7 @@ namespace Geom
         return ind;
     }
 
+
     bool trian_intr2D( const Triangle & tr1, const Triangle & tr2 )
     {
         Vec norm{tr1.plane().get_nrm()};
@@ -235,6 +239,7 @@ namespace Geom
                         Triangle{tr_v2[0], tr_v2[1], tr_v2[2]});
     }
 
+
     uint get_mid_ind( int i0, int i1, int N )
     {
         if (i0 < i1)
@@ -246,6 +251,7 @@ namespace Geom
     uint get_extreme_ind( const Triangle & tr, const Vec & pt )
     {
         int i0 = 0, i1 = 0;
+
         while (true)
         {
             int mid = get_mid_ind(i0, i1, 3);
@@ -271,20 +277,30 @@ namespace Geom
         }
     }
 
+
     bool tst_intr( const Triangle & tr1, const Triangle & tr2 )
     {
         for (int i0 = 0, i1 = 2; i0 < 3; i1 = i0, ++i0)
         {
-            Vec D1{(tr1[i0] - tr1[i1]).perp2D()},
-                D2{(tr2[i0] - tr2[i1]).perp2D()};
+            Vec D{(tr1[i0] - tr1[i1]).perp2D()};
 
-            int min1 = get_extreme_ind(tr2, -D1),
-                min2 = get_extreme_ind(tr1, -D2);
+            int min = get_extreme_ind(tr2, -D);
 
-            Vec diff1{tr2[min1] - tr1[i0]},
-                diff2{tr1[min2] - tr2[i0]};
+            Vec diff{tr2[min] - tr1[i0]};
 
-            if ((D1 & diff1) > 0 || (D2 & diff2) > 0)
+            if ((D & diff) > 0)
+                return false;
+        }
+
+        for (int i0 = 0, i1 = 2; i0 < 3; i1 = i0, ++i0)
+        {
+            Vec D{(tr2[i0] - tr2[i1]).perp2D()};
+
+            int min = get_extreme_ind(tr1, -D);
+
+            Vec diff{tr1[min] - tr2[i0]};
+
+            if ((D & diff) > 0)
                 return false;
         }
 
