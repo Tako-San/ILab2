@@ -19,7 +19,7 @@ using std::endl;
 
 using std::list;
 
-TEST(vector, getters)
+/*TEST(vector, getters)
 {
     Vec v{1, 2, 3};
 
@@ -197,7 +197,7 @@ TEST(triangles, intersection)
     Triangle tr1{Vec{1, 0, 0}, Vec{0, 1,  0}, Vec{0, 0, 1}};
     Triangle tr2{Vec{2, 0, 0}, Vec{0, 2, 0}, Vec{0, 0, 0.5}};
 
-    EXPECT_EQ(is_intersect3D(tr1, tr2), true);
+    EXPECT_EQ(trian_intr3D(tr1, tr2), true);
 }
 
 TEST(triangles, intersection1)
@@ -205,7 +205,7 @@ TEST(triangles, intersection1)
     Triangle tr1{Vec{4, 5, 0}, Vec{4, -5,  0}, Vec{-4, 0, 25}};
     Triangle tr2{Vec{-2.5, 7.86, 2}, Vec{-2.5, -9.55, 2}, Vec{3.5, 0, 3}};
 
-    EXPECT_EQ(is_intersect3D(tr1, tr2), true);
+    EXPECT_EQ(trian_intr3D(tr1, tr2), true);
 }
 
 TEST(triangles, intersection2)
@@ -213,7 +213,7 @@ TEST(triangles, intersection2)
     Triangle tr1{Vec{0, 0, 0}, Vec{1, 0,  0}, Vec{0, 1, 0}};
     Triangle tr2{Vec{0, 0, 1}, Vec{0, 0, -1}, Vec{1, 1, 0}};
 
-    EXPECT_EQ(is_intersect3D(tr1, tr2), true);
+    EXPECT_EQ(trian_intr3D(tr1, tr2), true);
 }
 
 TEST(octree, constructors)
@@ -239,14 +239,27 @@ TEST(intersect, tr_2D)
     Triangle tr1{Vec{1, 1, -1}, Vec{1, 1, -2}, Vec{2, 2, -1}};
     Triangle tr2{Vec{-1, -1, 1}, Vec{-1, -1, 2}, Vec{-2, -2, 1}};
 
-    bool ans{is_intersect3D(tr1, tr2)};
+    bool ans{trian_intr3D(tr1, tr2)};
 
     EXPECT_EQ(ans, false);
 
     Triangle tr3{Vec{-1, -1, 1}, Vec{-1, -1, 2}, Vec{-2, -2, 1}};
     Triangle tr4{Vec{1, 1, -1}, Vec{1, 1, -2}, Vec{2, 2, -1}};
 
-    EXPECT_EQ(is_intersect3D(tr3, tr4), false);
+    EXPECT_EQ(trian_intr3D(tr3, tr4), false);
+}*/
+
+TEST(intersect, tr_2D_2)
+{
+    Triangle tr1{Vec{2, -2, 0}, Vec{5, 1, 0}, Vec{7, -6, 0}};
+    Triangle tr2{Vec{4, -1, 0}, Vec{5, -3, 0}, Vec{4, -3, 0}};
+
+    EXPECT_EQ(tst_intr(tr1, tr2), true);
+
+    /*Triangle tr3{Vec{1, 5, 0}, Vec{7, 8, 0}, Vec{5, 3, 0}};
+    Triangle tr4{Vec{4, 2, 0}, Vec{8, 4, 0}, Vec{6, 1, 0}};
+
+    EXPECT_EQ(tst_intr(tr3, tr4), false);*/
 }
 
 int main( int argc, char ** argv )

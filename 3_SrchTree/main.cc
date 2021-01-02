@@ -52,6 +52,7 @@ int main( int ac, char ** av )
     testing_tree(my_tree, opts);
 
     // print my tree to png
+    my_tree.remove(0);
     if (dump)
         my_tree.dump(DOT, PLOT);
 

@@ -269,6 +269,7 @@ namespace Geom
             {
                 int prev = (mid + 3 - 1) % 3;
                 E = tr[mid] - tr[prev];
+
                 if ((pt & E) < 0)
                     i1 = mid;
                 else
@@ -280,6 +281,7 @@ namespace Geom
 
     bool tst_intr( const Triangle & tr1, const Triangle & tr2 )
     {
+
         for (int i0 = 0, i1 = 2; i0 < 3; i1 = i0, ++i0)
         {
             Vec D{(tr1[i0] - tr1[i1]).perp2D()};
@@ -303,6 +305,9 @@ namespace Geom
             if ((D & diff) > 0)
                 return false;
         }
+
+
+
 
         return true;
     }

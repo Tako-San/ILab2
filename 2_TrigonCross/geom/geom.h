@@ -17,7 +17,7 @@ namespace Geom
     bool trian_intr3D( const Triangle & tr1, const Triangle & tr2 );
     bool trian_intr2D( const Triangle & tr1, const Triangle & tr2 ); // TODO: РАБОТАЕТ НЕКОРРЕКТНО - ИСПРАВИТЬ
     Line intersection( const Plane & pl1, const Plane & pl2 );
-    bool tst_intr( const Triangle & tr1, const Triangle & tr2 );
+    bool tst_intr( const Triangle & tr1, const Triangle & tr2 ); // TODO: РАБОТАЕТ НЕКОРРЕКТНО - ИСПРАВИТЬ
 
     std::array<double, 2> find_t_param( const Triangle & tr, const Line & int_line, std::array<double, 3> sd );
     bool cmp_seg( std::array<double, 2> t1, std::array<double, 2> t2 );

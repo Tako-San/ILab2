@@ -15,11 +15,10 @@ namespace F
     class Tree;
 
     template <typename DataT>
-    class NodeIt;
-
-    template <typename DataT>
     class Node final
     {
+        friend class Tree<DataT>;
+
     private:
 
         DataT  data_;
@@ -33,7 +32,7 @@ namespace F
         Node * next_{nullptr};
         Node * prev_{nullptr};
 
-    public:
+    private:
 
         explicit Node( const DataT & data = nullptr,
                        Node * prnt = nullptr,
@@ -45,8 +44,6 @@ namespace F
         [[nodiscard]] bool has_children( ) const;
 
         const DataT & data( ) const;
-        NodeIt<DataT> next( ) const;
-        NodeIt<DataT> prev( ) const;
 
         Node * insert( const DataT & data );
         Node * remove( const DataT & data );
@@ -57,7 +54,6 @@ namespace F
         Node * next_ptr( ) const;
         Node * prev_ptr( ) const;
 
-        void print_lvl( int lvl )  const;
         void dump( std::ofstream &oft ) const;
 
     private:
@@ -75,51 +71,10 @@ namespace F
         void set_left( Node * left );
     };
 
-    template <typename DataT>
-    class NodeIt final
-    {
-    private:
 
-        Node<DataT> * ptr_;
-
-    public:
-
-        explicit NodeIt( Node<DataT> * ptr );
-        NodeIt( const NodeIt & it );
-
-        NodeIt & operator=( const NodeIt & it );
-
-        bool operator==( const NodeIt & it ) const;
-        bool operator!=( const NodeIt & it ) const;
-
-        const DataT & operator*( ) const;
-
-        NodeIt & operator++( );
-        NodeIt & operator--( );
-    };
-
-
-
-
-
-
-
-
-
-/*
- * Classes methods realisations
- */
-
-
-
-
-
-
-
-
-
-
-
+    /*
+     * Node methods realisations
+     */
 
 
     template <typename DataT>
@@ -206,18 +161,6 @@ namespace F
     const DataT & Node<DataT>::data( ) const
     {
         return data_;
-    }
-
-    template <typename DataT>
-    NodeIt<DataT> Node<DataT>::next( ) const
-    {
-        return NodeIt<DataT>{next_};
-    }
-
-    template <typename DataT>
-    NodeIt<DataT> Node<DataT>::prev( ) const
-    {
-        return NodeIt<DataT>{prev_};
     }
 
     template <typename DataT>
@@ -391,18 +334,6 @@ namespace F
     }
 
     template <typename DataT>
-    void Node<DataT>::print_lvl( int lvl ) const
-    {
-        if(lvl == 0)
-            std::cout << data_ << " ";
-        else if(lvl > 0)
-        {
-            left_->print_lvl(lvl - 1);
-            rght_->print_lvl(lvl - 1);
-        }
-    }
-
-    template <typename DataT>
     void Node<DataT>::dump( std::ofstream & oft ) const
     {
         if (left_ != nullptr)
@@ -434,71 +365,5 @@ namespace F
     {
         return prev_;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    template <typename DataT>
-    NodeIt<DataT>::NodeIt( const NodeIt<DataT> & it ) : ptr_(it.ptr_)
-    {}
-
-    template <typename DataT>
-    NodeIt<DataT>::NodeIt( Node<DataT> * ptr ) : ptr_(ptr)
-    {}
-
-    template <typename DataT>
-    NodeIt<DataT> & NodeIt<DataT>::operator=( const NodeIt<DataT> & it )
-    {
-        if (ptr_ != it.ptr_)
-            ptr_ = it.ptr_;
-        return *this;
-    }
-
-    template <typename DataT>
-    bool NodeIt<DataT>::operator==( const NodeIt<DataT> & it ) const
-    {
-        return (ptr_ == it.ptr_);
-    }
-
-    template <typename DataT>
-    bool NodeIt<DataT>::operator!=( const NodeIt<DataT> & it ) const
-    {
-        return (ptr_ != it.ptr_);
-    }
-
-    template <typename DataT>
-    const DataT & NodeIt<DataT>::operator*( ) const
-    {
-        return ptr_->data();
-    }
-
-    template <typename DataT>
-    NodeIt<DataT> & NodeIt<DataT>::operator++( )
-    {
-        return (*this = ptr_->next());
-    }
-
-    template <typename DataT>
-    NodeIt<DataT> & NodeIt<DataT>::operator--( )
-    {
-        return (*this = ptr_->prev());
-    }
-
 }
 #endif //NODE_HH

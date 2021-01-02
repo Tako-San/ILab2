@@ -10,6 +10,9 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+const char DOT[]  = "../dump/dump.dot";
+const char PLOT[] = "../dump/dump.png";
+
 int main( )
 {
     Tree<int> tree{};
@@ -34,8 +37,7 @@ int main( )
     }
     cout << "\n\n";
 
-
-    tree.dump();
+    tree.dump(DOT, PLOT);
     tree.print_leafs();
 
     return 0;

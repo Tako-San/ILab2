@@ -16,8 +16,8 @@ include_directories(../include ${GTEST_INCLUDE_DIRS})
 add_subdirectory(/usr/src/googletest gtest)
 
 
-add_executable(matr test.cc)
-# add_executable(matr main.cpp)
+# add_executable(matr test.cc)
+add_executable(matr main.cc)
 
 target_link_libraries(matr ${GTEST_LIBRARIES} Threads::Threads)
 

@@ -16,62 +16,64 @@ namespace F
     class Matrix final
     {
     private:
-        DataT **data_;
+
+        DataT ** data_;
         size_t rows_;
         size_t cols_;
 
-        class RowT;
+    private:
 
-        using func = DataT(*)(size_t, size_t);
+        class RowT;
+        using func = DataT (*)(size_t, size_t);
 
     public:
 
         Matrix( size_t rows, size_t cols );
-        Matrix( Matrix &&orig );
-        Matrix( const Matrix &orig );
+        Matrix( Matrix && orig );
+        Matrix( const Matrix & orig );
         Matrix( size_t rows, size_t cols, func action );
         Matrix( size_t rows, size_t cols, const initializer_list<DataT> &dat );
 
         template <typename Iter>
-        Matrix( size_t rows, size_t cols, const Iter & begin, const Iter & end );
+        Matrix( size_t rows, size_t cols, const Iter & beg, const Iter & end );
 
-        ~Matrix();
+        ~Matrix( );
 
         static Matrix eye( size_t n );
 
-        long double det() const;
+        long double det( ) const;
 
-        Matrix &transpose();
+        Matrix &transpose( );
 
-        size_t cols() const;
-        size_t rows() const;
+        size_t cols( ) const;
+        size_t rows( ) const;
 
         RowT operator[]( size_t row ) const;
 
-        Matrix operator-() const;
+        Matrix operator-( ) const;
 
-        Matrix &operator=( Matrix &&orig );
-        Matrix &operator=( const Matrix &orig );
+        Matrix & operator=( Matrix && orig );
+        Matrix & operator=( const Matrix & orig );
 
-        Matrix &operator+=( const Matrix &matr );
-        Matrix &operator-=( const Matrix &matr );
-        Matrix &operator*=( const Matrix &matr );
-        Matrix &operator*=( DataT mul );
+        Matrix & operator+=( const Matrix & matr );
+        Matrix & operator-=( const Matrix & matr );
+        Matrix & operator*=( const Matrix & matr );
+        Matrix & operator*=( DataT mul );
 
-        bool operator==( const Matrix &matr );
-        bool operator!=( const Matrix &matr );
+        bool operator==( const Matrix & matr );
+        bool operator!=( const Matrix & matr );
 
         bool swap_lines( size_t l1, size_t l2 );
         bool add_line( size_t to, size_t from, long double mul );
         bool mul_line( size_t l, DataT mul );
 
-        bool sum_suitable( const Matrix<DataT> &matr ) const;
+        bool sum_suitable( const Matrix<DataT> & matr ) const;
 
     private:
 
         void memory_allocation( size_t rows, size_t cols );
         void resize( size_t rows, size_t cols );
-        void kill();
+        void kill( );
     };
 
     template<typename DataT>
@@ -81,19 +83,19 @@ namespace F
         DataT * row_;
         size_t len_;
 
-        RowT( DataT *row, size_t len ) : row_{row}, len_{len}
+        RowT( DataT *row, size_t len ) : row_(row), len_(len)
         {}
 
         friend class Matrix<DataT>;
 
     public:
-        DataT &operator[]( size_t col )
+        DataT & operator[]( size_t col )
         {
             assert(col < len_);
             return row_[col];
         }
 
-        const DataT &operator[]( size_t col ) const
+        const DataT & operator[]( size_t col ) const
         {
             assert(col < len_);
             return row_[col];
@@ -101,44 +103,48 @@ namespace F
     };
 
     template<typename DataT>
-    Matrix<DataT> operator+( const Matrix<DataT> &lhs, const Matrix<DataT> &rhs );
+    Matrix<DataT> operator+( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs );
     template<typename DataT>
-    Matrix<DataT> operator-( const Matrix<DataT> &lhs, const Matrix<DataT> &rhs );
+    Matrix<DataT> operator-( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs );
     template<typename DataT>
-    Matrix<DataT> operator*( const Matrix<DataT> &lhs, const Matrix<DataT> &rhs );
+    Matrix<DataT> operator*( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs );
     template<typename DataT>
-    Matrix<DataT> operator*( const Matrix<DataT> &matr, DataT mul );
+    Matrix<DataT> operator*( const Matrix<DataT> & matr, DataT mul );
     template<typename DataT>
-    Matrix<DataT> operator*( DataT mul, const Matrix<DataT> &matr );
+    Matrix<DataT> operator*( DataT mul, const Matrix<DataT> & matr );
     template<typename DataT>
-    Matrix<DataT> transpose( const Matrix<DataT> &matr );
+    Matrix<DataT> transpose( const Matrix<DataT> & matr );
 
 
     /*
      *
      *
+     *
      * Matrix methods realisations
+     *
      *
      *
      */
 
 
     template <typename DataT>
-    Matrix<DataT>::Matrix( size_t rows, size_t cols ) : rows_{rows},
-                                                        cols_{cols}
+    Matrix<DataT>::Matrix( size_t rows, size_t cols ) : rows_(rows),
+                                                        cols_(cols)
     {
         memory_allocation(rows, cols);
     }
 
     template <typename DataT>
-    Matrix<DataT>::Matrix( size_t rows, size_t cols, const initializer_list<DataT> & data ) : rows_{rows},
-                                                                                              cols_{cols}
+    Matrix<DataT>::Matrix( size_t rows,
+                           size_t cols,
+                           const initializer_list<DataT> & data ) : rows_(rows),
+                                                                    cols_(cols)
     {
         memory_allocation(rows, cols);
 
         size_t max_num = rows_ * cols_;
         auto cur = data.begin(),
-                end = data.end();
+             end = data.end();
 
         for(size_t i = 0; i < max_num && cur != end; ++i, ++cur)
             data_[i / cols_][i % cols_] = *cur;
@@ -147,22 +153,27 @@ namespace F
 
     template <typename DataT>
     template <typename IterT>
-    Matrix<DataT>::Matrix( size_t rows, size_t cols, const IterT & begin, const IterT & end ) : rows_{rows},
-                                                                                                cols_{cols}
+    Matrix<DataT>::Matrix( size_t rows,
+                           size_t cols,
+                           const IterT & beg,
+                           const IterT & end ) : rows_(rows),
+                                                 cols_(cols)
     {
         memory_allocation(rows, cols);
 
         size_t i = 0;
         size_t el_num = rows_ * cols_;
 
-        for (IterT cur = begin; cur != end, i < el_num; ++i, ++cur)
+        for (IterT cur = beg; cur != end, i < el_num; ++i, ++cur)
             data_[i / cols_][i % cols_] = *cur;
 
     }
 
     template <typename DataT>
-    Matrix<DataT>::Matrix( size_t rows, size_t cols, func action ) : rows_{rows},
-                                                                     cols_{cols}
+    Matrix<DataT>::Matrix( size_t rows,
+                           size_t cols,
+                           func action ) : rows_(rows),
+                                           cols_(cols)
     {
         memory_allocation(rows, cols);
 
@@ -172,8 +183,8 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_{orig.rows_},
-                                                          cols_{orig.cols_}
+    Matrix<DataT>::Matrix( const Matrix<DataT> & orig ) : rows_(orig.rows_),
+                                                          cols_(orig.cols_)
     {
         memory_allocation(orig.rows_, orig.cols_);
 
@@ -183,9 +194,9 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT>::Matrix( Matrix<DataT> && orig ) : rows_{orig.rows_},
-                                                     cols_{orig.cols_},
-                                                     data_{orig.data_}
+    Matrix<DataT>::Matrix( Matrix<DataT> && orig ) : rows_(orig.rows_),
+                                                     cols_(orig.cols_),
+                                                     data_(orig.data_)
     {
         orig.data_ = nullptr;
         orig.cols_ = orig.rows_ = 0;
@@ -237,7 +248,7 @@ namespace F
                     continue;
 
                 long double mul = static_cast<long double>(tmp.data_[k][i])
-                                  / static_cast<long double>(tmp.data_[i][i]);
+                                / static_cast<long double>(tmp.data_[i][i]);
                 tmp.add_line(k, i, -mul);
             }
         }
@@ -282,14 +293,14 @@ namespace F
     }
 
     template <typename DataT>
-    typename Matrix<DataT>::RowT Matrix<DataT>::operator [] ( size_t row ) const
+    typename Matrix<DataT>::RowT Matrix<DataT>::operator[]( size_t row ) const
     {
         assert(row < rows_);
         return RowT{data_[row], cols_};
     }
 
     template <typename DataT>
-    Matrix<DataT> Matrix<DataT>::operator - ( ) const
+    Matrix<DataT> Matrix<DataT>::operator-( ) const
     {
         Matrix<DataT> matr{*this};
 
@@ -301,7 +312,7 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> & Matrix<DataT>::operator = ( Matrix<DataT> && orig )
+    Matrix<DataT> & Matrix<DataT>::operator=( Matrix<DataT> && orig )
     {
         kill();
 
@@ -316,9 +327,9 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> & Matrix<DataT>::operator = ( const Matrix<DataT> & orig )
+    Matrix<DataT> & Matrix<DataT>::operator=( const Matrix<DataT> & orig )
     {
-        if (&orig == this)
+        if (& orig == this)
             return *this;
 
         size_t rows = orig.rows_,
@@ -335,7 +346,7 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> & Matrix<DataT>::operator += ( const Matrix<DataT> & matr )
+    Matrix<DataT> & Matrix<DataT>::operator+=( const Matrix<DataT> & matr )
     {
         assert(sum_suitable(matr));
 
@@ -347,7 +358,7 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> & Matrix<DataT>::operator -= ( const Matrix<DataT> & matr )
+    Matrix<DataT> & Matrix<DataT>::operator-=( const Matrix<DataT> & matr )
     {
         assert(sum_suitable(matr));
 
@@ -359,7 +370,7 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> & Matrix<DataT>::operator *= ( const Matrix<DataT> & matr )
+    Matrix<DataT> & Matrix<DataT>::operator*=( const Matrix<DataT> & matr )
     {
         assert(cols_ == matr.rows_);
 
@@ -377,7 +388,7 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> & Matrix<DataT>::operator *= ( DataT mul )
+    Matrix<DataT> & Matrix<DataT>::operator*=( DataT mul )
     {
         for (size_t i = 0; i < rows_; ++i)
             for (size_t j = 0; j < cols_; ++j)
@@ -388,7 +399,7 @@ namespace F
 
 
     template <typename DataT>
-    bool Matrix<DataT>::operator == ( const Matrix<DataT> & matr )
+    bool Matrix<DataT>::operator==( const Matrix<DataT> & matr )
     {
         if (rows_ != matr.rows_ || cols_ != matr.cols_)
             return false;
@@ -402,7 +413,7 @@ namespace F
     }
 
     template <typename DataT>
-    bool Matrix<DataT>::operator != ( const Matrix<DataT> & matr )
+    bool Matrix<DataT>::operator!=( const Matrix<DataT> & matr )
     {
         return !operator==(matr);
     }
@@ -488,7 +499,7 @@ namespace F
 
 
     template <typename DataT>
-    std::ostream & operator << ( std::ostream & ost, const Matrix<DataT> & matr )
+    std::ostream & operator<<( std::ostream & ost, const Matrix<DataT> & matr )
     {
         size_t cols = matr.cols(),
                 rows = matr.rows();
@@ -505,31 +516,31 @@ namespace F
     }
 
     template <typename DataT>
-    Matrix<DataT> operator + ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
+    Matrix<DataT> operator+( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
     {
         return std::move(Matrix<DataT>{lhs} += rhs);
     }
 
     template <typename DataT>
-    Matrix<DataT> operator - ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
+    Matrix<DataT> operator-( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
     {
         return std::move(Matrix<DataT>{lhs} -= rhs);
     }
 
     template <typename DataT>
-    Matrix<DataT> operator * ( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
+    Matrix<DataT> operator*( const Matrix<DataT> & lhs, const Matrix<DataT> & rhs )
     {
         return std::move(Matrix<DataT>{lhs} *= rhs);
     }
 
     template <typename DataT>
-    Matrix<DataT> operator * ( const Matrix<DataT> & matr, DataT mul )
+    Matrix<DataT> operator*( const Matrix<DataT> & matr, DataT mul )
     {
         return std::move(Matrix<DataT>{matr} *= mul);
     }
 
     template <typename DataT>
-    Matrix<DataT> operator * ( DataT mul, const Matrix<DataT> & matr )
+    Matrix<DataT> operator*( DataT mul, const Matrix<DataT> & matr )
     {
         return std::move(Matrix<DataT>{matr} *= mul);
     }

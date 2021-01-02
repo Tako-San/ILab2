@@ -97,7 +97,7 @@ void testing_tree( Tree & tree, uint opts )
     for (int i = 0; i < req_num; ++i)
     {
         auto tree_it = tree.lower_bound(requests[2 * i]),
-                end_it  = tree.end();
+             end_it  = tree.end();
 
         if (tree_it == tree.end())
         {
