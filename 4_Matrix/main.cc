@@ -8,28 +8,28 @@ using std::cin;
 using std::endl;
 
 using std::vector;
-using namespace F;
+using namespace MX;
 
 int main( )
 {
-    uint size = 0;
-    cin >> size;
+  uint size = 0;
+  cin >> size;
 
-    uint el_num = size * size;
+  uint el_num = size * size;
 
-    vector<double> raw{};
-    raw.reserve(el_num);
+  vector<double> raw{};
+  raw.reserve(el_num);
 
-    for (int i = 0, end = el_num; i < end; ++i)
-    {
-        double tmp;
-        cin >> tmp;
-        raw.push_back(tmp);
-    }
+  for (int i = 0, end = el_num; i < end; ++i)
+  {
+    double tmp;
+    cin >> tmp;
+    raw.push_back(tmp);
+  }
 
-    Matrix<double> matr{size, size, raw.begin(), raw.end()};
+  Matrix<double> matr{size, size, raw.begin(), raw.end()};
 
-    cout << matr.det() << endl;
+  cout << matr.det() << endl;
 
-    return 0;
+  return 0;
 }
