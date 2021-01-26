@@ -235,8 +235,14 @@ namespace Geom
             }
             ++j;
         }
-        return tst_intr(Triangle{tr_v1[0], tr_v1[1], tr_v1[2]},
-                        Triangle{tr_v2[0], tr_v2[1], tr_v2[2]});
+
+        Triangle tr11{tr_v1[0], tr_v1[1], tr_v1[2]};
+        Triangle tr21{tr_v2[0], tr_v2[1], tr_v2[2]};
+
+        tr11.counter_clockwise2D();
+        tr21.counter_clockwise2D();
+
+        return tst_intr(tr11, tr21);
     }
 
 
@@ -305,9 +311,6 @@ namespace Geom
             if ((D & diff) > 0)
                 return false;
         }
-
-
-
 
         return true;
     }

@@ -19,7 +19,7 @@ using std::endl;
 
 using std::list;
 
-/*TEST(vector, getters)
+TEST(vector, getters)
 {
     Vec v{1, 2, 3};
 
@@ -247,7 +247,7 @@ TEST(intersect, tr_2D)
     Triangle tr4{Vec{1, 1, -1}, Vec{1, 1, -2}, Vec{2, 2, -1}};
 
     EXPECT_EQ(trian_intr3D(tr3, tr4), false);
-}*/
+}
 
 TEST(intersect, tr_2D_2)
 {

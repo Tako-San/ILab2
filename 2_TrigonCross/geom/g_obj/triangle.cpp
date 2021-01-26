@@ -114,7 +114,7 @@ namespace Geom
                      - (v1_.x_ * v3_.y_) - (v3_.x_ * v1_.y_)
                      + (v2_.x_ * v3_.y_) - (v3_.x_ * v2_.y_);
 
-        if (delta < 0)
+        if (delta <= 0)
             std::swap(v2_, v1_);
     }
 

@@ -18,8 +18,8 @@ include_directories(geom/octree)
 add_subdirectory(/usr/src/googletest gtest)
 add_subdirectory(geom)
 
-
-add_executable(trig tst.cpp)
+add_executable(trig main.cpp)
+# add_executable(trig tst.cpp)
 
 target_link_libraries(trig geom ${GTEST_LIBRARIES} Threads::Threads)
 # target_link_libraries(trig geom)
