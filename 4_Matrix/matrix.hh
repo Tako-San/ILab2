@@ -89,6 +89,8 @@ namespace MX
 {
   using namespace Buf;
 
+  template <typename DataT>
+  class Matrix;
 
   /*
    *
@@ -103,18 +105,18 @@ namespace MX
     using VBuf<DataT>::size_;
     using VBuf<DataT>::used_;
 
+    friend class Matrix<DataT>;
+
     explicit Row (size_t size);
-
     Row (const Row & rhs);
-
     template <typename It>
-    Row (size_t size, const It & beg, const It & end);
+    Row (size_t size, It beg, It end);
 
     Row & operator= (const Row & rhs);
 
   public:
 
-    [[nodiscard]] const DataT & get (size_t idx) const;
+    const DataT & get (size_t idx) const;
     void set (size_t idx, DataT new_val);
     const DataT & operator[] (size_t idx) const;
   };
@@ -147,7 +149,7 @@ namespace MX
 
   template <typename DataT>
   template <typename It>
-  Row<DataT>::Row (size_t size, const It & beg, const It & end) : VBuf<DataT>(size)
+  Row<DataT>::Row (size_t size, It beg, It end) : VBuf<DataT>(size)
   {
     It cur = beg;
 
@@ -221,20 +223,20 @@ namespace MX
     Matrix ( const Matrix & orig );
 
     template <typename It>
-    Matrix( size_t rows, size_t cols, const It & beg, const It & end );
+    Matrix( size_t rows, size_t cols, It beg, It end );
 
     void swap ( Matrix & rhs ) noexcept;
 
-    [[nodiscard]] size_t cols( ) const noexcept;
-    [[nodiscard]] size_t rows( ) const noexcept;
+    size_t cols( ) const noexcept;
+    size_t rows( ) const noexcept;
 
-    [[nodiscard]] const DataT & get (size_t row, size_t col) const;
+    const DataT & get (size_t row, size_t col) const;
     void set (size_t row, size_t col, DataT val);
     const Row<DataT> & operator[] (size_t row) const;
 
-    [[nodiscard]] long double det( ) const;
+    long double det( ) const;
 
-    Matrix & transpose ( );
+    Matrix & transpose ( ) &;
 
     Matrix operator- ( ) const;
 
@@ -252,7 +254,7 @@ namespace MX
     bool add_line ( size_t to, size_t from, DataT mul );
     bool mul_line ( size_t l, DataT mul );
 
-    [[nodiscard]] bool sum_suitable ( const Matrix<DataT> & matr ) const;
+    bool sum_suitable ( const Matrix<DataT> & matr ) const;
   };
 
   template<typename DataT>
@@ -303,7 +305,7 @@ namespace MX
     size_t elem_num = rows_ * cols_;
 
     auto cur = data.begin(),
-            end = data.end();
+         end = data.end();
 
     for (size_t i = 0; i < elem_num && cur != end; ++i, ++cur)
       arr_[i / cols_].set(i % cols_, *cur);
@@ -325,8 +327,8 @@ namespace MX
   template <typename It>
   Matrix<DataT>::Matrix ( size_t rows,
                           size_t cols,
-                          const It & beg,
-                          const It & end ) : Matrix(rows, cols)
+                          It beg,
+                          It end ) : Matrix(rows, cols)
   {
     size_t i = 0;
     size_t elem_num = rows_ * cols_;
@@ -438,13 +440,13 @@ namespace MX
   }
 
   template <typename DataT>
-  Matrix<DataT> & Matrix<DataT>::transpose ( )
+  Matrix<DataT> & Matrix<DataT>::transpose ( ) &
   {
     Matrix<DataT> tmp{cols_, rows_};
 
     for (size_t i = 0; i < tmp.rows_; ++i)
       for (size_t j = 0; j < tmp.cols_; ++j)
-        tmp.set(i, j, arr_[j][i]);
+        std::swap(tmp.arr_[i].arr_[j], arr_[j].arr_[i]);
 
     swap(tmp);
     return *this;

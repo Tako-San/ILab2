@@ -10,7 +10,7 @@ using std::endl;
 using std::vector;
 using namespace MX;
 
-int main( )
+int main ( )
 {
   uint size = 0;
   cin >> size;
