@@ -31,6 +31,7 @@ amount of intervals, intervals itself (begin and end).
 
 ## [Matrix](https://github.com/Tako-San/ILab2/tree/master/4_Matrix)
 
+### Lvl 1: [determinant](https://github.com/Tako-San/ILab2/tree/master/4_Matrix/1_determinant)
 Template matrix class with various operations.
 
 Some implemented operations:
@@ -39,6 +40,9 @@ Some implemented operations:
 * Matrix multiplication.
 
 Calculation determinant for square matrix in ```main.cc```.
+
+### Lvl 2: [circuits](https://github.com/Tako-San/circuits)
+Calculating currents in circuit.
 
 **Input**: matrix size, all matrix elements left to right top down.
 
