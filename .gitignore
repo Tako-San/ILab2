@@ -4,6 +4,8 @@
 .vscode/
 build/
 
+4_Matrix/1_determinant/BUILD/
+
 CMake*
 *.json
 
