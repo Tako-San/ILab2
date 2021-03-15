@@ -1,4 +1,11 @@
 /books/
 
+*/BUILD/
+.vscode/
+build/
+
+CMake*
+*.json
+
 *.out
 *.py
