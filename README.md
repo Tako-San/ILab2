@@ -52,3 +52,10 @@ Calculating currents in circuit.
 ## [ParaCL](https://github.com/derzhavin3016/ParaCL)
 
 Interpreter of C-like language. Parsing by flex & bison.
+
+## [OpenCL](https://github.com/Tako-San/OpenCL)
+
+Exploration of OpenCL.
+
+### Lvl 1: bitonic sort
+Sorting array in gpu.
