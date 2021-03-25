@@ -41,12 +41,12 @@ Some implemented operations:
 
 Calculation determinant for square matrix in ```main.cc```.
 
-### Lvl 2: [circuits](https://github.com/Tako-San/circuits)
-Calculating currents in circuit.
-
 **Input**: matrix size, all matrix elements left to right top down.
 
 **Output**: determinant of entered matrix.
+
+### Lvl 2: [circuits](https://github.com/Tako-San/circuits)
+Calculating currents in circuit.
 
 
 ## [ParaCL](https://github.com/derzhavin3016/ParaCL)
