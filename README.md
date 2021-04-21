@@ -45,13 +45,16 @@ Calculation determinant for square matrix in ```main.cc```.
 
 **Output**: determinant of entered matrix.
 
-### Lvl 2: [circuits](https://github.com/Tako-San/circuits)
+### Lvl 2: [circuits](https://github.com/Tako-San/Matrix/tree/master/2_Circuits)
 Calculating currents in circuit.
 
 
+### Lvl 3: [chain](https://github.com/Tako-San/Matrix/tree/master/3_BrPerm)
+Calclulatin optimal order for matrix multiplication.
+
 ## [ParaCL](https://github.com/derzhavin3016/ParaCL)
 
-Interpreter of C-like language. Parsing by flex & bison.
+Interpreter of C-like language. Parsing by flex & bison. Backend -- llvm.
 
 ## [OpenCL](https://github.com/Tako-San/OpenCL)
 
